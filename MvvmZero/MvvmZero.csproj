@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
+    <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
+    <Version>1.0.4</Version>
+    <PackageLicenseUrl>https://mit-license.org/</PackageLicenseUrl>
+    <Copyright>FunctionZero Ltd. 2019</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="3.6.0.220655" />
+  </ItemGroup>
+
+</Project>

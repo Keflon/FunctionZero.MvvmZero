@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MvvmZeroTestApp.Mvvm.Pages.SplashPage"   
+             x:Name ="Self"
+             BindingContext="{Binding Source={x:Reference Self}, Path=SplashPageVm}"
+             NavigationPage.HasNavigationBar="False"
+             
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Hello from SplashPage"
+                   VerticalOptions="CenterAndExpand" 
+                   HorizontalOptions="CenterAndExpand" />
+            <Button Text="DummyAsync" Command="{Binding DummyAsyncCommand}"/>
+            <Button Text="Dummy" Command="{Binding DummyCommand}"/>
+            <Button Text="Next" Command="{Binding NextCommand}"/>
+            <Button Text="Next" Command="{Binding NextCommand}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
