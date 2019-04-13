@@ -42,10 +42,10 @@ namespace FunctionZero.MvvmZero.Implementation
                     if (parameter is IHasOwnerPage<TEnum> hop)
                         hop.OwnerPageKey = pageKey;
                     _pageCreateAction?.Invoke(page);
-                    
+
                     page.Appearing += NewPageOnAppearing;
                     page.Disappearing += NewPageOnDisappearing;
-                    
+
                     return page;
                 }
                 throw new Exception($"Page {pageKey} does not exist.");
@@ -58,7 +58,7 @@ namespace FunctionZero.MvvmZero.Implementation
                 return newPage;
             }
 
-            public async Task<Page> PushPage(TEnum pageKey, object parameter, bool killExistingNavigationPage = false)
+            public async Task<Page> PushPageAsync(TEnum pageKey, object parameter, bool killExistingNavigationPage = false)
             {
                 Page newPage = MakePage(pageKey, parameter);
                 if (CurrentNavigationPage == null || killExistingNavigationPage)
@@ -77,7 +77,7 @@ namespace FunctionZero.MvvmZero.Implementation
                 return newPage;
             }
 
-            public async Task<Page> PushModalPage(TEnum pageKey, object parameter)
+            public async Task<Page> PushModalPageAsync(TEnum pageKey, object parameter)
             {
                 Page newPage = MakePage(pageKey, parameter);
                 if (CurrentNavigationPage == null)
@@ -93,17 +93,27 @@ namespace FunctionZero.MvvmZero.Implementation
                 _pagesByKey.Add(pageKey, pageMaker);
             }
 
-            public async Task Pop(bool animated = true)
+            public async Task PopAsync(bool animated = true)
             {
                 CurrentNavigationPage.CurrentPage.BindingContext = null;
                 await CurrentNavigationPage.Navigation.PopAsync(animated);
             }
 
-            public async Task PopModal(bool animated = true)
+            public async Task PopToDepthAsync(int desiredDepth, bool animated = true)
+            {
+                while (CurrentNavigationPage.StackDepth > desiredDepth + 1)
+                {
+                    CurrentNavigationPage.CurrentPage.BindingContext = null;
+                    CurrentNavigationPage.Navigation.RemovePage(CurrentNavigationPage.CurrentPage);
+                    await PopAsync(animated);
+                }
+            }
+
+            public async Task PopModalAsync(bool animated = true)
             {
                 await CurrentNavigationPage.Navigation.PopModalAsync(true);
             }
-            
+
             private void NewPageOnDisappearing(object sender, EventArgs e)
             {
                 Page newPage = (Page)sender;

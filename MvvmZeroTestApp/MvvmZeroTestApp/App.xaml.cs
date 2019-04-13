@@ -20,7 +20,7 @@ namespace MvvmZeroTestApp
 
             InitializeComponent();
 
-            Task<Page> newPage = Locator.PageService.PushPage(PageDefinitions.SplashPage, new SplashPageVm());
+            Task<Page> newPage = Locator.PageService.PushPageAsync(PageDefinitions.SplashPage, new SplashPageVm());
 
             //MainPage = new MainPage();
         }

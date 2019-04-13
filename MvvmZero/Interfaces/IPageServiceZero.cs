@@ -9,10 +9,12 @@ namespace FunctionZero.MvvmZero.Interfaces
         void SetPage(Page page);
         Page SetPage(TEnum pageKey, object parameter);
         Page CurrentPage { get; }
-        Task<Page> PushPage(TEnum pageKey, object parameter, bool killExistingNavigationPage = false);
-        Task<Page> PushModalPage(TEnum pageKey, object parameter);
+        Task<Page> PushPageAsync(TEnum pageKey, object parameter, bool killExistingNavigationPage = false);
+        Task<Page> PushModalPageAsync(TEnum pageKey, object parameter);
         void Register(TEnum pageKey, Func<object, Page> pageMaker);
-        Task Pop(bool animated = true);
-        Task PopModal(bool animated = true);
+        Task PopAsync(bool animated = true);
+        Task PopModalAsync(bool animated = true);
+        Task PopToDepthAsync(int desiredDepth, bool animated = true);
+
     }
 }

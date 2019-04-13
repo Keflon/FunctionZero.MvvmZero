@@ -23,7 +23,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private async Task NextCommandExecute()
         {
             await Task.Delay(2000);
-            await App.Locator.PageService.PushPage(PageDefinitions.HomePage, new HomePageVm());
+            await App.Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm());
         }
     }
 }
