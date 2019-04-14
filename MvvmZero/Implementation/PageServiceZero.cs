@@ -105,8 +105,8 @@ namespace FunctionZero.MvvmZero.Implementation
                 {
                     CurrentNavigationPage.CurrentPage.BindingContext = null;
                     CurrentNavigationPage.Navigation.RemovePage(CurrentNavigationPage.CurrentPage);
-                    await PopAsync(animated);
                 }
+                await PopAsync(animated);
             }
 
             public async Task PopModalAsync(bool animated = true)
