@@ -121,9 +121,38 @@ namespace FunctionZero.MvvmZero.Implementation
             private void NewPageOnAppearing(object sender, EventArgs e)
             {
                 Page newPage = (Page)sender;
+
                 if (newPage.BindingContext is IHasOwnerPage<TEnum> tHasOwnerPage)
                     tHasOwnerPage.OwnerPageAppearing();
+            }
+
+            //public void PopToBindingContext(Func<object, bool> context, bool animated = true)
+            public async Task PopToBindingContext(object context, bool animated = true)
+            {
+                
+                //while (CurrentNavigationPage.BindingContext != context) ???
+                while (CurrentNavigationPage.CurrentPage.BindingContext != context)
+                {
+                    CurrentNavigationPage.CurrentPage.BindingContext = null;
+                    CurrentNavigationPage.Navigation.RemovePage(CurrentNavigationPage.CurrentPage);
+                }
+                //await PopAsync(animated);
             }
         }
     }
 }
+
+
+
+
+
+#if _pastebin_
+
+            private readonly Action<TEnum> _pageCreatingAction;
+            private readonly Action<Page, TEnum> _pageCreatedAction;
+            private readonly Action<Page, int> _pushingPageAction;
+            private readonly Action<Page, int> _poppingPageAction;
+            private readonly Action<Page, int> _pushedPageAction;
+            private readonly Action<Page, int> _poppedPageAction;
+
+#endif
