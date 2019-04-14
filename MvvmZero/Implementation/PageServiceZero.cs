@@ -36,9 +36,6 @@ namespace FunctionZero.MvvmZero.Implementation
                 {
                     Page page = pageMaker.Invoke(parameter);
 
-                    //if(parameter is IHasOwnerPage iop)
-                    //    iop.OwnerPageKey = Convert.ToInt32(pageKey);
-
                     if (parameter is IHasOwnerPage<TEnum> hop)
                         hop.OwnerPageKey = pageKey;
                     _pageCreateAction?.Invoke(page);
@@ -117,8 +114,6 @@ namespace FunctionZero.MvvmZero.Implementation
             private void NewPageOnDisappearing(object sender, EventArgs e)
             {
                 Page newPage = (Page)sender;
-                //if (newPage.BindingContext is IHasOwnerPage hasOwnerPage)
-                //    hasOwnerPage.OwnerPageDisappearing();
                 if (newPage.BindingContext is IHasOwnerPage<TEnum> tHasOwnerPage)
                     tHasOwnerPage.OwnerPageDisappearing();
             }
@@ -126,8 +121,6 @@ namespace FunctionZero.MvvmZero.Implementation
             private void NewPageOnAppearing(object sender, EventArgs e)
             {
                 Page newPage = (Page)sender;
-                //if (newPage.BindingContext is IHasOwnerPage hasOwnerPage)
-                //    hasOwnerPage.OwnerPageAppearing();
                 if (newPage.BindingContext is IHasOwnerPage<TEnum> tHasOwnerPage)
                     tHasOwnerPage.OwnerPageAppearing();
             }
