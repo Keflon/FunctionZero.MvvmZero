@@ -28,13 +28,16 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void OwnerPageAppearing()
+        public void OwnerPageAppearing(PageDefinitions pageKey, int? pageDepth)
         {
+            OwnerPageKey = pageKey;
             Debug.WriteLine($"{this.GetType()} Appearing");
         }
 
         public void OwnerPageDisappearing()
         {
+            OwnerPageKey = PageDefinitions.None;
+
             Debug.WriteLine($"{this.GetType()} Disappearing");
         }
 

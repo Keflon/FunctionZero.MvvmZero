@@ -10,15 +10,13 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
 	public class SplashPageVm : BaseVm
 	{
-        public ICommand NextCommand { get; }
-        public ICommand DummyAsyncCommand { get ; }
-        public ICommand DummyCommand { get; }
+        public ICommand NextCommandAsync { get; }
+        public ICommand DummyCommandAsync { get ; }
 		public SplashPageVm(/* TODO: Inject dependencies here */)
 		{
-            DummyAsyncCommand = new GuardCommandAsync(this, async () => Debug.WriteLine("FAKE!"));
-            DummyCommand = new GuardCommand(this,  () => Debug.WriteLine("FAKE!"));
-            NextCommand = new GuardCommandAsync(this, async ()=>await NextCommandExecute());
-		}
+            DummyCommandAsync = new CommandZeroAsync(this, async () => Debug.WriteLine("FAKE!"));
+            NextCommandAsync = new CommandZeroAsync(this, async () => await NextCommandExecute());
+        }
 
         private async Task NextCommandExecute()
         {

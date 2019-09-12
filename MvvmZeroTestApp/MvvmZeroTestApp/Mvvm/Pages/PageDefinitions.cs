@@ -6,7 +6,8 @@ namespace MvvmZeroTestApp.Mvvm.Pages
 {
     public enum PageDefinitions
     {
-        SplashPage = 0,
+        None = 0,
+        SplashPage,
         HomePage,
     }
 }

@@ -5,7 +5,6 @@
              x:Name ="Self"
              BindingContext="{Binding Source={x:Reference Self}, Path=HomePageVm}"
              NavigationPage.HasNavigationBar="False"
-             
              >
     <ContentPage.Content>
         <StackLayout>

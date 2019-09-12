@@ -12,10 +12,8 @@
             <Label Text="Hello from SplashPage"
                    VerticalOptions="CenterAndExpand" 
                    HorizontalOptions="CenterAndExpand" />
-            <Button Text="DummyAsync" Command="{Binding DummyAsyncCommand}"/>
-            <Button Text="Dummy" Command="{Binding DummyCommand}"/>
-            <Button Text="Next" Command="{Binding NextCommand}"/>
-            <Button Text="Next" Command="{Binding NextCommand}"/>
+            <Button Text="DummyAsync" Command="{Binding DummyCommandAsync}"/>
+            <Button Text="Next" Command="{Binding NextCommandAsync}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

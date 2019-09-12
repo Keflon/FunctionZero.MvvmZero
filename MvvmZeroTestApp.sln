@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.438
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmZeroTestApp.Android", "MvvmZeroTestApp\MvvmZeroTestApp.Android\MvvmZeroTestApp.Android.csproj", "{343411E8-EFE6-4B9B-B3FD-BB2738FD2B04}"
 EndProject
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmZeroTestApp.UWP", "Mvvm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvvmZeroTestApp", "MvvmZeroTestApp\MvvmZeroTestApp\MvvmZeroTestApp.csproj", "{4ACCF3AF-C937-4CF9-B667-3DFE369BAB24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmZero", "MvvmZero\MvvmZero.csproj", "{50C18F4F-E55B-4C36-890C-BA98250120F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvvmZero", "MvvmZero\MvvmZero.csproj", "{50C18F4F-E55B-4C36-890C-BA98250120F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,7 +93,6 @@ Global
 		{343411E8-EFE6-4B9B-B3FD-BB2738FD2B04}.Debug|x64.Build.0 = Debug|Any CPU
 		{343411E8-EFE6-4B9B-B3FD-BB2738FD2B04}.Debug|x64.Deploy.0 = Debug|Any CPU
 		{343411E8-EFE6-4B9B-B3FD-BB2738FD2B04}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{343411E8-EFE6-4B9B-B3FD-BB2738FD2B04}.Debug|x86.Build.0 = Debug|Any CPU
 		{343411E8-EFE6-4B9B-B3FD-BB2738FD2B04}.Debug|x86.Deploy.0 = Debug|Any CPU
 		{343411E8-EFE6-4B9B-B3FD-BB2738FD2B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{343411E8-EFE6-4B9B-B3FD-BB2738FD2B04}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -165,7 +164,6 @@ Global
 		{6679C432-F041-4676-BBBA-AE1F2BC3EF23}.Debug|x64.Build.0 = Debug|iPhone
 		{6679C432-F041-4676-BBBA-AE1F2BC3EF23}.Debug|x64.Deploy.0 = Debug|iPhone
 		{6679C432-F041-4676-BBBA-AE1F2BC3EF23}.Debug|x86.ActiveCfg = Debug|iPhone
-		{6679C432-F041-4676-BBBA-AE1F2BC3EF23}.Debug|x86.Build.0 = Debug|iPhone
 		{6679C432-F041-4676-BBBA-AE1F2BC3EF23}.Debug|x86.Deploy.0 = Debug|iPhone
 		{6679C432-F041-4676-BBBA-AE1F2BC3EF23}.Release|Any CPU.ActiveCfg = Release|iPhone
 		{6679C432-F041-4676-BBBA-AE1F2BC3EF23}.Release|Any CPU.Build.0 = Release|iPhone

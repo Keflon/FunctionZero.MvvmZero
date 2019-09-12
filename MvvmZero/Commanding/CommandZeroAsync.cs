@@ -19,7 +19,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.using System;
+SOFTWARE.
 */
 
 using System;
@@ -29,38 +29,89 @@ using System.Windows.Input;
 
 namespace FunctionZero.MvvmZero.Commanding
 {
-    [Obsolete("Please use CommandZeroAsync instead, it's lovely")]
-    public class GuardCommandAsync : ICommand
+    public class CommandZeroAsync : ICommand
     {
         private readonly IGuard _guard;
         private readonly Func<object, bool> _canExecute;
         private readonly Func<object, Task> _execute;
-         
-        public GuardCommandAsync(IGuard guard, Func<object, Task> execute)
+
+        internal class FalseGuard : IGuard
+        {
+            public bool IsGuardRaised { get => false; set { } }
+            public event EventHandler<GuardChangedEventArgs> GuardChanged;
+        }
+
+        private static readonly IGuard _falseGuard = new FalseGuard();
+
+        public CommandZeroAsync(Func<object, Task> execute)
+            : this(_falseGuard, execute, (o) => true)
+        {
+        }
+
+        public CommandZeroAsync(Func<Task> execute)
+            : this(_falseGuard, (o) => execute(), (o) => true)
+        {
+        }
+
+        public CommandZeroAsync(Func<Task> execute, Func<bool> canExecute)
+            : this(_falseGuard, (o) => execute(), (o) => canExecute())
+        {
+        }
+
+        public CommandZeroAsync(Func<Task> execute, Func<object, bool> canExecute)
+            : this(_falseGuard, (o) => execute(), canExecute)
+        {
+
+        }
+
+        public CommandZeroAsync(Func<object, Task> execute, Func<bool> canExecute)
+            : this(_falseGuard, execute, (o) => canExecute())
+        {
+        }
+
+        public CommandZeroAsync(Func<object, Task> execute, Func<object, bool> canExecute)
+            : this(_falseGuard, execute, canExecute)
+        {
+        }
+
+
+
+        public CommandZeroAsync(IGuard guard, Func<object, Task> execute)
             : this(guard, execute, (o) => true)
         {
         }
-        
-        public GuardCommandAsync(IGuard guard, Func<Task> execute)
+
+        public CommandZeroAsync(IGuard guard, Func<Task> execute)
             : this(guard, (o) => execute(), (o) => true)
         {
         }
 
-        public GuardCommandAsync(IGuard guard, Func<Task> execute, Func<bool> canExecute)
+        public CommandZeroAsync(IGuard guard, Func<Task> execute, Func<bool> canExecute)
             : this(guard, (o) => execute(), (o) => canExecute())
         {
         }
 
-        public GuardCommandAsync(IGuard guard, Func<object, Task> execute, Func<object, bool> canExecute)
+        public CommandZeroAsync(IGuard guard, Func<Task> execute, Func<object, bool> canExecute)
+            : this(guard, (o) => execute(), canExecute)
         {
-            _guard = guard ?? throw new ArgumentNullException(nameof(guard));
+        }
+
+        public CommandZeroAsync(IGuard guard, Func<object, Task> execute, Func<bool> canExecute)
+            : this(guard, execute, (o) => canExecute())
+        {
+        }
+
+
+        public CommandZeroAsync(IGuard guard, Func<object, Task> execute, Func<object, bool> canExecute)
+        {
+            _guard = guard == null ? _falseGuard : guard;
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
+            _canExecute = canExecute == null ? (o) => true : canExecute;
 
             _guard.GuardChanged += Guard_PropertyChanged;
         }
 
-        ~GuardCommandAsync()
+        ~CommandZeroAsync()
         {
             _guard.GuardChanged -= Guard_PropertyChanged;
         }
