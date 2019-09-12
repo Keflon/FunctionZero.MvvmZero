@@ -1,7 +1,6 @@
-﻿/*
-MIT License
+﻿MIT License
 
-Copyright(c) 2016 - 2019 Function Zero Ltd
+Copyright (c) 2016 - 2019 Function Zero Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,26 +18,4 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.using System;
-*/
-
-using System;
-using System.Threading.Tasks;
-using Xamarin.Forms;
-
-namespace FunctionZero.MvvmZero.Interfaces
-{
-    public interface IPageServiceZero<TEnum> where TEnum  : Enum
-    {
-        void SetPage(Page page);
-        Page SetPage(TEnum pageKey, object parameter);
-        Page CurrentPage { get; }
-        Task<Page> PushPageAsync(TEnum pageKey, object parameter, bool killExistingNavigationPage = false);
-        Task<Page> PushModalPageAsync(TEnum pageKey, object parameter);
-        void Register(TEnum pageKey, Func<object, Page> pageMaker);
-        Task PopAsync(bool animated = true);
-        Task PopModalAsync(bool animated = true);
-        Task PopToDepthAsync(int desiredDepth, bool animated = true);
-
-    }
-}
+SOFTWARE.
