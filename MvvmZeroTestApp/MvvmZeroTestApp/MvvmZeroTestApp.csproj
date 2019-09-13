@@ -10,18 +10,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="3.6.0.220655" />
+    <PackageReference Include="Xamarin.Forms" Version="4.2.0.778463" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\MvvmZero\MvvmZero.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
       <HintPath>Xamarin.Forms.Core</HintPath>
     </Reference>
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <Compile Update="Mvvm\PageViewModels\HomePageVm.cs" />

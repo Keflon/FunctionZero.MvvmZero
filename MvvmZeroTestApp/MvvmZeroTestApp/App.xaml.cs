@@ -12,15 +12,15 @@ namespace MvvmZeroTestApp
     public partial class App : Application
     {
 
-        public static Locator Locator { get; private set; }
+        //public static Locator Locator { get; private set; }
 
         public App()
         {
-            Locator = new Locator();
+            //Locator = new Locator();
 
             InitializeComponent();
 
-            Task<Page> newPage = Locator.PageService.PushPageAsync(PageDefinitions.SplashPage, new SplashPageVm());
+            //Task<Page> newPage = Locator.PageService.PushPageAsync(PageDefinitions.SplashPage, new SplashPageVm());
 
             //MainPage = new MainPage();
         }

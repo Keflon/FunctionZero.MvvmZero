@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class HomePageVm : BaseVm2
+    public class HomePageVm : BaseVm
     {
         public HomePageVm(/* TODO: Inject dependencies here */)
         {

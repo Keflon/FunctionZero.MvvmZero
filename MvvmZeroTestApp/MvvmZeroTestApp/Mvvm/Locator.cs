@@ -1,29 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FunctionZero.MvvmZero.Implementation.FunctionZero.PageServiceZero;
-using FunctionZero.MvvmZero.Interfaces;
-using MvvmZeroTestApp.Mvvm.Pages;
-using MvvmZeroTestApp.Mvvm.PageViewModels;
-using Xamarin.Forms;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Text;
+//using FunctionZero.MvvmZero.Implementation;
+//using MvvmZeroTestApp.Mvvm.Pages;
+//using MvvmZeroTestApp.Mvvm.PageViewModels;
+//using Xamarin.Forms;
 
-namespace MvvmZeroTestApp.Mvvm
-{
-    public class Locator
-    {
-        public IPageServiceZero<PageDefinitions> PageService { get; }
+//namespace MvvmZeroTestApp.Mvvm
+//{
+//    public class Locator
+//    {
+//        public PageServiceZero<PageDefinitions> PageService { get; }
 
-        public Locator()
-        {
-            PageService = new PageServiceZero<PageDefinitions>(Application.Current, PageCreateAction);
+//        public Locator()
+//        {
+//            PageService = new PageServiceZero<PageDefinitions>(Application.Current, PageCreateAction);
 
-            PageService.Register(PageDefinitions.SplashPage, viewModel => new SplashPage((SplashPageVm)viewModel));
-            PageService.Register(PageDefinitions.HomePage, viewModel => new HomePage((HomePageVm)viewModel));
-        }
+//            PageService.Register(PageDefinitions.SplashPage, viewModel => new SplashPage((SplashPageVm)viewModel));
+//            PageService.Register(PageDefinitions.HomePage, viewModel => new HomePage((HomePageVm)viewModel));
+//        }
 
-        private void PageCreateAction(Page newPage)
-        {
+//        private void PageCreateAction(Page newPage)
+//        {
 
-        }
-    }
-}
+//        }
+//    }
+//}
