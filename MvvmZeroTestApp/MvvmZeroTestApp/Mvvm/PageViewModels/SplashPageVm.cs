@@ -3,12 +3,13 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FunctionZero.MvvmZero.Commanding;
+using FunctionZero.MvvmZero.ViewModel;
 using MvvmZeroTestApp.Mvvm.Pages;
 using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-	public class SplashPageVm : BaseVm
+    public class SplashPageVm : BaseVm
 	{
         public ICommand NextCommandAsync { get; }
         public ICommand DummyCommandAsync { get ; }
@@ -17,6 +18,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             DummyCommandAsync = new CommandZeroAsync(this, async () => Debug.WriteLine("FAKE!"));
             NextCommandAsync = new CommandZeroAsync(this, async () => await NextCommandExecute());
         }
+        BaseVm2 Blart;
 
         private async Task NextCommandExecute()
         {
@@ -24,4 +26,12 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             await App.Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm());
         }
     }
+
+    //public class Thing : BaseVm2
+    //{
+
+    //}
+
+
+
 }

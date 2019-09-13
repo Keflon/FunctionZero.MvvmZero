@@ -7,15 +7,15 @@ using System.Text;
 using FunctionZero.MvvmZero.Commanding;
 using FunctionZero.MvvmZero.Interfaces;
 
-namespace MvvmZeroTestApp.Mvvm.PageViewModels
+namespace FunctionZero.MvvmZero.ViewModel
 {
-    public abstract class BaseVm : IGuard, INotifyPropertyChanged, IHasOwnerPage
+    public  class BaseVm2 : IGuard, INotifyPropertyChanged, IHasOwnerPage
     {
         private readonly IGuard _guardImplementation;
         private int _ownerPageKey;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public BaseVm()
+        public BaseVm2()
         {
             _guardImplementation = new BasicGuard();
         }
@@ -28,14 +28,14 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         public virtual void OwnerPageAppearing(int pageKey, int? pageDepth)
         {
             OwnerPageKey = pageKey;
-            Debug.WriteLine($"{this.GetType()} Appearing");
+            Debug.WriteLine($"{GetType()} Appearing");
         }
 
         public virtual void OwnerPageDisappearing()
         {
             OwnerPageKey = -1;
 
-            Debug.WriteLine($"{this.GetType()} Disappearing");
+            Debug.WriteLine($"{GetType()} Disappearing");
         }
 
         public int OwnerPageKey
@@ -43,7 +43,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             get => _ownerPageKey;
             set
             {
-                Debug.WriteLine($"{this.GetType()} page key set to {value}");
+                Debug.WriteLine($"{GetType()} page key set to {value}");
                 _ownerPageKey = value;
             }
         }

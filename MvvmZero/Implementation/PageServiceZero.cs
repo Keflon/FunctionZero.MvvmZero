@@ -61,9 +61,9 @@ namespace FunctionZero.MvvmZero.Implementation
                     Page page = pageMaker.Invoke(parameter);
                     _pageCreateAction?.Invoke(page);
 
-                    if (parameter is IHasOwnerPage<TEnum> tHasOwnerPage)
+                    if (parameter is IHasOwnerPage tHasOwnerPage)
                     {
-                        page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing(pageKey, this.CurrentNavigationPage?.StackDepth);
+                        page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing(Convert.ToInt32(pageKey), this.CurrentNavigationPage?.StackDepth);
                         page.Disappearing += (s, e)=> tHasOwnerPage.OwnerPageDisappearing();
                     }
                     return page;

@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
     <PackageLicenseUrl>https://mit-license.org/</PackageLicenseUrl>
     <Copyright>FunctionZero Ltd. 2019</Copyright>
   </PropertyGroup>
