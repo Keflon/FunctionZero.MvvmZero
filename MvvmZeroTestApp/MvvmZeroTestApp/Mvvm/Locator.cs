@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using FunctionZero.MvvmZero.Implementation.FunctionZero.PageServiceZero;
 using FunctionZero.MvvmZero.Interfaces;
+using FunctionZero.PageServiceZero;
 using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.PageViewModels;
 using Xamarin.Forms;

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FunctionZero.MvvmZero.Commanding;
+using FunctionZero.MvvmZero.Implementation;
 using MvvmZeroTestApp.Mvvm.Pages;
 using Xamarin.Forms;
 

@@ -28,8 +28,6 @@ using System.Threading.Tasks;
 using FunctionZero.MvvmZero.Interfaces;
 using Xamarin.Forms;
 
-namespace FunctionZero.MvvmZero.Implementation
-{
     namespace FunctionZero.PageServiceZero
     {
         public class PageServiceZero<TEnum> : IPageServiceZero<TEnum> where TEnum : Enum
@@ -61,9 +59,9 @@ namespace FunctionZero.MvvmZero.Implementation
                     Page page = pageMaker.Invoke(parameter);
                     _pageCreateAction?.Invoke(page);
 
-                    if (parameter is IHasOwnerPage<TEnum> tHasOwnerPage)
+                    if (parameter is IHasOwnerPage tHasOwnerPage)
                     {
-                        page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing(pageKey, this.CurrentNavigationPage?.StackDepth);
+                        page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing((int)(object)pageKey, this.CurrentNavigationPage?.StackDepth);
                         page.Disappearing += (s, e)=> tHasOwnerPage.OwnerPageDisappearing();
                     }
                     return page;
@@ -132,4 +130,3 @@ namespace FunctionZero.MvvmZero.Implementation
             }
         }
     }
-}

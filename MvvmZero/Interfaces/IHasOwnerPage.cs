@@ -30,13 +30,13 @@ namespace FunctionZero.MvvmZero.Interfaces
     /// If the ViewModel of a Page supports this interface, these methods are called by the page service.
     /// </summary>
     /// <typeparam name="TPageKey"></typeparam>
-    public interface IHasOwnerPage<TPageKey> where TPageKey : Enum
+    public interface IHasOwnerPage
     {
         /// <summary>
         /// </summary>
         /// <param name="pageKey">The key of the Page that is appearing</param>
         /// <param name="pageDepth">The stack depth of the containing NavigationPage, or null if there is no containing NavigationPage</param>
-        void OwnerPageAppearing(TPageKey pageKey, int? pageDepth);
+        void OwnerPageAppearing(int? pageKey, int? pageDepth);
         void OwnerPageDisappearing();
     }
 }
