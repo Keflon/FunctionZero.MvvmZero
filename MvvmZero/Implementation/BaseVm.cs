@@ -10,6 +10,10 @@ using FunctionZero.MvvmZero.Interfaces;
 
 namespace FunctionZero.MvvmZero.Implementation
 {
+    /// <summary>
+    /// If you get a UWP xaml compiler error after deriving from this class,
+    /// reference this library directly in your UWP project to resolve it.
+    /// </summary>
     public abstract class BaseVm : IGuard, INotifyPropertyChanged, IHasOwnerPage
     {
         private readonly IGuard _guardImplementation;
@@ -26,13 +30,13 @@ namespace FunctionZero.MvvmZero.Implementation
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void OwnerPageAppearing(int? pageKey, int? pageDepth)
+        public virtual void OwnerPageAppearing(int? pageKey, int? pageDepth)
         {
             OwnerPageKey = pageKey;
             Debug.WriteLine($"{GetType()} Appearing");
         }
 
-        public void OwnerPageDisappearing()
+        public virtual void OwnerPageDisappearing()
         {
             OwnerPageKey = -1;
 

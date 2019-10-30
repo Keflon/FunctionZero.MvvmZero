@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MvvmZeroTestApp.Boilerplate;
+using MvvmZeroTestApp.Mvvm.PageViewModels;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -6,11 +8,14 @@ namespace MvvmZeroTestApp
 {
     public partial class App : Application
     {
+        public Locator Locator { get; }
+
         public App()
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            Locator = new Locator(this);
+            MainPage = Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm()).Result;
         }
 
         protected override void OnStart()

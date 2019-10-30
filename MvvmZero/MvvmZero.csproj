@@ -6,7 +6,6 @@
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
     <Version>1.0.6</Version>
-    <PackageLicenseUrl>https://mit-license.org/</PackageLicenseUrl>
     <Copyright>FunctionZero Ltd. 2019</Copyright>
   </PropertyGroup>
 
