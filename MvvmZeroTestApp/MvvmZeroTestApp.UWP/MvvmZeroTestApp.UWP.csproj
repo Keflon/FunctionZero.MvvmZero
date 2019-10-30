@@ -147,6 +147,10 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.5" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MvvmZero\MvvmZero.csproj">
+      <Project>{50c18f4f-e55b-4c36-890c-ba98250120f4}</Project>
+      <Name>MvvmZero</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MvvmZeroTestApp\MvvmZeroTestApp.csproj">
       <Project>{AF97B747-A1E1-442F-BEEB-CB56B375B603}</Project>
       <Name>MvvmZeroTestApp</Name>
