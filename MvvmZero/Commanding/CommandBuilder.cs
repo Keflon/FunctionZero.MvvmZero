@@ -5,29 +5,45 @@ using System.Threading.Tasks;
 
 namespace FunctionZero.MvvmZero.Commanding
 {
-#if false
     public class CommandBuilder
     {
-
         public CommandZeroAsync Build()
         {
-            if (_executeFuncList.Count == 1)
-                return new CommandZeroAsync(_guard, _executeFuncList[0], _predicate);
-
-            return new CommandZeroAsync(_guard, async (o) => { foreach (var func in _executeFuncList) await func(o); }, _predicate);
-
+            if (_hasBuilt)
+                throw new InvalidOperationException("This CommandBuilder has expired. You cannot call Build more than once.");
+            _hasBuilt = true;
+            return new CommandZeroAsync(_guardList, _execute, _predicate, _getName);
         }
 
-        public CommandBuilder AddExecute(Func<object, Task> execute)
+        public CommandBuilder SetExecute(Func<object, Task> execute)
         {
-            _executeFuncList.Add(execute);
+            if (_execute != null)
+                throw new NotSupportedException("SetExecute cannot be called more than once");
+            _execute = execute;
             return this;
         }
-        public CommandBuilder AddExecute(Func<Task> execute)
+        public CommandBuilder SetExecute(Func<Task> execute)
         {
-            _executeFuncList.Add((o) => execute());
+            if (_execute != null)
+                throw new NotSupportedException("SetExecute cannot be called more than once");
+            _execute = (o) => execute();
             return this;
         }
+        public CommandBuilder SetExecute(Action execute)
+        {
+            if (_execute != null)
+                throw new NotSupportedException("SetExecute cannot be called more than once");
+            _execute = (o) => { execute(); return Task.CompletedTask; };
+            return this;
+        }
+        public CommandBuilder SetExecute(Action<object> execute)
+        {
+            if (_execute != null)
+                throw new NotSupportedException("SetExecute cannot be called more than once");
+            _execute = (o) => { execute(o); return Task.CompletedTask; };
+            return this;
+        }
+
         public CommandBuilder SetCanExecute(Func<object, bool> canExecute)
         {
             if (_predicate != null)
@@ -42,30 +58,47 @@ namespace FunctionZero.MvvmZero.Commanding
             _predicate = (o) => canExecute();
             return this;
         }
-
-        public CommandBuilder SetGuard(IGuard guard)
+        public CommandBuilder AddGlobalGuard()
         {
-            if (_guard != null)
-                throw new NotSupportedException("SetGuard cannot be called more than once");
-            _guard = guard;
+            if (_guardList.Contains(GlobalGuard))
+                throw new ArgumentException("Cannot add the global guard to the same command twice");
+            _guardList.Add(GlobalGuard);
             return this;
         }
+        public static IGuard GlobalGuard { get; } = new BasicGuard();
 
         public CommandBuilder AddGuard(IGuard guard)
         {
-            throw new NotImplementedException("This requires a change to IGuard.IsGuardRaised from bool to a reference count.");
+            if (_guardList.Contains(guard))
+                throw new ArgumentException("Cannot add the same guard to the same command twice");
+            _guardList.Add(guard);
+            return this;
         }
 
-        IList<Func<object, Task>> _executeFuncList;
+        public CommandBuilder SetName(Func<string> getName)
+        {
+            if (_getName != null)
+                throw new NotSupportedException("SetName cannot be called more than once");
+            _getName = getName;
+            return this;
+        }
+        public CommandBuilder SetName(string name)
+        {
+            if (_getName != null)
+                throw new NotSupportedException("SetName cannot be called more than once");
+            _getName = () => name;
+            return this;
+        }
+
+        Func<object, Task> _execute;
         Func<object, bool> _predicate;
-        IGuard _guard;
+        IList<IGuard> _guardList;
+        Func<string> _getName;
+        bool _hasBuilt;
 
         public CommandBuilder()
         {
-            _executeFuncList = new List<Func<object, Task>>();
-            _predicate = null;
-            _guard = null;
+            _guardList = new List<IGuard>();
         }
     }
-#endif
 }

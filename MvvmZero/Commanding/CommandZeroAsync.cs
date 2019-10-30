@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -31,114 +32,83 @@ namespace FunctionZero.MvvmZero.Commanding
 {
     public class CommandZeroAsync : ICommand
     {
-        private readonly IGuard _guard;
+        private readonly IEnumerable<IGuard> _guardList;
         private readonly Func<object, bool> _canExecute;
         private readonly Func<object, Task> _execute;
-
-        internal class FalseGuard : IGuard
-        {
-            public bool IsGuardRaised { get => false; set { } }
-            public event EventHandler<GuardChangedEventArgs> GuardChanged;
-        }
-
-        private static readonly IGuard _falseGuard = new FalseGuard();
-
-        public CommandZeroAsync(Func<object, Task> execute)
-            : this(_falseGuard, execute, (o) => true)
-        {
-        }
-
-        public CommandZeroAsync(Func<Task> execute)
-            : this(_falseGuard, (o) => execute(), (o) => true)
-        {
-        }
-
-        public CommandZeroAsync(Func<Task> execute, Func<bool> canExecute)
-            : this(_falseGuard, (o) => execute(), (o) => canExecute())
-        {
-        }
-
-        public CommandZeroAsync(Func<Task> execute, Func<object, bool> canExecute)
-            : this(_falseGuard, (o) => execute(), canExecute)
-        {
-
-        }
-
-        public CommandZeroAsync(Func<object, Task> execute, Func<bool> canExecute)
-            : this(_falseGuard, execute, (o) => canExecute())
-        {
-        }
-
-        public CommandZeroAsync(Func<object, Task> execute, Func<object, bool> canExecute)
-            : this(_falseGuard, execute, canExecute)
-        {
-        }
-
-
-
-        public CommandZeroAsync(IGuard guard, Func<object, Task> execute)
-            : this(guard, execute, (o) => true)
-        {
-        }
-
-        public CommandZeroAsync(IGuard guard, Func<Task> execute)
-            : this(guard, (o) => execute(), (o) => true)
-        {
-        }
-
-        public CommandZeroAsync(IGuard guard, Func<Task> execute, Func<bool> canExecute)
-            : this(guard, (o) => execute(), (o) => canExecute())
-        {
-        }
-
-        public CommandZeroAsync(IGuard guard, Func<Task> execute, Func<object, bool> canExecute)
-            : this(guard, (o) => execute(), canExecute)
-        {
-        }
-
-        public CommandZeroAsync(IGuard guard, Func<object, Task> execute, Func<bool> canExecute)
-            : this(guard, execute, (o) => canExecute())
-        {
-        }
-
-
-        public CommandZeroAsync(IGuard guard, Func<object, Task> execute, Func<object, bool> canExecute)
-        {
-            _guard = guard == null ? _falseGuard : guard;
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute == null ? (o) => true : canExecute;
-
-            _guard.GuardChanged += Guard_PropertyChanged;
-        }
-
-        ~CommandZeroAsync()
-        {
-            _guard.GuardChanged -= Guard_PropertyChanged;
-        }
-
-        private void Guard_PropertyChanged(object sender, GuardChangedEventArgs e)
-        {
-            this.ChangeCanExecute();
-        }
-
-        public bool CanExecute(object parameter)
-        {
-            return !_guard.IsGuardRaised && _canExecute(parameter);
-        }
-
+        private int _raisedGuardCount;
         /// <summary>
         /// Occurs when the target of the Command should reevaluate whether or not the Command can be executed.
         /// </summary>
         public event EventHandler CanExecuteChanged;
 
+        public Func<string> NameGetter { get; }
+        public string FriendlyName => NameGetter();
+
+        public CommandZeroAsync(IEnumerable<IGuard> guardList, Func<object, Task> execute, Func<object, bool> canExecute, Func<string> nameGetter)
+        {
+            _guardList = guardList ?? throw new ArgumentNullException(nameof(guardList));
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _canExecute = canExecute ?? ((o) => true);
+            NameGetter = nameGetter ?? (() => string.Empty);
+             
+            foreach (var guard in _guardList)
+            {
+                if (guard.IsGuardRaised)
+                    _raisedGuardCount++;
+                guard.GuardChanged += Guard_GuardChanged;
+            }
+        }
+        public bool CanExecute(object parameter)
+        {
+            return (_raisedGuardCount == 0) && _canExecute(parameter);
+        }
+
+        private void Guard_GuardChanged(object sender, GuardChangedEventArgs e)
+        {
+            if (e.NewValue == true)
+            {
+                _raisedGuardCount++;
+                if (_raisedGuardCount == 1)
+                    this.ChangeCanExecute();
+            }
+            else
+            {
+                _raisedGuardCount--;
+                if (_raisedGuardCount == 0)
+                    this.ChangeCanExecute();
+            }
+        }
+
+        ~CommandZeroAsync()
+        {
+            foreach (var guard in _guardList)
+                guard.GuardChanged -= Guard_GuardChanged;
+        }
+
+        /// <summary>
+        /// Used by ICommand observers.
+        /// </summary>
+        /// <param name="parameter"></param>
         public async void Execute(object parameter)
         {
-            if (!_guard.IsGuardRaised)
+            await ExecuteAsync(parameter);
+        }
+
+        /// <summary>
+        /// Used by grownups.
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public async Task<bool> ExecuteAsync(object parameter)
+        {
+            if (_raisedGuardCount == 0)
             {
                 try
                 {
-                    _guard.IsGuardRaised = true;
+                    foreach (var guard in _guardList)
+                        guard.IsGuardRaised = true;
                     await _execute(parameter);
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -146,9 +116,11 @@ namespace FunctionZero.MvvmZero.Commanding
                 }
                 finally
                 {
-                    _guard.IsGuardRaised = false;
+                    foreach (var guard in _guardList)
+                        guard.IsGuardRaised = false;
                 }
             }
+            return false;
         }
 
         public void ChangeCanExecute()
