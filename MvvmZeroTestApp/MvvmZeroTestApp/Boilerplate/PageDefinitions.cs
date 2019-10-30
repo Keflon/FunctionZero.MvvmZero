@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MvvmZeroTestApp.Mvvm.Pages
+namespace MvvmZeroTestApp.Boilerplate
 {
     public enum PageDefinitions
     {
-        SplashPage = 0,
+        None = 0,
         HomePage,
+        HomeOnePage,
+        HomeTwoPage
     }
 }

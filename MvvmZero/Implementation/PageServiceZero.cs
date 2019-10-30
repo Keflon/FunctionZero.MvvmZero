@@ -28,8 +28,6 @@ using System.Threading.Tasks;
 using FunctionZero.MvvmZero.Interfaces;
 using Xamarin.Forms;
 
-namespace FunctionZero.MvvmZero.Implementation
-{
     namespace FunctionZero.PageServiceZero
     {
         public class PageServiceZero<TEnum> : IPageServiceZero<TEnum> where TEnum : Enum
@@ -59,17 +57,16 @@ namespace FunctionZero.MvvmZero.Implementation
                 if (_pagesByKey.TryGetValue(pageKey, out var pageMaker))
                 {
                     Page page = pageMaker.Invoke(parameter);
-
-                    if (parameter is IHasOwnerPage<TEnum> hop)
-                        hop.OwnerPageKey = pageKey;
                     _pageCreateAction?.Invoke(page);
 
-                    page.Appearing += NewPageOnAppearing;
-                    page.Disappearing += NewPageOnDisappearing;
-
+                    if (parameter is IHasOwnerPage tHasOwnerPage)
+                    {
+                        page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing((int)(object)pageKey, this.CurrentNavigationPage?.StackDepth);
+                        page.Disappearing += (s, e)=> tHasOwnerPage.OwnerPageDisappearing();
+                    }
                     return page;
                 }
-                throw new Exception($"Page {pageKey} does not exist.");
+                throw new InvalidOperationException($"Page {pageKey} does not exist.");
             }
 
             public Page SetPage(TEnum pageKey, object parameter)
@@ -91,9 +88,6 @@ namespace FunctionZero.MvvmZero.Implementation
                 {
                     await CurrentNavigationPage.Navigation.PushAsync(newPage, true);
                 }
-
-                if (parameter is IHasOwnerPage<TEnum> hop)
-                    hop.PageDepth = this.CurrentNavigationPage?.StackDepth;
 
                 return newPage;
             }
@@ -134,20 +128,5 @@ namespace FunctionZero.MvvmZero.Implementation
             {
                 await CurrentNavigationPage.Navigation.PopModalAsync(true);
             }
-
-            private void NewPageOnDisappearing(object sender, EventArgs e)
-            {
-                Page newPage = (Page)sender;
-                if (newPage.BindingContext is IHasOwnerPage<TEnum> tHasOwnerPage)
-                    tHasOwnerPage.OwnerPageDisappearing();
-            }
-
-            private void NewPageOnAppearing(object sender, EventArgs e)
-            {
-                Page newPage = (Page)sender;
-                if (newPage.BindingContext is IHasOwnerPage<TEnum> tHasOwnerPage)
-                    tHasOwnerPage.OwnerPageAppearing();
-            }
         }
     }
-}

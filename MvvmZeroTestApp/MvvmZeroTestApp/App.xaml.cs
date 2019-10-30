@@ -1,28 +1,21 @@
-﻿using System;
-using System.Threading.Tasks;
-using MvvmZeroTestApp.Mvvm;
-using MvvmZeroTestApp.Mvvm.Pages;
+﻿using MvvmZeroTestApp.Boilerplate;
 using MvvmZeroTestApp.Mvvm.PageViewModels;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace MvvmZeroTestApp
 {
     public partial class App : Application
     {
-
-        public static Locator Locator { get; private set; }
+        public Locator Locator { get; }
 
         public App()
         {
-            Locator = new Locator();
-
             InitializeComponent();
 
-            Task<Page> newPage = Locator.PageService.PushPageAsync(PageDefinitions.SplashPage, new SplashPageVm());
-
-            //MainPage = new MainPage();
+            Locator = new Locator(this);
+            MainPage = Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm()).Result;
         }
 
         protected override void OnStart()

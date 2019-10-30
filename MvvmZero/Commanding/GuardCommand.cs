@@ -28,6 +28,7 @@ using System.Windows.Input;
 
 namespace FunctionZero.MvvmZero.Commanding
 {
+    [Obsolete("Please use CommandZeroAsync instead, it's lovely")]
     public class GuardCommand : ICommand
     {
         private readonly IGuard _guard;
