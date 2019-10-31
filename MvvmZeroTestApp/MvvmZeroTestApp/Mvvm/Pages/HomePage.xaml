@@ -5,10 +5,9 @@
              x:Name ="Self"
              >
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Hello from HomePage"
-                   VerticalOptions="CenterAndExpand" 
-                   HorizontalOptions="CenterAndExpand" />
+        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+            <Button Text="{Binding RedPillCommand.FriendlyName}" Command="{Binding RedPillCommand}"/>
+            <Button Text="{Binding BluePillCommand.FriendlyName}" Command="{Binding BluePillCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

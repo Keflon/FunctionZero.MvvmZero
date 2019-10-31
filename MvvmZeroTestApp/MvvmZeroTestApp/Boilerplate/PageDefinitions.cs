@@ -8,7 +8,8 @@ namespace MvvmZeroTestApp.Boilerplate
     {
         None = 0,
         HomePage,
-        HomeOnePage,
-        HomeTwoPage
+        RedPillPage,
+        BluePillPage,
+        ResultsPage
     }
 }

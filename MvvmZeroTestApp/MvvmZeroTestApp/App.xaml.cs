@@ -8,13 +8,16 @@ namespace MvvmZeroTestApp
 {
     public partial class App : Application
     {
-        public Locator Locator { get; }
+        public static Locator Locator { get; private set; }
 
         public App()
         {
             InitializeComponent();
 
+            // Initialise the Locator instance used to orchestrate our pages ...
             Locator = new Locator(this);
+
+            // Ask the Locator to prepare and present our first page ...
             MainPage = Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm()).Result;
         }
 

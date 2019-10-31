@@ -33,8 +33,9 @@ namespace FunctionZero.MvvmZero.Interfaces
     public interface IHasOwnerPage
     {
         /// <summary>
+        /// Lifecycle events for a Page
         /// </summary>
-        /// <param name="pageKey">The key of the Page that is appearing</param>
+        /// <param name="pageKey">The key of the Page that is appearing, or null if it has no key</param>
         /// <param name="pageDepth">The stack depth of the containing NavigationPage, or null if there is no containing NavigationPage</param>
         void OwnerPageAppearing(int? pageKey, int? pageDepth);
         void OwnerPageDisappearing();

@@ -112,6 +112,8 @@ namespace FunctionZero.MvvmZero.Commanding
                 }
                 catch (Exception ex)
                 {
+                    // TODO: Re-throw a suitable exception. 
+                    // TODO: Either the original exception or the original exception wrapped in a GuardCommandException
                     Debug.WriteLine($"GuardCommandAsync exception. Message: {ex.Message}");
                 }
                 finally

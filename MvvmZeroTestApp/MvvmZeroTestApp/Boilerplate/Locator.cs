@@ -18,8 +18,9 @@ namespace MvvmZeroTestApp.Boilerplate
             PageService = new PageServiceZero<PageDefinitions>(currentApplication, PageCreated);
 
             PageService.Register(PageDefinitions.HomePage, (vm) => new HomePage((HomePageVm)vm));
-            //PageService.Register(PageDefinitions.HomeOnePage, (vm) => new HomeOnePage((HomeOnePageVm)vm));
-            //PageService.Register(PageDefinitions.HomeTwoPage, (vm) => new HomeTwoPage((HomeTwoPageVm)vm));
+            PageService.Register(PageDefinitions.RedPillPage, (vm) => new RedPillPage((RedPillPageVm)vm));
+            PageService.Register(PageDefinitions.BluePillPage, (vm) => new BluePillPage((BluePillPageVm)vm));
+            PageService.Register(PageDefinitions.ResultsPage, (vm) => new ResultsPage((ResultsPageVm)vm));
         }
 
         private void PageCreated(Page newPage)

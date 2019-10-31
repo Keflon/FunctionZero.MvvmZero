@@ -5,8 +5,28 @@ using System.Threading.Tasks;
 
 namespace FunctionZero.MvvmZero.Commanding
 {
+    /// <summary>
+    /// A Builder for a CommandZeroAsync instance
+    /// </summary>
     public class CommandBuilder
     {
+        Func<object, Task> _execute;
+        Func<object, bool> _predicate;
+        IList<IGuard> _guardList;
+        Func<string> _getName;
+        bool _hasBuilt;
+
+        /// <summary>
+        /// CommandBuilder ctor
+        /// </summary>
+        public CommandBuilder()
+        {
+            _guardList = new List<IGuard>();
+        }
+        /// <summary>
+        /// Build the Command! :)
+        /// </summary>
+        /// <returns></returns>
         public CommandZeroAsync Build()
         {
             if (_hasBuilt)
@@ -15,6 +35,11 @@ namespace FunctionZero.MvvmZero.Commanding
             return new CommandZeroAsync(_guardList, _execute, _predicate, _getName);
         }
 
+        /// <summary>
+        /// Set an asynchronous Execute callback that requires a parameter
+        /// </summary>
+        /// <param name="execute">An asynchronous Execute callback that requires a parameter</param>
+        /// <returns></returns>
         public CommandBuilder SetExecute(Func<object, Task> execute)
         {
             if (_execute != null)
@@ -22,6 +47,12 @@ namespace FunctionZero.MvvmZero.Commanding
             _execute = execute;
             return this;
         }
+
+        /// <summary>
+        /// Set an asynchronous Execute callback that does not require a parameter
+        /// </summary>
+        /// <param name="execute">An asynchronous Execute callback that requires a parameter</param>
+        /// <returns></returns>
         public CommandBuilder SetExecute(Func<Task> execute)
         {
             if (_execute != null)
@@ -29,6 +60,12 @@ namespace FunctionZero.MvvmZero.Commanding
             _execute = (o) => execute();
             return this;
         }
+
+        /// <summary>
+        /// Set a synchonous Execute callback that does not require a parameter
+        /// </summary>
+        /// <param name="execute">A synchonous Execute callback that does not require a parameter</param>
+        /// <returns></returns>
         public CommandBuilder SetExecute(Action execute)
         {
             if (_execute != null)
@@ -36,6 +73,12 @@ namespace FunctionZero.MvvmZero.Commanding
             _execute = (o) => { execute(); return Task.CompletedTask; };
             return this;
         }
+
+        /// <summary>
+        /// Set a synchonous Execute callback that requires a parameter
+        /// </summary>
+        /// <param name="execute">A synchonous Execute callback that requires a parameter</param>
+        /// <returns></returns>
         public CommandBuilder SetExecute(Action<object> execute)
         {
             if (_execute != null)
@@ -44,6 +87,11 @@ namespace FunctionZero.MvvmZero.Commanding
             return this;
         }
 
+        /// <summary>
+        /// Set a CanExecute callback that requires a parameter
+        /// </summary>
+        /// <param name="canExecute">A CanExecute callback that requires a parameter</param>
+        /// <returns></returns>
         public CommandBuilder SetCanExecute(Func<object, bool> canExecute)
         {
             if (_predicate != null)
@@ -51,6 +99,12 @@ namespace FunctionZero.MvvmZero.Commanding
             _predicate = canExecute;
             return this;
         }
+
+        /// <summary>
+        /// Set a CanExecute callback that does not require a parameter
+        /// </summary>
+        /// <param name="canExecute">A CanExecute callback that does not require a parameter</param>
+        /// <returns></returns>
         public CommandBuilder SetCanExecute(Func<bool> canExecute)
         {
             if (_predicate != null)
@@ -58,6 +112,14 @@ namespace FunctionZero.MvvmZero.Commanding
             _predicate = (o) => canExecute();
             return this;
         }
+
+        /// <summary>
+        /// Applies a global guard object to the resultant ICommand
+        /// Async Commands that share this global guard cannot execute concurrently
+        /// Commands can be given multiple guard implementations, though individual guard implementations
+        /// can only be added once
+        /// </summary>
+        /// <returns></returns>
         public CommandBuilder AddGlobalGuard()
         {
             if (_guardList.Contains(GlobalGuard))
@@ -65,8 +127,20 @@ namespace FunctionZero.MvvmZero.Commanding
             _guardList.Add(GlobalGuard);
             return this;
         }
-        public static IGuard GlobalGuard { get; } = new BasicGuard();
 
+        /// <summary>
+        /// This is a global implementation if IGuard that can optionally be used by commands
+        /// </summary>
+        public static IGuard GlobalGuard { get; } = new BasicGuard();
+        /// <summary>
+        /// Adds a guard implementation. Commands that share a guard cannot execute concurrently.
+        /// Async Commands that share this guard cannot execute concurrently
+        /// Commands can be given multiple guard implementations, though individual guard implementations
+        /// can only be added once
+        /// *CAUTION* Watch out for deadlock if you use the same Giard across multiple Pages.
+        /// </summary>
+        /// <param name="guard">A guard implementation to add to the Command being built</param>
+        /// <returns></returns>
         public CommandBuilder AddGuard(IGuard guard)
         {
             if (_guardList.Contains(guard))
@@ -75,6 +149,12 @@ namespace FunctionZero.MvvmZero.Commanding
             return this;
         }
 
+        /// <summary>
+        /// Sets a delegate that can be used to retrieve the name of the resultant Command. Can be bound to by the UI etc.
+        /// Useful for swapping language at runtime
+        /// </summary>
+        /// <param name="getName">A delegate that returns a friendly name for the Command</param>
+        /// <returns></returns>
         public CommandBuilder SetName(Func<string> getName)
         {
             if (_getName != null)
@@ -82,23 +162,18 @@ namespace FunctionZero.MvvmZero.Commanding
             _getName = getName;
             return this;
         }
+
+        /// <summary>
+        /// Sets the name of the resultant Command. Can be bound to by the UI etc.
+        /// </summary>
+        /// <param name="name">The friendly name for the Command</param>
+        /// <returns></returns>
         public CommandBuilder SetName(string name)
         {
             if (_getName != null)
                 throw new NotSupportedException("SetName cannot be called more than once");
             _getName = () => name;
             return this;
-        }
-
-        Func<object, Task> _execute;
-        Func<object, bool> _predicate;
-        IList<IGuard> _guardList;
-        Func<string> _getName;
-        bool _hasBuilt;
-
-        public CommandBuilder()
-        {
-            _guardList = new List<IGuard>();
         }
     }
 }
