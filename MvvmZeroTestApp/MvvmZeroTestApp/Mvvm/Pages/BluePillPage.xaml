@@ -3,12 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MvvmZeroTestApp.Mvvm.Pages.BluePillPage"   
              x:Name ="Self"
-             BindingContext="{Binding Source={x:Reference Self}, Path=BluePillPageVm}">
+             BindingContext="{Binding Source={x:Reference Self}, Path=BluePillPageVm}"
+             >
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Hello from BluePillPage"
-                   VerticalOptions="CenterAndExpand" 
-                   HorizontalOptions="CenterAndExpand" />
+        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="Center" 
+                     >
+            <Label HorizontalOptions="Center" Text="PUZZLE!" FontSize="21" FontAttributes="Bold"/>
+            <Button HorizontalOptions="Center" WidthRequest="{Binding ZeroWidth, Mode=OneWay}" Text="{Binding ZeroCommand.FriendlyName}" Command="{Binding ZeroCommand}" BackgroundColor="Red" TextColor="White"/>
+            <Button HorizontalOptions="Center" WidthRequest="{Binding OneWidth, Mode=OneWay}" Text="{Binding OneCommand.FriendlyName}" Command="{Binding OneCommand}" BackgroundColor="Orange" TextColor="White"/>
+            <Button HorizontalOptions="Center" WidthRequest="{Binding TwoWidth, Mode=OneWay}" Text="{Binding TwoCommand.FriendlyName}" Command="{Binding TwoCommand}" BackgroundColor="Green" TextColor="White"/>
         </StackLayout>
-    </ContentPage.Content>
+    </ContentPage.Content> 
 </ContentPage>

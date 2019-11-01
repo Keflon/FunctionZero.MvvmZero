@@ -6,9 +6,8 @@
              BindingContext="{Binding Source={x:Reference Self}, Path=ResultsPageVm}">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Hello from ResultsPage"
-                   VerticalOptions="CenterAndExpand" 
-                   HorizontalOptions="CenterAndExpand" />
+            <Label Text="Message from previous page:" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"/>
+            <Label Text="{Binding ResultsMessage}" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

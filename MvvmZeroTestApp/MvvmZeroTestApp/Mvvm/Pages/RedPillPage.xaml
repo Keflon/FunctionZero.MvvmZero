@@ -5,10 +5,13 @@
              x:Name ="Self"
              BindingContext="{Binding Source={x:Reference Self}, Path=RedPillPageVm}">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Hello from RedPillPage"
-                   VerticalOptions="CenterAndExpand" 
-                   HorizontalOptions="CenterAndExpand" />
+        <StackLayout VerticalOptions="CenterAndExpand" 
+                   HorizontalOptions="CenterAndExpand">
+            <Label Text="We value your privacy, that's why we're taking it" FontAttributes="Bold"/>
+            <Label Text="Please check below if you don't want to not opt out of spam"/>
+            <CheckBox IsChecked="{Binding CanProceed, Mode=TwoWay}"/>
+            <Button Text="{Binding NextCommand.FriendlyName}" Command="{Binding NextCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
+    
