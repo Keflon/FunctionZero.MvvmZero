@@ -3,11 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MvvmZeroTestApp.Mvvm.Pages.HomePage"   
              x:Name ="Self"
+              Visual="Material"
+
              >
     <ContentPage.Content>
-        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
-            <Button Text="{Binding RedPillCommand.FriendlyName}" Command="{Binding RedPillCommand}"/>
-            <Button Text="{Binding BluePillCommand.FriendlyName}" Command="{Binding BluePillCommand}"/>
+        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
+                                  TranslationX="{Binding TranslationX, Mode=OneWay}"
+             TranslationY="{Binding TranslationY, Mode=OneWay}"
+             Rotation="{Binding Rotation, Mode=OneWay}"
+AnchorX="0"
+AnchorY="0"
+                     
+                     >
+            <Button TranslationY="{Binding TranslationY, Mode=OneWay}" Text="{Binding RedPillCommand.FriendlyName}" Command="{Binding RedPillCommand}" BackgroundColor="Red"/>
+            <Button Text="{Binding BluePillCommand.FriendlyName}" Command="{Binding BluePillCommand}" BackgroundColor="Blue" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

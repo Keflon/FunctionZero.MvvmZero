@@ -18,7 +18,7 @@ namespace MvvmZeroTestApp
             Locator = new Locator(this);
 
             // Ask the Locator to prepare and present our first page ...
-            MainPage = Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm()).Result;
+            _ = Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm());
         }
 
         protected override void OnStart()

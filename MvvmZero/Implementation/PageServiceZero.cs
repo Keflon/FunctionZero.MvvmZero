@@ -24,6 +24,7 @@ SOFTWARE.using System;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using FunctionZero.MvvmZero.Interfaces;
 using Xamarin.Forms;
@@ -45,9 +46,21 @@ using Xamarin.Forms;
             {
                 _application = application;
                 _pageCreateAction = pageCreateAction;
+
+            application.PropertyChanging += Application_PropertyChanging;
             }
 
-            public void SetPage(Page page)
+        private void Application_PropertyChanging(object sender, PropertyChangingEventArgs e)
+        {
+            Debug.WriteLine(e.PropertyName);
+            if(e.PropertyName == nameof(Application.MainPage))
+            {
+                Debug.WriteLine("Gotcha!");
+
+            }
+        }
+
+        public void SetPage(Page page)
             {
                 _application.MainPage = page;
             }
@@ -81,9 +94,9 @@ using Xamarin.Forms;
                 Page newPage = MakePage(pageKey, parameter);
                 if (CurrentNavigationPage == null || killExistingNavigationPage)
                 {
-                    var navPage = new NavigationPage(newPage);
-                    this.SetPage(navPage);
-                }
+                var navPage = new NavigationPage(newPage);
+                this.SetPage(navPage);
+            }
                 else
                 {
                     await CurrentNavigationPage.Navigation.PushAsync(newPage, true);
