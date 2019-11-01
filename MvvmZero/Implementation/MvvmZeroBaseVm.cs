@@ -14,13 +14,13 @@ namespace FunctionZero.MvvmZero.Implementation
     /// If you get a UWP xaml compiler error after deriving from this class,
     /// reference this library directly in your UWP project to resolve it.
     /// </summary>
-    public abstract class BaseVm : IGuard, INotifyPropertyChanged, IHasOwnerPage
+    public abstract class MvvmZeroBaseVm : IGuard, INotifyPropertyChanged, IHasOwnerPage
     {
         private readonly IGuard _guardImplementation;
         private int? _ownerPageKey;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public BaseVm()
+        public MvvmZeroBaseVm()
         {
             _guardImplementation = new BasicGuard();
         }
