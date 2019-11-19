@@ -38,7 +38,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             _stopwatch = new Stopwatch();
         }
 
-        private async Task AnyCommandExecute(object arg)
+        private async Task AnyCommandExecute()
         {
             PuzzleProgress++;
             if(PuzzleProgress == 3)
@@ -96,6 +96,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 
         private bool TimerCallback()
         {
+            // Make the button's widths follow a sine wave with offsets ...
             double rate = 200.0;
             double offset = 140.0;
             long time = _stopwatch.ElapsedMilliseconds;
