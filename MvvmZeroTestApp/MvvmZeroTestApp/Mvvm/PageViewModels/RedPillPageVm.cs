@@ -12,6 +12,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
     public class RedPillPageVm : BaseVm, IFlowPageZero<object, object>
     {
         private bool _canProceed;
+        private IFlowPageServiceZero _pageService;
 
         public CommandZeroAsync NextCommand { get; }
         public bool CanProceed
@@ -27,8 +28,10 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             }
         }
 
-        public RedPillPageVm(/* TODO: Inject dependencies here */)
+        public RedPillPageVm(IFlowPageServiceZero pageService)
         {
+            _pageService = pageService;
+
             NextCommand = new CommandBuilder()
                 //.SetCanExecute(() => CanProceed)
                 .SetExecute(NextCommandExecute)
@@ -42,7 +45,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 CanProceed = true;
             else
                 //await App.Locator.PageService.PushPageAsync(Boilerplate.PageDefinitions.ResultsPage, new ResultsPageVm("GO TEAM RED!!"));
-                await App.Locator.PageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM RED!!"));
+                await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM RED!!"));
         }
 
         public override void OwnerPageAppearing(int? pageKey, int? pageDepth)
@@ -64,15 +67,5 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         {
             return null;
         }
-
-        //protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        //{
-        //    base.OnPropertyChanged(propertyName);
-
-        //    if(propertyName == nameof(CanProceed))
-        //    {
-        //        NextCommand.ChangeCanExecute();
-        //    }
-        //}
     }
 }

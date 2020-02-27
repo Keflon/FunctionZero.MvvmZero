@@ -10,7 +10,6 @@ namespace MvvmZeroTestApp.Mvvm.Pages
 
         public BluePillPage()
         {
-            //this.BluePillPageVm = viewModel;
             InitializeComponent();
         }
     }

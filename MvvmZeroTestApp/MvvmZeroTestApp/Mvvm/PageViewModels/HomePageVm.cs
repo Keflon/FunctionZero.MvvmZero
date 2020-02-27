@@ -15,11 +15,15 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
     {
         public string FriendlyName => "Hello from the HomePageVm";
 
+        private IFlowPageServiceZero _pageService;
+
         public CommandZeroAsync RedPillCommand { get; }
         public CommandZeroAsync BluePillCommand { get; }
 
-        public HomePageVm(/* TODO: Inject dependencies here */)
+        public HomePageVm(IFlowPageServiceZero pageService)
         {
+            _pageService = pageService;
+
             RedPillCommand = new CommandBuilder().AddGuard(this).SetExecute(RedPillCommandExecute).SetName("Red Pill").Build();
             BluePillCommand = new CommandBuilder().AddGuard(this).SetExecute(BluePillCommandExecute).SetName("Blue Pill").Build();
         }
@@ -27,8 +31,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private async Task RedPillCommandExecute()
         {
             await DoSomethingSilly();
-            //await App.Locator.PageService.PushPageAsync(PageDefinitions.RedPillPage, new RedPillPageVm());
-            await App.Locator.PageService.PushPageAsync<RedPillPage, RedPillPageVm>((vm) => vm.SetState(null));
+            await _pageService.PushPageAsync<RedPillPage, RedPillPageVm>((vm) => vm.SetState(null));
         }
 
         private async Task DoSomethingSilly()
@@ -67,8 +70,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private async Task BluePillCommandExecute()
         {
             await DoSomethingElseSilly();
-            //await App.Locator.PageService.PushPageAsync(PageDefinitions.BluePillPage, new BluePillPageVm());
-            await App.Locator.PageService.PushPageAsync<BluePillPage, BluePillPageVm>((vm) => vm.SetState(null));
+            await _pageService.PushPageAsync<BluePillPage, BluePillPageVm>((vm) => vm.SetState(null));
         }
 
         private async Task DoSomethingElseSilly()

@@ -1,7 +1,9 @@
 ﻿using FunctionZero.MvvmZero;
+using FunctionZero.MvvmZero.Interfaces;
 using FunctionZero.PageServiceZero;
 using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.PageViewModels;
+using MvvmZeroTestApp.Mvvm.ViewModels;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,7 @@ namespace MvvmZeroTestApp.Boilerplate
     public class Locator
     {
         public Container IoCC { get; }
-        public FlowPageServiceZero PageService { get; }
+        //public FlowPageServiceZero PageService { get; }
 
         public Locator(Application currentApplication)
         {
@@ -28,21 +30,17 @@ namespace MvvmZeroTestApp.Boilerplate
             IoCC.Register<BluePillPage>(Lifestyle.Transient);
             IoCC.Register<ResultsPage>(Lifestyle.Transient);
             IoCC.Register<ResultsPageVm>(Lifestyle.Transient);
-
-
-
             //IoCC.Register<IJarvisLogger, JarvisLogger>(Lifestyle.Singleton);
-            //IoCC.Register<IPageServiceZero<PageDefinitions>>(() => new PageServiceZero<PageDefinitions>(currentApplication, PageCreated), Lifestyle.Singleton);
 
-
-            PageService = new FlowPageServiceZero(currentApplication, PageCreated);
-
-            PageService.RegisterTypeFactory((theType) => IoCC.GetInstance(theType));
-
-            //PageService.Register(PageDefinitions.HomePage, (vm) => new HomePage((HomePageVm)vm));
-            //PageService.Register(PageDefinitions.RedPillPage, (vm) => new RedPillPage((RedPillPageVm)vm));
-            //PageService.Register(PageDefinitions.BluePillPage, (vm) => new BluePillPage((BluePillPageVm)vm));
-            //PageService.Register(PageDefinitions.ResultsPage, (vm) => new ResultsPage((ResultsPageVm)vm));
+            IoCC.Register<IFlowPageServiceZero>(
+                () =>
+                {
+                    var pageService = new FlowPageServiceZero(currentApplication, PageCreated);
+                    pageService.RegisterTypeFactory((theType) => IoCC.GetInstance(theType));
+                    return pageService;
+                },
+                Lifestyle.Singleton
+            );
         }
 
         private void PageCreated(Page newPage)

@@ -17,6 +17,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private double _zeroWidth;
         private double _oneWidth;
         private double _twoWidth;
+        private IFlowPageServiceZero _pageService;
 
         public CommandZeroAsync ZeroCommand { get; }
         public CommandZeroAsync OneCommand { get; }
@@ -31,8 +32,9 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 }
             }
         }
-        public BluePillPageVm(/* TODO: Inject dependencies here */)
+        public BluePillPageVm(IFlowPageServiceZero pageService)
         {
+            _pageService = pageService;
             ZeroCommand = new CommandBuilder().AddGuard(this).SetCanExecute(()=>PuzzleProgress == 0).SetExecute(AnyCommandExecute).SetName("Zero").Build();
             OneCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 1).SetExecute(AnyCommandExecute).SetName("One").Build();
             TwoCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 2).SetExecute(AnyCommandExecute).SetName("Two").Build();
@@ -44,8 +46,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         {
             PuzzleProgress++;
             if(PuzzleProgress == 3)
-                //await App.Locator.PageService.PushPageAsync(PageDefinitions.ResultsPage, new ResultsPageVm("GO TEAM BLUE!!"));
-                await App.Locator.PageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM BLUE!!"));
+                await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM BLUE!!"));
         }
 
         public double ZeroWidth

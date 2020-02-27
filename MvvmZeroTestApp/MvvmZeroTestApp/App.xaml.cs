@@ -1,4 +1,5 @@
-﻿using MvvmZeroTestApp.Boilerplate;
+﻿using FunctionZero.MvvmZero.Interfaces;
+using MvvmZeroTestApp.Boilerplate;
 using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.PageViewModels;
 using System;
@@ -20,7 +21,7 @@ namespace MvvmZeroTestApp
 
             // Ask the Locator to prepare and present our first page ...
             //_ = Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm());
-            _ = Locator.PageService.PushPageAsync<HomePage, HomePageVm>((vm)=>vm.SetState(null));
+            _ = Locator.IoCC.GetInstance<IFlowPageServiceZero>().PushPageAsync<HomePage, HomePageVm>((vm)=>vm.SetState(null));
         }
 
         protected override void OnStart()

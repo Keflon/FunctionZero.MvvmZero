@@ -24,7 +24,7 @@ namespace FunctionZero.MvvmZero
         }
 
 
-        private TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
+        public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
         {
             TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
             TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
