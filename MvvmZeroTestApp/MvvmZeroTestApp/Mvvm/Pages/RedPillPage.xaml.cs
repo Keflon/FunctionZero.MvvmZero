@@ -7,16 +7,8 @@ namespace MvvmZeroTestApp.Mvvm.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RedPillPage : ContentPage
     {
-        public static readonly BindableProperty RedPillPageVmProperty = BindableProperty.Create("RedPillPageVm", typeof(RedPillPageVm), typeof(RedPillPage), null);
-
-        public RedPillPageVm RedPillPageVm
+        public RedPillPage()
         {
-            get { return (RedPillPageVm)GetValue(RedPillPageVmProperty); }
-            set { SetValue(RedPillPageVmProperty, value); }
-        }
-        public RedPillPage(RedPillPageVm viewModel)
-        {
-            this.RedPillPageVm = viewModel;
             InitializeComponent();
         }
     }

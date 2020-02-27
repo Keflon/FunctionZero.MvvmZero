@@ -1,5 +1,7 @@
 using FunctionZero.MvvmZero.Commanding;
+using FunctionZero.MvvmZero.Interfaces;
 using MvvmZeroTestApp.Boilerplate;
+using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.ViewModels;
 using System;
 using System.Diagnostics;
@@ -9,7 +11,7 @@ using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class BluePillPageVm : BaseVm
+    public class BluePillPageVm : BaseVm, IFlowPageZero<object, object>
     {
         private int _puzzleProgress;
         private double _zeroWidth;
@@ -42,7 +44,8 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         {
             PuzzleProgress++;
             if(PuzzleProgress == 3)
-                await App.Locator.PageService.PushPageAsync(PageDefinitions.ResultsPage, new ResultsPageVm("GO TEAM BLUE!!"));
+                //await App.Locator.PageService.PushPageAsync(PageDefinitions.ResultsPage, new ResultsPageVm("GO TEAM BLUE!!"));
+                await App.Locator.PageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM BLUE!!"));
         }
 
         public double ZeroWidth
@@ -114,6 +117,20 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             PuzzleProgress = 0;
 
             base.OwnerPageDisappearing();
+        }
+
+        public void SetState(object state)
+        {
+        }
+
+        public object GetState()
+        {
+            return null;
+        }
+
+        public object GetResult()
+        {
+            return null;
         }
     }
 }

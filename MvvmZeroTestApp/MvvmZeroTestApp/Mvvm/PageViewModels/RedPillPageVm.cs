@@ -1,4 +1,6 @@
 using FunctionZero.MvvmZero.Commanding;
+using FunctionZero.MvvmZero.Interfaces;
+using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.ViewModels;
 using System;
 using System.Runtime.CompilerServices;
@@ -7,7 +9,7 @@ using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class RedPillPageVm : BaseVm
+    public class RedPillPageVm : BaseVm, IFlowPageZero<object, object>
     {
         private bool _canProceed;
 
@@ -39,13 +41,28 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             if (CanProceed == false)
                 CanProceed = true;
             else
-                await App.Locator.PageService.PushPageAsync(Boilerplate.PageDefinitions.ResultsPage, new ResultsPageVm("GO TEAM RED!!"));
+                //await App.Locator.PageService.PushPageAsync(Boilerplate.PageDefinitions.ResultsPage, new ResultsPageVm("GO TEAM RED!!"));
+                await App.Locator.PageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM RED!!"));
         }
 
         public override void OwnerPageAppearing(int? pageKey, int? pageDepth)
         {
             base.OwnerPageAppearing(pageKey, pageDepth);
             CanProceed = false;
+        }
+
+        public void SetState(object state)
+        {
+        }
+
+        public object GetState()
+        {
+            return null;
+        }
+
+        public object GetResult()
+        {
+            return null;
         }
 
         //protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)

@@ -29,31 +29,31 @@ using System.Threading.Tasks;
 using FunctionZero.MvvmZero.Interfaces;
 using Xamarin.Forms;
 
-    namespace FunctionZero.PageServiceZero
+namespace FunctionZero.PageServiceZero
+{
+    public class PageServiceZero<TEnum> : IPageServiceZero<TEnum> where TEnum : Enum
     {
-        public class PageServiceZero<TEnum> : IPageServiceZero<TEnum> where TEnum : Enum
+        private readonly Dictionary<TEnum, Func<object, Page>> _pagesByKey =
+               new Dictionary<TEnum, Func<object, Page>>();
+
+        private readonly Application _application;
+        private readonly Action<Page> _pageCreateAction;
+
+        public Page CurrentPage => _application.MainPage;
+        public NavigationPage CurrentNavigationPage => CurrentPage as NavigationPage;
+
+        public PageServiceZero(Application application, Action<Page> pageCreateAction)
         {
-            private readonly Dictionary<TEnum, Func<object, Page>> _pagesByKey =
-                   new Dictionary<TEnum, Func<object, Page>>();
-
-            private readonly Application _application;
-            private readonly Action<Page> _pageCreateAction;
-
-            public Page CurrentPage => _application.MainPage;
-            public NavigationPage CurrentNavigationPage => CurrentPage as NavigationPage;
-
-            public PageServiceZero(Application application, Action<Page> pageCreateAction)
-            {
-                _application = application;
-                _pageCreateAction = pageCreateAction;
+            _application = application;
+            _pageCreateAction = pageCreateAction;
 
             application.PropertyChanging += Application_PropertyChanging;
-            }
+        }
 
         private void Application_PropertyChanging(object sender, PropertyChangingEventArgs e)
         {
             Debug.WriteLine(e.PropertyName);
-            if(e.PropertyName == nameof(Application.MainPage))
+            if (e.PropertyName == nameof(Application.MainPage))
             {
                 Debug.WriteLine("Gotcha!");
 
@@ -61,85 +61,85 @@ using Xamarin.Forms;
         }
 
         public void SetPage(Page page)
-            {
-                _application.MainPage = page;
-            }
+        {
+            _application.MainPage = page;
+        }
 
-            private Page MakePage(TEnum pageKey, object parameter)
+        private Page MakePage(TEnum pageKey, object parameter)
+        {
+            if (_pagesByKey.TryGetValue(pageKey, out var pageMaker))
             {
-                if (_pagesByKey.TryGetValue(pageKey, out var pageMaker))
+                Page page = pageMaker.Invoke(parameter);
+                _pageCreateAction?.Invoke(page);
+
+                if (parameter is IHasOwnerPage tHasOwnerPage)
                 {
-                    Page page = pageMaker.Invoke(parameter);
-                    _pageCreateAction?.Invoke(page);
-
-                    if (parameter is IHasOwnerPage tHasOwnerPage)
-                    {
-                        page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing((int)(object)pageKey, this.CurrentNavigationPage?.StackDepth);
-                        page.Disappearing += (s, e)=> tHasOwnerPage.OwnerPageDisappearing();
-                    }
-                    return page;
+                    page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing((int)(object)pageKey, this.CurrentNavigationPage?.StackDepth);
+                    page.Disappearing += (s, e) => tHasOwnerPage.OwnerPageDisappearing();
                 }
-                throw new InvalidOperationException($"Page {pageKey} does not exist.");
+                return page;
             }
+            throw new InvalidOperationException($"Page {pageKey} does not exist.");
+        }
 
-            public Page SetPage(TEnum pageKey, object parameter)
-            {
-                Page newPage = MakePage(pageKey, parameter);
-                _application.MainPage = newPage;
-                return newPage;
-            }
+        public Page SetPage(TEnum pageKey, object parameter)
+        {
+            Page newPage = MakePage(pageKey, parameter);
+            _application.MainPage = newPage;
+            return newPage;
+        }
 
-            public async Task<Page> PushPageAsync(TEnum pageKey, object parameter, bool killExistingNavigationPage = false)
+        public async Task<Page> PushPageAsync(TEnum pageKey, object parameter, bool killExistingNavigationPage = false)
+        {
+            Page newPage = MakePage(pageKey, parameter);
+            if (CurrentNavigationPage == null || killExistingNavigationPage)
             {
-                Page newPage = MakePage(pageKey, parameter);
-                if (CurrentNavigationPage == null || killExistingNavigationPage)
-                {
                 var navPage = new NavigationPage(newPage);
                 this.SetPage(navPage);
             }
-                else
-                {
-                    await CurrentNavigationPage.Navigation.PushAsync(newPage, true);
-                }
-
-                return newPage;
-            }
-
-            public async Task<Page> PushModalPageAsync(TEnum pageKey, object parameter)
+            else
             {
-                Page newPage = MakePage(pageKey, parameter);
-                if (CurrentNavigationPage == null)
-                    this.SetPage(new NavigationPage());
-
-                await CurrentNavigationPage.Navigation.PushModalAsync(newPage, true);
-
-                return newPage;
+                await CurrentNavigationPage.Navigation.PushAsync(newPage, true);
             }
 
-            public void Register(TEnum pageKey, Func<object, Page> pageMaker)
-            {
-                _pagesByKey.Add(pageKey, pageMaker);
-            }
+            return newPage;
+        }
 
-            public async Task PopAsync(bool animated = true)
+        public async Task<Page> PushModalPageAsync(TEnum pageKey, object parameter)
+        {
+            Page newPage = MakePage(pageKey, parameter);
+            if (CurrentNavigationPage == null)
+                this.SetPage(new NavigationPage());
+
+            await CurrentNavigationPage.Navigation.PushModalAsync(newPage, true);
+
+            return newPage;
+        }
+
+        public void Register(TEnum pageKey, Func<object, Page> pageMaker)
+        {
+            _pagesByKey.Add(pageKey, pageMaker);
+        }
+
+        public async Task PopAsync(bool animated = true)
+        {
+            CurrentNavigationPage.CurrentPage.BindingContext = null;
+            await CurrentNavigationPage.Navigation.PopAsync(animated);
+        }
+
+        public async Task PopToDepthAsync(int desiredDepth, bool animated = true)
+        {
+            while (CurrentNavigationPage.StackDepth > desiredDepth + 1)
             {
                 CurrentNavigationPage.CurrentPage.BindingContext = null;
-                await CurrentNavigationPage.Navigation.PopAsync(animated);
+                CurrentNavigationPage.Navigation.RemovePage(CurrentNavigationPage.CurrentPage);
             }
+            await PopAsync(animated);
+        }
 
-            public async Task PopToDepthAsync(int desiredDepth, bool animated = true)
-            {
-                while (CurrentNavigationPage.StackDepth > desiredDepth + 1)
-                {
-                    CurrentNavigationPage.CurrentPage.BindingContext = null;
-                    CurrentNavigationPage.Navigation.RemovePage(CurrentNavigationPage.CurrentPage);
-                }
-                await PopAsync(animated);
-            }
-
-            public async Task PopModalAsync(bool animated = true)
-            {
-                await CurrentNavigationPage.Navigation.PopModalAsync(true);
-            }
+        public async Task PopModalAsync(bool animated = true)
+        {
+            await CurrentNavigationPage.Navigation.PopModalAsync(true);
         }
     }
+}

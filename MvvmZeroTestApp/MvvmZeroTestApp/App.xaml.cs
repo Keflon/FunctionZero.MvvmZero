@@ -1,4 +1,5 @@
 ﻿using MvvmZeroTestApp.Boilerplate;
+using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.PageViewModels;
 using System;
 using Xamarin.Forms;
@@ -18,7 +19,8 @@ namespace MvvmZeroTestApp
             Locator = new Locator(this);
 
             // Ask the Locator to prepare and present our first page ...
-            _ = Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm());
+            //_ = Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm());
+            _ = Locator.PageService.PushPageAsync<HomePage, HomePageVm>((vm)=>vm.SetState(null));
         }
 
         protected override void OnStart()

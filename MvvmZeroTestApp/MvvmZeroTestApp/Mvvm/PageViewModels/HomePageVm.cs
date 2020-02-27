@@ -2,6 +2,7 @@ using FunctionZero.MvvmZero.Commanding;
 using FunctionZero.MvvmZero.Implementation;
 using FunctionZero.MvvmZero.Interfaces;
 using MvvmZeroTestApp.Boilerplate;
+using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.ViewModels;
 using System;
 using System.Diagnostics;
@@ -10,7 +11,7 @@ using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class HomePageVm : BaseVm
+    public class HomePageVm : BaseVm, IFlowPageZero<object, object>
     {
         public string FriendlyName => "Hello from the HomePageVm";
 
@@ -26,7 +27,8 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private async Task RedPillCommandExecute()
         {
             await DoSomethingSilly();
-            await App.Locator.PageService.PushPageAsync(PageDefinitions.RedPillPage, new RedPillPageVm());
+            //await App.Locator.PageService.PushPageAsync(PageDefinitions.RedPillPage, new RedPillPageVm());
+            await App.Locator.PageService.PushPageAsync<RedPillPage, RedPillPageVm>((vm) => vm.SetState(null));
         }
 
         private async Task DoSomethingSilly()
@@ -65,7 +67,8 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private async Task BluePillCommandExecute()
         {
             await DoSomethingElseSilly();
-            await App.Locator.PageService.PushPageAsync(PageDefinitions.BluePillPage, new BluePillPageVm());
+            //await App.Locator.PageService.PushPageAsync(PageDefinitions.BluePillPage, new BluePillPageVm());
+            await App.Locator.PageService.PushPageAsync<BluePillPage, BluePillPageVm>((vm) => vm.SetState(null));
         }
 
         private async Task DoSomethingElseSilly()
@@ -90,6 +93,20 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 
                 await Task.Delay(15);
             }
+        }
+
+        public void SetState(object state)
+        {
+        }
+
+        public object GetState()
+        {
+            return null;
+        }
+
+        public object GetResult()
+        {
+            return null;
         }
     }
 }
