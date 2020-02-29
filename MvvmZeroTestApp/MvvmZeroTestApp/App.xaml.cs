@@ -1,7 +1,7 @@
 ﻿using FunctionZero.MvvmZero.Interfaces;
-using MvvmZeroTestApp.Boilerplate;
 using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.PageViewModels;
+using MvvmZeroTestApp.Service;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

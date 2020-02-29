@@ -44,7 +44,6 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             if (CanProceed == false)
                 CanProceed = true;
             else
-                //await App.Locator.PageService.PushPageAsync(Boilerplate.PageDefinitions.ResultsPage, new ResultsPageVm("GO TEAM RED!!"));
                 await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM RED!!"));
         }
 
