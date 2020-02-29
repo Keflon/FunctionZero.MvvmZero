@@ -5,11 +5,12 @@
     <LangVersion>7.3</LangVersion>
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
-    <Version>2.0.0-alpha-00</Version>
-    <Copyright>FunctionZero Ltd. 2019</Copyright>
+    <Version>2.0.0-alpha-01</Version>
+    <Copyright>FunctionZero Ltd. 2020</Copyright>
     <Description />
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

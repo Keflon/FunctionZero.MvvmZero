@@ -42,18 +42,6 @@ namespace MvvmZeroTestApp.Service
                 },
                 Lifestyle.Singleton
             );
-            /*
-             TODO: Define FlowItem
-             it contains a Page<TInput, TOutput>
-             the page has 3 buttons
-             each button has an action, that is passed in via TInput where TInput is tuple (Action AButtonAction, Action BButtonAction, Action CButtonAction)
-             The FlowItem declares those Actions
-             A FlowItem links its Page to child FlowItems, like currently a Page links itself to child Pages
-             => the FlowItems encode the flow.
-             How is state passed along a flow?
-             How is input state passed from FlowItem to child?
-
-              */
         }
 
         private void PageCreated(Page newPage)

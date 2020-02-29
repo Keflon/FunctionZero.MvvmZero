@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class HomePageVm : BaseVm, IFlowPageZero<object, object>
+    public class HomePageVm : BaseVm
     {
         public string FriendlyName => "Hello from the HomePageVm";
 

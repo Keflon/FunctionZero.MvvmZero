@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class ResultsPageVm : BaseVm, IFlowPageZero<string, int>
+    public class ResultsPageVm : BaseVm
     {
         public string ResultsMessage { get; private set; }
         public ResultsPageVm()

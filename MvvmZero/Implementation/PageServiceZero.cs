@@ -139,7 +139,7 @@ namespace FunctionZero.PageServiceZero
 
         public async Task PopModalAsync(bool animated = true)
         {
-            await CurrentNavigationPage.Navigation.PopModalAsync(true);
+            await CurrentNavigationPage.Navigation.PopModalAsync(animated);
         }
     }
 }

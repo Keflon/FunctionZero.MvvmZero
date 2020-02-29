@@ -5,11 +5,10 @@ using MvvmZeroTestApp.Mvvm.ViewModels;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class RedPillPageVm : BaseVm, IFlowPageZero<object, object>
+    public class RedPillPageVm : BaseVm
     {
         private bool _canProceed;
         private IFlowPageServiceZero _pageService;

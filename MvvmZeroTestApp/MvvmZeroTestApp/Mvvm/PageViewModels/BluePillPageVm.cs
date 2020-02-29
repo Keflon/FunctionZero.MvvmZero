@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class BluePillPageVm : BaseVm, IFlowPageZero<object, object>
+    public class BluePillPageVm : BaseVm
     {
         private int _puzzleProgress;
         private double _zeroWidth;

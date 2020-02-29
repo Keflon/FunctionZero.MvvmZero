@@ -42,28 +42,40 @@ namespace FunctionZero.MvvmZero.Interfaces
 
     //}
 
+    //public interface IFlowPageServiceZero
+    //{
+    //    void SetPage(Page page);
+    //    Page SetPage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
+    //    Page CurrentPage { get; }
+    //    TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
+    //    Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setState, bool killExistingNavigationPage = false) where TPage : Page;
+    //    void RegisterTypeFactory(Func<Type, object> typeFactory);
+    //    Task<Page> PushModalPageAsync<TPage, TViewModel>(Action<TViewModel> setState);
+    //    //void Register(TEnum pageKey, Func<object, Page> pageMaker);
+    //    Task PopAsync(bool animated = true);
+    //    Task PopModalAsync(bool animated = true);
+    //    Task PopToDepthAsync(int desiredDepth, bool animated = true);
+
+    //}
+
     public interface IFlowPageServiceZero
     {
-        //void SetPage(Page page);
-        //Page SetPage(TEnum pageKey, object parameter);
+        void SetPage(Page page);
         Page CurrentPage { get; }
-        //Task<Page> PushPageAsync(TEnum pageKey, object parameter, bool killExistingNavigationPage = false);
-        Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setState, bool killExistingNavigationPage = false) where TPage : Page;
         void RegisterTypeFactory(Func<Type, object> typeFactory);
-        //Task<Page> PushModalPageAsync(TEnum pageKey, object parameter);
-        //void Register(TEnum pageKey, Func<object, Page> pageMaker);
-        //Task PopAsync(bool animated = true);
-        //Task PopModalAsync(bool animated = true);
-        //Task PopToDepthAsync(int desiredDepth, bool animated = true);
-
+        TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
+        TPage SetPage<TPage, TViewModel>(Action<TViewModel> setStateAction) where TPage : Page;
+        Task<Page> PushPageAsync(Page page, bool isModal);
+        Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page;
+        Task PopAsync(bool isModal, bool animated = true);
     }
 
-    public interface IFlowPageZero<TInput, TOutput>
-    {
-        void SetState(TInput state);
-        TInput GetState();
-        TOutput GetResult();
-    }
+    //public interface IFlowPageZero<TInput, TOutput>
+    //{
+    //    void SetState(TInput state);
+    //    TInput GetState();
+    //    TOutput GetResult();
+    //}
 
 
 }
