@@ -50,7 +50,7 @@ namespace FunctionZero.MvvmZero
 
         public async Task<Page> PushPageAsync(Page page, bool isModal)
         {
-            if (isModal)
+            if (isModal == false)
             {
                 if (CurrentNavigationPage == null /* || killExistingNavigationPage */)
                 {
