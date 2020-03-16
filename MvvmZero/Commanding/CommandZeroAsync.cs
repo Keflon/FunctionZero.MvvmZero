@@ -24,6 +24,7 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -34,6 +35,8 @@ namespace FunctionZero.MvvmZero.Commanding
     {
         private readonly IEnumerable<IGuard> _guardList;
         private readonly Func<object, bool> _canExecute;
+        private readonly INotifyPropertyChanged _propertyNotifier;
+        private readonly HashSet<string> _observedProperties;
         private readonly Func<object, Task> _execute;
         private int _raisedGuardCount;
         /// <summary>
@@ -44,20 +47,47 @@ namespace FunctionZero.MvvmZero.Commanding
         public Func<string> NameGetter { get; }
         public string FriendlyName => NameGetter();
 
-        public CommandZeroAsync(IEnumerable<IGuard> guardList, Func<object, Task> execute, Func<object, bool> canExecute, Func<string> nameGetter)
+        public CommandZeroAsync(
+            IEnumerable<IGuard> guardList,
+            Func<object, Task> execute,
+            Func<object, bool> canExecute,
+            Func<string> nameGetter,
+            INotifyPropertyChanged propertyNotifier,
+            HashSet<string> observedProperties
+            )
         {
             _guardList = guardList ?? throw new ArgumentNullException(nameof(guardList));
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute ?? ((o) => true);
             NameGetter = nameGetter ?? (() => string.Empty);
-             
+
+            if ((propertyNotifier == null) && ((observedProperties != null))&&(observedProperties.Count != 0))
+                throw new ArgumentNullException(nameof(propertyNotifier), $"{nameof(propertyNotifier)} cannot be null if {nameof(observedProperties)} is not empty");
+
+            _propertyNotifier = propertyNotifier ?? new DummyInpc();
+            _observedProperties = observedProperties ?? new HashSet<string>();
+
             foreach (var guard in _guardList)
             {
                 if (guard.IsGuardRaised)
                     _raisedGuardCount++;
                 guard.GuardChanged += Guard_GuardChanged;
             }
+
+            _propertyNotifier.PropertyChanged += ObservedPropertyChanged;
         }
+
+        private void ObservedPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (_observedProperties.Contains(e.PropertyName))
+                this.CanExecuteChanged(this, EventArgs.Empty);
+        }
+
+        private class DummyInpc : INotifyPropertyChanged
+        {
+            public event PropertyChangedEventHandler PropertyChanged;
+        }
+
         public bool CanExecute(object parameter)
         {
             return (_raisedGuardCount == 0) && _canExecute(parameter);
@@ -81,6 +111,8 @@ namespace FunctionZero.MvvmZero.Commanding
 
         ~CommandZeroAsync()
         {
+            _propertyNotifier.PropertyChanged += ObservedPropertyChanged;
+
             foreach (var guard in _guardList)
                 guard.GuardChanged -= Guard_GuardChanged;
         }
