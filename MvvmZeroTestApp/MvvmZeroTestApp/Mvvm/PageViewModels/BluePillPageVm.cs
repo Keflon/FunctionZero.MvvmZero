@@ -22,7 +22,12 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         public CommandZeroAsync ZeroCommand { get; }
         public CommandZeroAsync OneCommand { get; }
         public CommandZeroAsync TwoCommand { get; }
-        public int PuzzleProgress { get => _puzzleProgress;
+        
+        public 
+            CommandZeroAsync ResetCommand { get; }
+        public int PuzzleProgress
+        {
+            get => _puzzleProgress;
             set
             {
                 if(value != _puzzleProgress)
@@ -39,12 +44,26 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             OneCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 1).SetExecute(AnyCommandExecute).SetName("One").Build();
             TwoCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 2).SetExecute(AnyCommandExecute).SetName("Two").Build();
 
+            ResetCommand = new CommandBuilder().AddObservedProperty(this, nameof(PuzzleProgress)).SetExecute(TestCommandExecute).SetCanExecute(TestCommandCanExecute).SetName("RESET").Build();
+
+
             _stopwatch = new Stopwatch();
+        }
+
+        private bool TestCommandCanExecute(object arg)
+        {
+            return PuzzleProgress != 0;
+        }
+
+        private async Task TestCommandExecute(object arg)
+        {
+            PuzzleProgress = 0;
         }
 
         private async Task AnyCommandExecute()
         {
             PuzzleProgress++;
+            //ResetCommand.ChangeCanExecute();
             if(PuzzleProgress == 3)
                 await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM BLUE!!"));
         }

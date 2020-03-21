@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmZeroTestApp.Android", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmZeroTestApp.iOS", "MvvmZeroTestApp\MvvmZeroTestApp.iOS\MvvmZeroTestApp.iOS.csproj", "{BC7A3A34-AFA7-4E8F-9C1D-74C7528EC0D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmZeroTestApp", "MvvmZeroTestApp\MvvmZeroTestApp\MvvmZeroTestApp.csproj", "{C56E6556-CA71-4682-B4D3-2284C6BAA795}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvvmZeroTestApp", "MvvmZeroTestApp\MvvmZeroTestApp\MvvmZeroTestApp.csproj", "{C56E6556-CA71-4682-B4D3-2284C6BAA795}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -134,9 +134,9 @@ Global
 		{1C658F4C-AC99-42E7-9328-D797602247CC}.Debug|x64.ActiveCfg = Debug|x64
 		{1C658F4C-AC99-42E7-9328-D797602247CC}.Debug|x64.Build.0 = Debug|x64
 		{1C658F4C-AC99-42E7-9328-D797602247CC}.Debug|x64.Deploy.0 = Debug|x64
-		{1C658F4C-AC99-42E7-9328-D797602247CC}.Debug|x86.ActiveCfg = Debug|x86
-		{1C658F4C-AC99-42E7-9328-D797602247CC}.Debug|x86.Build.0 = Debug|x86
-		{1C658F4C-AC99-42E7-9328-D797602247CC}.Debug|x86.Deploy.0 = Debug|x86
+		{1C658F4C-AC99-42E7-9328-D797602247CC}.Debug|x86.ActiveCfg = Debug|x64
+		{1C658F4C-AC99-42E7-9328-D797602247CC}.Debug|x86.Build.0 = Debug|x64
+		{1C658F4C-AC99-42E7-9328-D797602247CC}.Debug|x86.Deploy.0 = Debug|x64
 		{1C658F4C-AC99-42E7-9328-D797602247CC}.Release|Any CPU.ActiveCfg = Release|x86
 		{1C658F4C-AC99-42E7-9328-D797602247CC}.Release|ARM.ActiveCfg = Release|ARM
 		{1C658F4C-AC99-42E7-9328-D797602247CC}.Release|ARM.Build.0 = Release|ARM

@@ -1,7 +1,7 @@
 ﻿/*
 MIT License
 
-Copyright(c) 2016 - 2019 Function Zero Ltd
+Copyright(c) 2016 - 2020 Function Zero Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,8 +35,6 @@ namespace FunctionZero.MvvmZero.Commanding
     {
         private readonly IEnumerable<IGuard> _guardList;
         private readonly Func<object, bool> _canExecute;
-        private readonly INotifyPropertyChanged _propertyNotifier;
-        private readonly HashSet<string> _observedProperties;
         private readonly Func<object, Task> _execute;
         private int _raisedGuardCount;
         /// <summary>
@@ -45,6 +43,9 @@ namespace FunctionZero.MvvmZero.Commanding
         public event EventHandler CanExecuteChanged;
 
         public Func<string> NameGetter { get; }
+
+        private readonly IDictionary<INotifyPropertyChanged, HashSet<string>> _observables;
+
         public string FriendlyName => NameGetter();
 
         public CommandZeroAsync(
@@ -52,8 +53,7 @@ namespace FunctionZero.MvvmZero.Commanding
             Func<object, Task> execute,
             Func<object, bool> canExecute,
             Func<string> nameGetter,
-            INotifyPropertyChanged propertyNotifier,
-            HashSet<string> observedProperties
+            IDictionary<INotifyPropertyChanged, HashSet<string>> observables
             )
         {
             _guardList = guardList ?? throw new ArgumentNullException(nameof(guardList));
@@ -61,11 +61,7 @@ namespace FunctionZero.MvvmZero.Commanding
             _canExecute = canExecute ?? ((o) => true);
             NameGetter = nameGetter ?? (() => string.Empty);
 
-            if ((propertyNotifier == null) && ((observedProperties != null))&&(observedProperties.Count != 0))
-                throw new ArgumentNullException(nameof(propertyNotifier), $"{nameof(propertyNotifier)} cannot be null if {nameof(observedProperties)} is not empty");
-
-            _propertyNotifier = propertyNotifier ?? new DummyInpc();
-            _observedProperties = observedProperties ?? new HashSet<string>();
+            _observables = observables ?? new Dictionary<INotifyPropertyChanged, HashSet<string>>();
 
             foreach (var guard in _guardList)
             {
@@ -74,18 +70,14 @@ namespace FunctionZero.MvvmZero.Commanding
                 guard.GuardChanged += Guard_GuardChanged;
             }
 
-            _propertyNotifier.PropertyChanged += ObservedPropertyChanged;
+            foreach(KeyValuePair<INotifyPropertyChanged, HashSet<string>> item in _observables)
+                item.Key.PropertyChanged += ObservedPropertyChanged;
         }
 
         private void ObservedPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_observedProperties.Contains(e.PropertyName))
+            if(_observables[(INotifyPropertyChanged)sender].Contains(e.PropertyName))
                 this.CanExecuteChanged(this, EventArgs.Empty);
-        }
-
-        private class DummyInpc : INotifyPropertyChanged
-        {
-            public event PropertyChangedEventHandler PropertyChanged;
         }
 
         public bool CanExecute(object parameter)
@@ -111,7 +103,8 @@ namespace FunctionZero.MvvmZero.Commanding
 
         ~CommandZeroAsync()
         {
-            _propertyNotifier.PropertyChanged += ObservedPropertyChanged;
+            foreach (KeyValuePair<INotifyPropertyChanged, HashSet<string>> item in _observables)
+                item.Key.PropertyChanged -= ObservedPropertyChanged;
 
             foreach (var guard in _guardList)
                 guard.GuardChanged -= Guard_GuardChanged;

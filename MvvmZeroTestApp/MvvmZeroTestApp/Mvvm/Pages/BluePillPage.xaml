@@ -12,6 +12,7 @@
             <Button HorizontalOptions="Center" WidthRequest="{Binding ZeroWidth, Mode=OneWay}" Text="{Binding ZeroCommand.FriendlyName}" Command="{Binding ZeroCommand}" BackgroundColor="Red" TextColor="White"/>
             <Button HorizontalOptions="Center" WidthRequest="{Binding OneWidth, Mode=OneWay}" Text="{Binding OneCommand.FriendlyName}" Command="{Binding OneCommand}" BackgroundColor="Orange" TextColor="White"/>
             <Button HorizontalOptions="Center" WidthRequest="{Binding TwoWidth, Mode=OneWay}" Text="{Binding TwoCommand.FriendlyName}" Command="{Binding TwoCommand}" BackgroundColor="Green" TextColor="White"/>
+            <Button HorizontalOptions="Center" Text="{Binding ResetCommand.FriendlyName}" Command="{Binding ResetCommand}" BackgroundColor="Purple" TextColor="White"/>
         </StackLayout>
     </ContentPage.Content> 
 </ContentPage>

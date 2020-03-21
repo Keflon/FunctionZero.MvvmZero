@@ -16,8 +16,8 @@ namespace FunctionZero.MvvmZero.Commanding
         private IList<IGuard> _guardList;
         private Func<string> _getName;
         private bool _hasBuilt;
-        private INotifyPropertyChanged _propertyNotifier;
-        private HashSet<string> _observedProperties;
+        //private INotifyPropertyChanged _propertyNotifier;
+        private IDictionary<INotifyPropertyChanged, HashSet<string>> _observedProperties;
 
         /// <summary>
         /// CommandBuilder ctor
@@ -25,7 +25,7 @@ namespace FunctionZero.MvvmZero.Commanding
         public CommandBuilder()
         {
             _guardList = new List<IGuard>();
-            _observedProperties = new HashSet<string>();
+            _observedProperties = new Dictionary<INotifyPropertyChanged, HashSet<string>>();
         }
         /// <summary>
         /// Build the Command! :)
@@ -36,7 +36,7 @@ namespace FunctionZero.MvvmZero.Commanding
             if (_hasBuilt)
                 throw new InvalidOperationException("This CommandBuilder has expired. You cannot call Build more than once.");
             _hasBuilt = true;
-            return new CommandZeroAsync(_guardList, _execute, _predicate, _getName, _propertyNotifier, _observedProperties);
+            return new CommandZeroAsync(_guardList, _execute, _predicate, _getName, _observedProperties);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace FunctionZero.MvvmZero.Commanding
         /// Async Commands that share this guard cannot execute concurrently
         /// Commands can be given multiple guard implementations, though individual guard implementations
         /// can only be added once
-        /// *CAUTION* Watch out for deadlock if you use the same Giard across multiple Pages.
+        /// *CAUTION* Watch out for deadlock if you use the same Guard across multiple Pages.
         /// </summary>
         /// <param name="guard">A guard implementation to add to the Command being built</param>
         /// <returns></returns>
@@ -195,13 +195,13 @@ namespace FunctionZero.MvvmZero.Commanding
         /// </summary>
         /// <param name="propertyNotifier">The name of a property whose value-change will trigger a CanExecuteChanged event</param>
         /// <returns></returns>
-        public CommandBuilder SetPropertyNotifier(INotifyPropertyChanged propertyNotifier)
-        {
-            if (_propertyNotifier != null)
-                throw new NotSupportedException("SetPropertyNotifier cannot be called more than once");
-            _propertyNotifier = propertyNotifier;
-            return this;
-        }
+        //public CommandBuilder SetPropertyNotifier(INotifyPropertyChanged propertyNotifier)
+        //{
+        //    if (_propertyNotifier != null)
+        //        throw new NotSupportedException("SetPropertyNotifier cannot be called more than once");
+        //    _propertyNotifier = propertyNotifier;
+        //    return this;
+        //}
 
         /// <summary>
         /// The Command can automatically raise CanExecuteChanged notifications when specified properties change
@@ -217,12 +217,26 @@ namespace FunctionZero.MvvmZero.Commanding
         /// </summary>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        public CommandBuilder AddObservedProperty(string propertyName)
+        //public CommandBuilder AddObservedProperty(INotifyPropertyChanged propertySource, string propertyName)
+        public CommandBuilder AddObservedProperty(INotifyPropertyChanged propertySource, string propertyName)
         {
-            if (string.IsNullOrEmpty(propertyName))
-                throw new ArgumentException("Cannot be null or empty", nameof(propertyName));
+            return this.AddObservedProperty(propertySource, new string[] { propertyName });
+        }
 
-            _observedProperties.Add(propertyName);
+    public CommandBuilder AddObservedProperty(INotifyPropertyChanged propertySource, params string[] propertyNames)
+        {
+            if (propertySource == null)
+                throw new ArgumentException("Cannot be null or empty", nameof(propertySource));
+
+            if (propertyNames == null)
+                throw new ArgumentException("Cannot be null or empty", nameof(propertyNames));
+
+            if (_observedProperties.ContainsKey(propertySource) == false)
+                _observedProperties.Add(propertySource, new HashSet<string>());
+
+            foreach (string propertyName in propertyNames)
+                _observedProperties[propertySource].Add(propertyName);
+
             return this;
         }
     }
