@@ -55,6 +55,8 @@ namespace FunctionZero.MvvmZero
                 if (CurrentNavigationPage == null /* || killExistingNavigationPage */)
                 {
                     var navPage = new NavigationPage(page);
+                    // When a Page is popped, tell it to release any bindings to the view model.
+                    navPage.Popped += (s, e) => e.Page.BindingContext = null;
                     this.SetPage(navPage);
                 }
                 else

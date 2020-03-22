@@ -40,7 +40,7 @@ namespace FunctionZero.MvvmZero.Commanding
         /// <summary>
         /// Occurs when the target of the Command should reevaluate whether or not the Command can be executed.
         /// </summary>
-        public event EventHandler CanExecuteChanged;
+        private event EventHandler CanExecuteChanged;
 
         public Func<string> NameGetter { get; }
 
@@ -72,6 +72,21 @@ namespace FunctionZero.MvvmZero.Commanding
 
             foreach(KeyValuePair<INotifyPropertyChanged, HashSet<string>> item in _observables)
                 item.Key.PropertyChanged += ObservedPropertyChanged;
+        }
+
+        event EventHandler ICommand.CanExecuteChanged
+        {
+            add
+            {
+                CanExecuteChanged += value;
+            }
+
+            remove
+            {
+                // Breakpoint here to confirm command bindings are unsubscribing when back button pressed.
+                // (in response to the binding context being set to null.)
+                CanExecuteChanged -= value;
+            }
         }
 
         private void ObservedPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -154,5 +169,7 @@ namespace FunctionZero.MvvmZero.Commanding
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
+
+
     }
 }

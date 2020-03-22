@@ -18,6 +18,16 @@ namespace MvvmZeroTestApp.Service
         public Container IoCC { get; }
         //public FlowPageServiceZero PageService { get; }
 
+        //public Locator(Application currentApplication)
+        //{
+        //    PageService = new PageServiceZero<PageDefinitions>(currentApplication, PageCreated);
+
+        //    PageService.Register(PageDefinitions.HomePage, (vm) => new HomePage((HomePageVm)vm));
+        //    PageService.Register(PageDefinitions.RedPillPage, (vm) => new RedPillPage((RedPillPageVm)vm));
+        //    PageService.Register(PageDefinitions.BluePillPage, (vm) => new BluePillPage((BluePillPageVm)vm));
+        //    PageService.Register(PageDefinitions.ResultsPage, (vm) => new ResultsPage((ResultsPageVm)vm));
+        //}
+
         public Locator(Application currentApplication)
         {
             // Create the IoC container that will contain all our configurable classes ...

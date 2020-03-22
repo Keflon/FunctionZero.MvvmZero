@@ -16,7 +16,6 @@ namespace FunctionZero.MvvmZero.Commanding
         private IList<IGuard> _guardList;
         private Func<string> _getName;
         private bool _hasBuilt;
-        //private INotifyPropertyChanged _propertyNotifier;
         private IDictionary<INotifyPropertyChanged, HashSet<string>> _observedProperties;
 
         /// <summary>
@@ -181,49 +180,12 @@ namespace FunctionZero.MvvmZero.Commanding
             return this;
         }
 
-        /// <summary>
-        /// The Command can automatically raise CanExecuteChanged notifications when specified properties change
-        /// To achieve this, first use this call to provide the instance that contains the properties to be monitored,
-        /// then call AddObservedProperty to specify one or more named properties to monitor.
-        /// E.g. to re-evaluate CanExecute when this.CanProceed changes ...
-        ///   var ProceedCommand = new CommandBuilder().
-        ///                         SetExecute(ProceedCommandExecute).
-        ///                         SetPropertyNotifier(this).
-        ///                         AddObservedProperty(nameof(CanProceed)).
-        ///                         SetName("Next").
-        ///                         Build();
-        /// </summary>
-        /// <param name="propertyNotifier">The name of a property whose value-change will trigger a CanExecuteChanged event</param>
-        /// <returns></returns>
-        //public CommandBuilder SetPropertyNotifier(INotifyPropertyChanged propertyNotifier)
-        //{
-        //    if (_propertyNotifier != null)
-        //        throw new NotSupportedException("SetPropertyNotifier cannot be called more than once");
-        //    _propertyNotifier = propertyNotifier;
-        //    return this;
-        //}
-
-        /// <summary>
-        /// The Command can automatically raise CanExecuteChanged notifications when specified properties change
-        /// To achieve this, first call SetPropertyNotifier to provide the instance that contains the properties to be monitored,
-        /// then call AddObservedProperty to specify one or more named properties to monitor.
-        /// E.g. to re-evaluate CanExecute when this.CanProceed changes ...
-        ///   var ProceedCommand = new CommandBuilder().
-        ///                         SetExecute(ProceedCommandExecute).
-        ///                         SetPropertyNotifier(this).
-        ///                         AddObservedProperty(nameof(CanProceed)).
-        ///                         SetName("Next").
-        ///                         Build();
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
-        //public CommandBuilder AddObservedProperty(INotifyPropertyChanged propertySource, string propertyName)
         public CommandBuilder AddObservedProperty(INotifyPropertyChanged propertySource, string propertyName)
         {
             return this.AddObservedProperty(propertySource, new string[] { propertyName });
         }
 
-    public CommandBuilder AddObservedProperty(INotifyPropertyChanged propertySource, params string[] propertyNames)
+        public CommandBuilder AddObservedProperty(INotifyPropertyChanged propertySource, params string[] propertyNames)
         {
             if (propertySource == null)
                 throw new ArgumentException("Cannot be null or empty", nameof(propertySource));
