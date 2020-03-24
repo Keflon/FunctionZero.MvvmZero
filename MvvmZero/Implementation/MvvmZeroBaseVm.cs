@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
-using FunctionZero.MvvmZero.Commanding;
+using FunctionZero.CommandZero;
 using FunctionZero.MvvmZero.Interfaces;
 
 

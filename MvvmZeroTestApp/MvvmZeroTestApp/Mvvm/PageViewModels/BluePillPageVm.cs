@@ -1,4 +1,4 @@
-using FunctionZero.MvvmZero.Commanding;
+using FunctionZero.CommandZero;
 using FunctionZero.MvvmZero.Interfaces;
 using MvvmZeroTestApp.Boilerplate;
 using MvvmZeroTestApp.Mvvm.Pages;
