@@ -42,21 +42,7 @@ namespace FunctionZero.MvvmZero.Interfaces
 
     //}
 
-    //public interface IFlowPageServiceZero
-    //{
-    //    void SetPage(Page page);
-    //    Page SetPage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
-    //    Page CurrentPage { get; }
-    //    TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
-    //    Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setState, bool killExistingNavigationPage = false) where TPage : Page;
-    //    void RegisterTypeFactory(Func<Type, object> typeFactory);
-    //    Task<Page> PushModalPageAsync<TPage, TViewModel>(Action<TViewModel> setState);
-    //    //void Register(TEnum pageKey, Func<object, Page> pageMaker);
-    //    Task PopAsync(bool animated = true);
-    //    Task PopModalAsync(bool animated = true);
-    //    Task PopToDepthAsync(int desiredDepth, bool animated = true);
 
-    //}
 
     public interface IFlowPageServiceZero
     {

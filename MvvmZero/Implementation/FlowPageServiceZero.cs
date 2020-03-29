@@ -40,10 +40,11 @@ namespace FunctionZero.MvvmZero
 
         public NavigationPage CurrentNavigationPage => CurrentPage as NavigationPage;
 
-        public FlowPageServiceZero(Application application, Action<Page> pageCreateAction)
+        public FlowPageServiceZero(Application application, Func<Type, object> typeFactory, Action<Page> pageCreateAction)
         {
             _application = application;
             _pageCreateAction = pageCreateAction;
+            _typeFactory = typeFactory;
         }
 
         public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
@@ -102,11 +103,6 @@ namespace FunctionZero.MvvmZero
         {
             TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
             return await PushPageAsync(newPage, isModal);
-        }
-
-        public void RegisterTypeFactory(Func<Type, object> typeFactory)
-        {
-            _typeFactory = typeFactory;
         }
 
         public void SetPage(Page page)
