@@ -1,6 +1,5 @@
 ﻿using FunctionZero.MvvmZero;
 using FunctionZero.MvvmZero.Interfaces;
-using FunctionZero.PageServiceZero;
 using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.PageViewModels;
 using MvvmZeroTestApp.Mvvm.ViewModels;
@@ -22,6 +21,12 @@ namespace MvvmZeroTestApp.Service
             // Create the IoC container that will contain all our configurable classes ...
             IoCC = new Container();
 
+            // Register the PageService ...
+            IoCC.Register<IPageServiceZero>(() => new PageServiceZero(currentApplication,
+                                                                              (theType) => IoCC.GetInstance(theType),
+                                                                              PageCreated),
+                                               Lifestyle.Singleton);
+
             // Register Pages ...
             IoCC.Register<HomePage>(Lifestyle.Transient);
             IoCC.Register<RedPillPage>(Lifestyle.Transient);
@@ -35,12 +40,6 @@ namespace MvvmZeroTestApp.Service
 
             // Register other things ...
             //IoCC.Register<IJarvisLogger, JarvisLogger>(Lifestyle.Singleton);
-
-            IoCC.Register<IFlowPageServiceZero>(
-                () => new FlowPageServiceZero(currentApplication,
-                                             (theType) => IoCC.GetInstance(theType),
-                                             PageCreated),
-                Lifestyle.Singleton);
         }
 
         private void PageCreated(Page newPage)

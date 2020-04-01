@@ -37,7 +37,7 @@ namespace FunctionZero.MvvmZero.Interfaces
         /// </summary>
         /// <param name="pageKey">The key of the Page that is appearing, or null if it has no key</param>
         /// <param name="pageDepth">The stack depth of the containing NavigationPage, or null if there is no containing NavigationPage</param>
-        void OwnerPageAppearing(int? pageKey, int? pageDepth);
+        void OwnerPageAppearing(int? pageDepth);
         void OwnerPageDisappearing();
     }
 }

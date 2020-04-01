@@ -17,7 +17,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private double _zeroWidth;
         private double _oneWidth;
         private double _twoWidth;
-        private IFlowPageServiceZero _pageService;
+        private IPageServiceZero _pageService;
 
         public CommandZeroAsync ZeroCommand { get; }
         public CommandZeroAsync OneCommand { get; }
@@ -37,7 +37,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 }
             }
         }
-        public BluePillPageVm(IFlowPageServiceZero pageService)
+        public BluePillPageVm(IPageServiceZero pageService)
         {
             _pageService = pageService;
             ZeroCommand = new CommandBuilder().AddGuard(this).SetCanExecute(()=>PuzzleProgress == 0).SetExecute(AnyCommandExecute).SetName("Zero").Build();
@@ -106,9 +106,9 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         }
 
         Stopwatch _stopwatch;
-        public override void OwnerPageAppearing(int? pageKey, int? pageDepth)
+        public override void OwnerPageAppearing(int? pageDepth)
         {
-            base.OwnerPageAppearing(pageKey, pageDepth);
+            base.OwnerPageAppearing(pageDepth);
 
             PuzzleProgress = 0;
             // BindingContext may not yet be set, so force a ChangeCanExecute ...

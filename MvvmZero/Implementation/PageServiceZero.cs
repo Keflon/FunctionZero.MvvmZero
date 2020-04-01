@@ -21,43 +21,86 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using FunctionZero.MvvmZero.Interfaces;
+using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace FunctionZero.PageServiceZero
+namespace FunctionZero.MvvmZero
 {
-    public class PageServiceZero<TEnum> : IPageServiceZero<TEnum> where TEnum : Enum
+    public class PageServiceZero : IPageServiceZero
     {
-        private readonly Dictionary<TEnum, Func<object, Page>> _pagesByKey =
-               new Dictionary<TEnum, Func<object, Page>>();
+        public Page CurrentPage => _application.MainPage;
 
         private readonly Application _application;
         private readonly Action<Page> _pageCreateAction;
+        private Func<Type, object> _typeFactory;
 
-        public Page CurrentPage => _application.MainPage;
         public NavigationPage CurrentNavigationPage => CurrentPage as NavigationPage;
 
-        public PageServiceZero(Application application, Action<Page> pageCreateAction)
+        public PageServiceZero(Application application, Func<Type, object> typeFactory, Action<Page> pageCreateAction)
         {
             _application = application;
             _pageCreateAction = pageCreateAction;
-
-            application.PropertyChanging += Application_PropertyChanging;
+            _typeFactory = typeFactory;
         }
 
-        private void Application_PropertyChanging(object sender, PropertyChangingEventArgs e)
+        public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
         {
-            Debug.WriteLine(e.PropertyName);
-            if (e.PropertyName == nameof(Application.MainPage))
-            {
-                Debug.WriteLine("Gotcha!");
+            TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
+            TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
+            setState?.Invoke(vm);
+            page.BindingContext = vm;
 
+            _pageCreateAction?.Invoke(page);
+
+            if (vm is IHasOwnerPage tHasOwnerPage)
+            {
+                page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing(this.CurrentNavigationPage?.StackDepth);
+                page.Disappearing += (s, e) => tHasOwnerPage.OwnerPageDisappearing();
             }
+            return page;
+        }
+
+        public async Task PopAsync(bool isModal, bool animated = true)
+        {
+            if (isModal)
+                await CurrentNavigationPage.PopAsync(animated);
+            else
+                await CurrentNavigationPage.Navigation.PopModalAsync(animated);
+        }
+
+        public async Task<Page> PushPageAsync(Page page, bool isModal)
+        {
+            if (isModal == false)
+            {
+                if (CurrentNavigationPage == null /* || killExistingNavigationPage */)
+                {
+                    var navPage = new NavigationPage(page);
+                    // When a Page is popped, tell it to release any bindings to the view model.
+                    navPage.Popped += (s, e) => e.Page.BindingContext = null;
+                    this.SetPage(navPage);
+                }
+                else
+                {
+                    await CurrentNavigationPage.Navigation.PushAsync(page, true);
+                }
+            }
+            else
+            {
+                if (CurrentNavigationPage == null)
+                    this.SetPage(new NavigationPage());
+
+                await CurrentNavigationPage.Navigation.PushModalAsync(page, true);
+            }
+
+            return page;
+        }
+
+        public async Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page
+        {
+            TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
+            return await PushPageAsync(newPage, isModal);
         }
 
         public void SetPage(Page page)
@@ -65,81 +108,11 @@ namespace FunctionZero.PageServiceZero
             _application.MainPage = page;
         }
 
-        private Page MakePage(TEnum pageKey, object parameter)
+        public TPage SetPage<TPage, TViewModel>(Action<TViewModel> setStateAction) where TPage : Page
         {
-            if (_pagesByKey.TryGetValue(pageKey, out var pageMaker))
-            {
-                Page page = pageMaker.Invoke(parameter);
-                _pageCreateAction?.Invoke(page);
-
-                if (parameter is IHasOwnerPage tHasOwnerPage)
-                {
-                    page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing((int)(object)pageKey, this.CurrentNavigationPage?.StackDepth);
-                    page.Disappearing += (s, e) => tHasOwnerPage.OwnerPageDisappearing();
-                }
-                return page;
-            }
-            throw new InvalidOperationException($"Page {pageKey} does not exist.");
-        }
-
-        public Page SetPage(TEnum pageKey, object parameter)
-        {
-            Page newPage = MakePage(pageKey, parameter);
-            _application.MainPage = newPage;
+            TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
+            SetPage(newPage);
             return newPage;
-        }
-
-        public async Task<Page> PushPageAsync(TEnum pageKey, object parameter, bool killExistingNavigationPage = false)
-        {
-            Page newPage = MakePage(pageKey, parameter);
-            if (CurrentNavigationPage == null || killExistingNavigationPage)
-            {
-                var navPage = new NavigationPage(newPage);
-                this.SetPage(navPage);
-            }
-            else
-            {
-                await CurrentNavigationPage.Navigation.PushAsync(newPage, true);
-            }
-
-            return newPage;
-        }
-
-        public async Task<Page> PushModalPageAsync(TEnum pageKey, object parameter)
-        {
-            Page newPage = MakePage(pageKey, parameter);
-            if (CurrentNavigationPage == null)
-                this.SetPage(new NavigationPage());
-
-            await CurrentNavigationPage.Navigation.PushModalAsync(newPage, true);
-
-            return newPage;
-        }
-
-        public void Register(TEnum pageKey, Func<object, Page> pageMaker)
-        {
-            _pagesByKey.Add(pageKey, pageMaker);
-        }
-
-        public async Task PopAsync(bool animated = true)
-        {
-            CurrentNavigationPage.CurrentPage.BindingContext = null;
-            await CurrentNavigationPage.Navigation.PopAsync(animated);
-        }
-
-        public async Task PopToDepthAsync(int desiredDepth, bool animated = true)
-        {
-            while (CurrentNavigationPage.StackDepth > desiredDepth + 1)
-            {
-                CurrentNavigationPage.CurrentPage.BindingContext = null;
-                CurrentNavigationPage.Navigation.RemovePage(CurrentNavigationPage.CurrentPage);
-            }
-            await PopAsync(animated);
-        }
-
-        public async Task PopModalAsync(bool animated = true)
-        {
-            await CurrentNavigationPage.Navigation.PopModalAsync(animated);
         }
     }
 }

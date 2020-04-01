@@ -15,12 +15,12 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
     {
         public string FriendlyName => "Hello from the HomePageVm";
 
-        private IFlowPageServiceZero _pageService;
+        private IPageServiceZero _pageService;
 
         public CommandZeroAsync RedPillCommand { get; }
         public CommandZeroAsync BluePillCommand { get; }
 
-        public HomePageVm(IFlowPageServiceZero pageService)
+        public HomePageVm(IPageServiceZero pageService)
         {
             _pageService = pageService;
 

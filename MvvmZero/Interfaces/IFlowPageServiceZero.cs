@@ -28,27 +28,10 @@ using Xamarin.Forms;
 
 namespace FunctionZero.MvvmZero.Interfaces
 {
-    //public interface IPageServiceZero<TEnum> where TEnum  : Enum
-    //{
-    //    void SetPage(Page page);
-    //    Page SetPage(TEnum pageKey, object parameter);
-    //    Page CurrentPage { get; }
-    //    Task<Page> PushPageAsync(TEnum pageKey, object parameter, bool killExistingNavigationPage = false);
-    //    Task<Page> PushModalPageAsync(TEnum pageKey, object parameter);
-    //    void Register(TEnum pageKey, Func<object, Page> pageMaker);
-    //    Task PopAsync(bool animated = true);
-    //    Task PopModalAsync(bool animated = true);
-    //    Task PopToDepthAsync(int desiredDepth, bool animated = true);
-
-    //}
-
-
-
-    public interface IFlowPageServiceZero
+    public interface IPageServiceZero
     {
         void SetPage(Page page);
         Page CurrentPage { get; }
-        void RegisterTypeFactory(Func<Type, object> typeFactory);
         TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
         TPage SetPage<TPage, TViewModel>(Action<TViewModel> setStateAction) where TPage : Page;
         Task<Page> PushPageAsync(Page page, bool isModal);
@@ -62,6 +45,4 @@ namespace FunctionZero.MvvmZero.Interfaces
     //    TInput GetState();
     //    TOutput GetResult();
     //}
-
-
 }

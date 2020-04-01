@@ -23,34 +23,21 @@ namespace FunctionZero.MvvmZero.Implementation
         public MvvmZeroBaseVm()
         {
             _guardImplementation = new BasicGuard();
-        }
+        } 
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public virtual void OwnerPageAppearing(int? pageKey, int? pageDepth)
+        public virtual void OwnerPageAppearing(int? pageDepth)
         {
-            OwnerPageKey = pageKey;
             Debug.WriteLine($"{GetType()} Appearing");
         }
 
         public virtual void OwnerPageDisappearing()
         {
-            OwnerPageKey = -1;
-
             Debug.WriteLine($"{GetType()} Disappearing");
-        }
-
-        public int? OwnerPageKey
-        {
-            get => _ownerPageKey;
-            set
-            {
-                Debug.WriteLine($"{GetType()} page key set to {value}");
-                _ownerPageKey = value;
-            }
         }
 
         public int? PageDepth { get; set; }

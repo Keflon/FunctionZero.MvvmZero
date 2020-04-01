@@ -11,7 +11,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
     public class RedPillPageVm : BaseVm
     {
         private bool _canProceed;
-        private IFlowPageServiceZero _pageService;
+        private IPageServiceZero _pageService;
 
         public CommandZeroAsync NextCommand { get; }
         public bool CanProceed
@@ -27,7 +27,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             }
         }
 
-        public RedPillPageVm(IFlowPageServiceZero pageService)
+        public RedPillPageVm(IPageServiceZero pageService)
         {
             _pageService = pageService;
 
@@ -46,9 +46,9 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM RED!!"));
         }
 
-        public override void OwnerPageAppearing(int? pageKey, int? pageDepth)
+        public override void OwnerPageAppearing(int? pageDepth)
         {
-            base.OwnerPageAppearing(pageKey, pageDepth);
+            base.OwnerPageAppearing(pageDepth);
             CanProceed = false;
         }
 
