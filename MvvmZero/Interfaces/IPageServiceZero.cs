@@ -37,6 +37,7 @@ namespace FunctionZero.MvvmZero.Interfaces
         Task<Page> PushPageAsync(Page page, bool isModal);
         Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page;
         Task PopAsync(bool isModal, bool animated = true);
+        Task PopToRootAsync(bool animated = true);
     }
 
     //public interface IFlowPageZero<TInput, TOutput>

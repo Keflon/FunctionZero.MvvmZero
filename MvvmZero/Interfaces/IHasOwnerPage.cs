@@ -29,14 +29,12 @@ namespace FunctionZero.MvvmZero.Interfaces
     /// <summary>
     /// If the ViewModel of a Page supports this interface, these methods are called by the page service.
     /// </summary>
-    /// <typeparam name="TPageKey"></typeparam>
     public interface IHasOwnerPage
     {
         /// <summary>
         /// Lifecycle events for a Page
         /// </summary>
-        /// <param name="pageKey">The key of the Page that is appearing, or null if it has no key</param>
-        /// <param name="pageDepth">The stack depth of the containing NavigationPage, or null if there is no containing NavigationPage</param>
+        /// <param name="pageDepth">The stack depth of the Page associated with this ViewModel, or null if the Page is not within a NavigationPage</param>
         void OwnerPageAppearing(int? pageDepth);
         void OwnerPageDisappearing();
     }

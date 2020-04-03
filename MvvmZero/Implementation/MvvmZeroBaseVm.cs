@@ -17,7 +17,6 @@ namespace FunctionZero.MvvmZero.Implementation
     public abstract class MvvmZeroBaseVm : IGuard, INotifyPropertyChanged, IHasOwnerPage
     {
         private readonly IGuard _guardImplementation;
-        private int? _ownerPageKey;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MvvmZeroBaseVm()

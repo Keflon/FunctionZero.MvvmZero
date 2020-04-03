@@ -1,3 +1,5 @@
+using FunctionZero.CommandZero;
+using FunctionZero.MvvmZero;
 using FunctionZero.MvvmZero.Interfaces;
 using MvvmZeroTestApp.Boilerplate;
 using MvvmZeroTestApp.Mvvm.ViewModels;
@@ -8,9 +10,16 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
     public class ResultsPageVm : BaseVm
     {
+        public CommandZeroAsync PopToRootCommand { get; }
+
         public string ResultsMessage { get; private set; }
-        public ResultsPageVm()
+
+        public ResultsPageVm(IPageServiceZero pageService)
         {
+            PopToRootCommand = new CommandBuilder()
+                .SetName("Test PopToRoot")
+                .SetExecute(
+                () => pageService.PopToRootAsync()).Build();
         }
 
         public void SetState(string state)

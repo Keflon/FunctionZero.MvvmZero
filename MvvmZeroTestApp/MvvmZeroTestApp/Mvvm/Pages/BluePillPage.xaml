@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MvvmZeroTestApp.Mvvm.Pages.BluePillPage"   
              x:Name ="Self"
-             BindingContext="{Binding Source={x:Reference Self}, Path=BluePillPageVm}"
              >
     <ContentPage.Content>
         <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="Center" 

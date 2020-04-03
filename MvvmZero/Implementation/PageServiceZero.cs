@@ -23,6 +23,7 @@ SOFTWARE.
 */
 using FunctionZero.MvvmZero.Interfaces;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -30,19 +31,18 @@ namespace FunctionZero.MvvmZero
 {
     public class PageServiceZero : IPageServiceZero
     {
-        public Page CurrentPage => _application.MainPage;
-
         private readonly Application _application;
         private readonly Action<Page> _pageCreateAction;
         private Func<Type, object> _typeFactory;
 
+        public Page CurrentPage => _application.MainPage;
         public NavigationPage CurrentNavigationPage => CurrentPage as NavigationPage;
 
         public PageServiceZero(Application application, Func<Type, object> typeFactory, Action<Page> pageCreateAction)
         {
-            _application = application;
-            _pageCreateAction = pageCreateAction;
+               _application = application;
             _typeFactory = typeFactory;
+            _pageCreateAction = pageCreateAction;
         }
 
         public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
@@ -54,11 +54,15 @@ namespace FunctionZero.MvvmZero
 
             _pageCreateAction?.Invoke(page);
 
-            if (vm is IHasOwnerPage tHasOwnerPage)
-            {
-                page.Appearing += (s, e) => tHasOwnerPage.OwnerPageAppearing(this.CurrentNavigationPage?.StackDepth);
-                page.Disappearing += (s, e) => tHasOwnerPage.OwnerPageDisappearing();
-            }
+            return page;
+        }
+        public TPage MakePage<TPage>(Action<object> setState) where TPage : Page
+        {
+            TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
+            setState?.Invoke(page.BindingContext);
+
+            _pageCreateAction?.Invoke(page);
+
             return page;
         }
 
@@ -72,34 +76,73 @@ namespace FunctionZero.MvvmZero
 
         public async Task<Page> PushPageAsync(Page page, bool isModal)
         {
-            if (isModal == false)
-            {
-                if (CurrentNavigationPage == null /* || killExistingNavigationPage */)
-                {
-                    var navPage = new NavigationPage(page);
-                    // When a Page is popped, tell it to release any bindings to the view model.
-                    navPage.Popped += (s, e) => e.Page.BindingContext = null;
-                    this.SetPage(navPage);
-                }
-                else
-                {
-                    await CurrentNavigationPage.Navigation.PushAsync(page, true);
-                }
-            }
-            else
-            {
-                if (CurrentNavigationPage == null)
-                    this.SetPage(new NavigationPage());
+            if (CurrentNavigationPage == null)
+                this.SetPage(CreateNavigationPage());
 
+            if (isModal == false)
+                await CurrentNavigationPage.Navigation.PushAsync(page, true);
+            else
                 await CurrentNavigationPage.Navigation.PushModalAsync(page, true);
-            }
 
             return page;
+        }
+
+        private NavigationPage CreateNavigationPage()
+        {
+            var navPage = new NavigationPage();
+            navPage.ChildAdded += NavPage_ChildAdded;
+            navPage.ChildRemoved += NavPage_ChildRemoved;
+            return navPage;
+        }
+
+        private void NavPage_ChildRemoved(object sender, ElementEventArgs e)
+        {
+            Debug.WriteLine("Removed "+e.Element);
+
+            Page page = (Page)e.Element;
+
+            page.Appearing -= PageServiceZero_Appearing;
+            page.Disappearing -= PageServiceZero_Disappearing;
+
+
+            // When a Page is removed, tell it to release any bindings to the view model.
+            page.BindingContext = null;
+        }
+
+
+        private void NavPage_ChildAdded(object sender, ElementEventArgs e)
+        {
+            Debug.WriteLine("Added " + e.Element);
+
+            Page page = (Page)e.Element;
+
+            page.Appearing += PageServiceZero_Appearing;
+            page.Disappearing += PageServiceZero_Disappearing;
+        }
+
+        private void PageServiceZero_Disappearing(object sender, EventArgs e)
+        {
+            Page page = (Page)sender;
+
+            if (page.BindingContext is IHasOwnerPage hop)
+                hop.OwnerPageDisappearing();
+        }
+
+        private void PageServiceZero_Appearing(object sender, EventArgs e)
+        {
+            if (((Page)sender).BindingContext is IHasOwnerPage hop)
+                hop.OwnerPageAppearing(this.CurrentNavigationPage?.StackDepth);
         }
 
         public async Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page
         {
             TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
+            return await PushPageAsync(newPage, isModal);
+        }
+
+        public async Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page
+        {
+            TPage newPage = MakePage<TPage>(setStateAction);
             return await PushPageAsync(newPage, isModal);
         }
 
@@ -113,6 +156,18 @@ namespace FunctionZero.MvvmZero
             TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
             SetPage(newPage);
             return newPage;
+        }
+
+        public TPage SetPage<TPage>(Action<object> setStateAction) where TPage : Page
+        {
+            TPage newPage = MakePage<TPage>(setStateAction);
+            SetPage(newPage);
+            return newPage;
+        }
+
+        public async Task PopToRootAsync(bool animated = false)
+        {
+            await CurrentNavigationPage.PopToRootAsync(animated);
         }
     }
 }

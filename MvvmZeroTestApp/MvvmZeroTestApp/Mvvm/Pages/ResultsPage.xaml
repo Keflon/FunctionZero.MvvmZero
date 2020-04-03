@@ -8,6 +8,7 @@
         <StackLayout>
             <Label Text="Message from previous page:" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"/>
             <Label Text="{Binding ResultsMessage}" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+            <Button Command="{Binding PopToRootCommand}" Text="{Binding PopToRootCommand.FriendlyName}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
