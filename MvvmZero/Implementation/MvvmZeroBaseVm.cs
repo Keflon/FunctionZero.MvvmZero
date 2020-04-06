@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using FunctionZero.CommandZero;
-using FunctionZero.MvvmZero.Interfaces;
 
-
-namespace FunctionZero.MvvmZero.Implementation
+namespace FunctionZero.MvvmZero
 {
     /// <summary>
     /// If you get a UWP xaml compiler error after deriving from this class,

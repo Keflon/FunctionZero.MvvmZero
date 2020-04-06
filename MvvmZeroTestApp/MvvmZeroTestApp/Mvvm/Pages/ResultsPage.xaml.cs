@@ -7,8 +7,9 @@ namespace MvvmZeroTestApp.Mvvm.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ResultsPage : ContentPage
     {
-        public ResultsPage()
+        public ResultsPage(ResultsPageVm viewModel)
         {
+            this.BindingContext = viewModel;
             InitializeComponent();
         }
     }

@@ -1,7 +1,5 @@
 using FunctionZero.CommandZero;
-using FunctionZero.MvvmZero.Implementation;
-using FunctionZero.MvvmZero.Interfaces;
-using MvvmZeroTestApp.Boilerplate;
+using FunctionZero.MvvmZero;
 using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.ViewModels;
 using System;

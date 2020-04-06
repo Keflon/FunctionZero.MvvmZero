@@ -26,7 +26,7 @@ using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace FunctionZero.MvvmZero.Interfaces
+namespace FunctionZero.MvvmZero
 {
     public interface IPageServiceZero
     {
@@ -36,6 +36,7 @@ namespace FunctionZero.MvvmZero.Interfaces
         TPage SetPage<TPage, TViewModel>(Action<TViewModel> setStateAction) where TPage : Page;
         Task<Page> PushPageAsync(Page page, bool isModal);
         Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page;
+        Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page;
         Task PopAsync(bool isModal, bool animated = true);
         Task PopToRootAsync(bool animated = true);
     }

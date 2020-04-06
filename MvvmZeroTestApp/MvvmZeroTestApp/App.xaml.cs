@@ -1,4 +1,4 @@
-﻿using FunctionZero.MvvmZero.Interfaces;
+﻿using FunctionZero.MvvmZero;
 using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.PageViewModels;
 using MvvmZeroTestApp.Service;

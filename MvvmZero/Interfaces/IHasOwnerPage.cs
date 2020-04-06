@@ -19,12 +19,10 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.using System;
+SOFTWARE.
 */
 
-using System;
-
-namespace FunctionZero.MvvmZero.Interfaces
+namespace FunctionZero.MvvmZero
 {
     /// <summary>
     /// If the ViewModel of a Page supports this interface, these methods are called by the page service.

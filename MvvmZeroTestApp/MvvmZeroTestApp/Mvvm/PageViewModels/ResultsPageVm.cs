@@ -1,7 +1,6 @@
 using FunctionZero.CommandZero;
 using FunctionZero.MvvmZero;
-using FunctionZero.MvvmZero.Interfaces;
-using MvvmZeroTestApp.Boilerplate;
+using FunctionZero.MvvmZero;
 using MvvmZeroTestApp.Mvvm.ViewModels;
 using System;
 using Xamarin.Forms;
@@ -25,6 +24,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         public void SetState(string state)
         {
             ResultsMessage = state;
+            this.OnPropertyChanged(nameof(ResultsMessage));
         }
 
         public string GetState()

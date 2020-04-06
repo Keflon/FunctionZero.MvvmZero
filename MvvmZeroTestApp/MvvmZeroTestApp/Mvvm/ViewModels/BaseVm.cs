@@ -1,4 +1,4 @@
-﻿using FunctionZero.MvvmZero.Implementation;
+﻿using FunctionZero.MvvmZero;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

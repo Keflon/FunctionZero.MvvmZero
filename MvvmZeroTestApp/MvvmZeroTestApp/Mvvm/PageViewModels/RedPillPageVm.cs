@@ -1,5 +1,5 @@
 using FunctionZero.CommandZero;
-using FunctionZero.MvvmZero.Interfaces;
+using FunctionZero.MvvmZero;
 using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.ViewModels;
 using System;
@@ -43,7 +43,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             if (CanProceed == false)
                 CanProceed = true;
             else
-                await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM RED!!"));
+                await _pageService.PushPageAsync<ResultsPage>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM RED!!"));
         }
 
         public override void OwnerPageAppearing(int? pageDepth)

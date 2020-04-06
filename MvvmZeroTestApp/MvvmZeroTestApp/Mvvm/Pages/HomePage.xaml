@@ -4,7 +4,6 @@
              x:Class="MvvmZeroTestApp.Mvvm.Pages.HomePage"   
              x:Name ="Self"
               Visual="Material"
-
              >
     <ContentPage.Content>
         <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"

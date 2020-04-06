@@ -1,6 +1,5 @@
 using FunctionZero.CommandZero;
-using FunctionZero.MvvmZero.Interfaces;
-using MvvmZeroTestApp.Boilerplate;
+using FunctionZero.MvvmZero;
 using MvvmZeroTestApp.Mvvm.Pages;
 using MvvmZeroTestApp.Mvvm.ViewModels;
 using System;
@@ -63,9 +62,8 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private async Task AnyCommandExecute()
         {
             PuzzleProgress++;
-            //ResetCommand.ChangeCanExecute();
             if(PuzzleProgress == 3)
-                await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>vm.SetState("GO TEAM BLUE!!"));
+                await _pageService.PushPageAsync<ResultsPage>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM BLUE!!"));
         }
 
         public double ZeroWidth
