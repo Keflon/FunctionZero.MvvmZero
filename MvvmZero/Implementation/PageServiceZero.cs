@@ -30,16 +30,44 @@ namespace FunctionZero.MvvmZero
 {
     public class PageServiceZero : IPageServiceZero
     {
-        private readonly Application _application;
         private readonly Action<Page> _pageCreateAction;
         private Func<Type, object> _typeFactory;
 
-        public Page CurrentPage => _application.MainPage;
-        public NavigationPage CurrentNavigationPage => CurrentPage as NavigationPage;
+        private INavigation CurrentNavigationPage { get; }
 
-        public PageServiceZero(Application application, Func<Type, object> typeFactory, Action<Page> pageCreateAction)
+
+        /// <summary>
+        /// Sets Application.MainPage to a NavigationPage, ready to have Page objects stacked up.
+        /// </summary>
+        /// <param name="application"></param>
+        /// <param name="typeFactory"></param>
+        /// <param name="pageCreateAction"></param>
+        [Obsolete("Please use 'PageServiceZero(NavigationPage navPage, Func<Type, object> typeFactory, Action<Page> pageCreateAction)'")]
+        public PageServiceZero(Application application, Func<Type, object> typeFactory, Action<Page> pageCreateAction) : this(GetTheNavigationPage(application), typeFactory, pageCreateAction)
         {
-               _application = application;
+        }
+
+        private static NavigationPage GetTheNavigationPage(Application application)
+        {
+            var page = new NavigationPage();
+            application.MainPage = page;
+            return page;
+        }
+
+        /// <summary>
+        /// Creates a PageServiceZero associated with the provided NavigationPage.
+        /// Does not touch Application.Current.MainPage.
+        /// </summary>
+        /// <param name="navPage"></param>
+        /// <param name="typeFactory"></param>
+        /// <param name="pageCreateAction"></param>
+        public PageServiceZero(NavigationPage navPage, Func<Type, object> typeFactory, Action<Page> pageCreateAction)
+        {
+            navPage.ChildAdded += NavPage_ChildAdded;
+            navPage.ChildRemoved += NavPage_ChildRemoved;
+
+            CurrentNavigationPage = navPage.Navigation;
+
             _typeFactory = typeFactory;
             _pageCreateAction = pageCreateAction;
         }
@@ -70,33 +98,33 @@ namespace FunctionZero.MvvmZero
             if (isModal)
                 await CurrentNavigationPage.PopAsync(animated);
             else
-                await CurrentNavigationPage.Navigation.PopModalAsync(animated);
+                await CurrentNavigationPage.PopModalAsync(animated);
         }
 
         public async Task<Page> PushPageAsync(Page page, bool isModal)
         {
-            if (CurrentNavigationPage == null)
-                this.SetPage(CreateNavigationPage());
+            //if (CurrentNavigationPage == null)
+            //    this.SetPage(CreateNavigationPage());
 
             if (isModal == false)
-                await CurrentNavigationPage.Navigation.PushAsync(page, true);
+                await CurrentNavigationPage.PushAsync(page, true);
             else
-                await CurrentNavigationPage.Navigation.PushModalAsync(page, true);
+                await CurrentNavigationPage.PushModalAsync(page, true);
 
             return page;
         }
 
-        private NavigationPage CreateNavigationPage()
-        {
-            var navPage = new NavigationPage();
-            navPage.ChildAdded += NavPage_ChildAdded;
-            navPage.ChildRemoved += NavPage_ChildRemoved;
-            return navPage;
-        }
+        //private NavigationPage CreateNavigationPage()
+        //{
+        //    var navPage = new NavigationPage();
+        //    navPage.ChildAdded += NavPage_ChildAdded;
+        //    navPage.ChildRemoved += NavPage_ChildRemoved;
+        //    return navPage;
+        //}
 
         private void NavPage_ChildRemoved(object sender, ElementEventArgs e)
         {
-            Debug.WriteLine("Removed "+e.Element);
+            Debug.WriteLine("Removed " + e.Element);
 
             Page page = (Page)e.Element;
 
@@ -130,7 +158,7 @@ namespace FunctionZero.MvvmZero
         private void PageServiceZero_Appearing(object sender, EventArgs e)
         {
             if (((Page)sender).BindingContext is IHasOwnerPage hop)
-                hop.OwnerPageAppearing(this.CurrentNavigationPage?.StackDepth);
+                hop.OwnerPageAppearing(this.CurrentNavigationPage?.NavigationStack.Count);
         }
 
         public async Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page
@@ -147,7 +175,7 @@ namespace FunctionZero.MvvmZero
 
         public void SetPage(Page page)
         {
-            _application.MainPage = page;
+            Application.Current.MainPage = page;
         }
 
         public TPage SetPage<TPage, TViewModel>(Action<TViewModel> setStateAction) where TPage : Page

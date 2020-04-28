@@ -22,9 +22,9 @@ namespace MvvmZeroTestApp.Service
 
             // Register the PageService ...
             IoCC.Register<IPageServiceZero>(() => new PageServiceZero(currentApplication,
-                                                                              (theType) => IoCC.GetInstance(theType),
-                                                                              PageCreated),
-                                               Lifestyle.Singleton);
+                                                                  (theType) => IoCC.GetInstance(theType),
+                                                                  PageCreated),
+                                   Lifestyle.Singleton);
 
             // Register Pages ...
             IoCC.Register<HomePage>(Lifestyle.Transient);

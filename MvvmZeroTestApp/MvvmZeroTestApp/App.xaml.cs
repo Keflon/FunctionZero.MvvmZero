@@ -20,7 +20,6 @@ namespace MvvmZeroTestApp
             Locator = new Locator(this);
 
             // Ask the Locator to prepare and present our first page ...
-            //_ = Locator.PageService.PushPageAsync(PageDefinitions.HomePage, new HomePageVm());
             _ = Locator.IoCC.GetInstance<IPageServiceZero>().PushPageAsync<HomePage, HomePageVm>((vm)=>vm.SetState(null));
         }
 
