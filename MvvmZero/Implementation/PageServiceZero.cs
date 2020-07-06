@@ -23,7 +23,9 @@ SOFTWARE.
 */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -76,14 +78,10 @@ namespace FunctionZero.MvvmZero
 
         public async Task PopAsync(bool isModal, bool animated = true)
         {
-            Page page;
-
             if (!isModal)
-                page = await CurrentNavigationPage.PopAsync(animated);
+               await CurrentNavigationPage.PopAsync(animated);
             else
-                page = await CurrentNavigationPage.PopModalAsync(animated);
-
-            DetachFromPage(page);
+                await CurrentNavigationPage.PopModalAsync(animated);
         }
 
         public async Task<Page> PushPageAsync(Page page, bool isModal)
@@ -129,27 +127,39 @@ namespace FunctionZero.MvvmZero
 
         public async Task PopToRootAsync(bool animated = false)
         {
-            var pages = new List<Page>(CurrentNavigationPage.NavigationStack);
-
             await CurrentNavigationPage.PopToRootAsync(animated);
-
-            // Detach from the pages we've just discarded.
-            // Do not detach from the top page because it is not popped.
-            for (int c = pages.Count - 1; c > 0; c--)
-                DetachFromPage(pages[c]);
         }
 
         private void DetachFromPage(Page thePage)
         {
-            Debug.WriteLine($"Letting go of {thePage}");
+            Debug.WriteLine($"Detaching from {thePage}");
             thePage.Appearing -= Page_Appearing;
             thePage.Disappearing -= Page_Disappearing;
+            thePage.PropertyChanged -= Page_PropertyChanged;
         }
 
         private void AttachToPage(Page page)
         {
+            Debug.WriteLine($"Attaching to {page}");
             page.Appearing += Page_Appearing;
             page.Disappearing += Page_Disappearing;
+            page.PropertyChanged += Page_PropertyChanged;
+        }
+
+        private void Page_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Page.Parent))
+            {
+                var page = (Page)sender;
+                if (page.Parent == null)
+                {
+                    DetachFromPage(page);
+                }
+                else
+                {
+                    // Page has just been given a parent.
+                }
+            }
         }
     }
 }

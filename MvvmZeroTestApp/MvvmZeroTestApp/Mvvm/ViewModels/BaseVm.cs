@@ -42,7 +42,7 @@ namespace MvvmZeroTestApp.Mvvm.ViewModels
                 {
                     _translationY = value;
                     OnPropertyChanged();
-                    Debug.WriteLine($"TranslationY:{TranslationY}");
+                    //Debug.WriteLine($"TranslationY:{TranslationY}");
                 }
             }
         }
