@@ -63,6 +63,14 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 TranslationY = time * 500;
                 await Task.Delay(15);
             }
+            Rotation = 0.0;
+            TranslationX = 0.1;
+            TranslationX = 0.0;
+            TranslationY = 0.1;
+            TranslationY = 0.0;
+            AnchorX = 0.0;
+            AnchorY = 0.0;
+            Scale = 1.0;
         }
 
         private async Task BluePillCommandExecute()

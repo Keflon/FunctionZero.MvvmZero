@@ -21,7 +21,7 @@ namespace MvvmZeroTestApp
 
             // Ask the Locator to prepare and present our first page ...
             //this.MainPage = new NavigationPage(Locator.IoCC.GetInstance<IPageServiceZero>().MakePage<HomePage, HomePageVm>((vm) => vm.SetState(null)));
-            _ = Locator.IoCC.GetInstance<IPageServiceZero>().PushPageAsync<HomePage, HomePageVm>((vm)=>vm.SetState(null));
+            //_ = Locator.IoCC.GetInstance<IPageServiceZero>().PushPageAsync<HomePage, HomePageVm>((vm)=>vm.SetState(null));
         }
 
         protected override void OnStart()

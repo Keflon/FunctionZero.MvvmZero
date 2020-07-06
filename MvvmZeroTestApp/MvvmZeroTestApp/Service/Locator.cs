@@ -14,9 +14,10 @@ namespace MvvmZeroTestApp.Service
     public class Locator
     {
         public Container IoCC { get; }
-        public NavigationPage _navPageHack;
         public Locator(Application currentApplication)
         {
+            currentApplication.PageAppearing += Current_PageAppearing;
+            currentApplication.PageDisappearing += Current_PageDisappearing;
 
 
             // Create the IoC container that will contain all our configurable classes ...
@@ -42,19 +43,17 @@ namespace MvvmZeroTestApp.Service
             // Register other things ...
             //IoCC.Register<IJarvisLogger, JarvisLogger>(Lifestyle.Singleton);
 
-            _navPageHack = new NavigationPage();
+            var nav = new NavigationPage();
             //var nav = new NavigationPage(this.IoCC.GetInstance<IPageServiceZero>().MakePage<HomePage, HomePageVm>((vm) => vm.SetState(null)));
-            Application.Current.MainPage = _navPageHack;
-            //currentApplication.MainPage = nav;
+            //Application.Current.MainPage = nav;
+            currentApplication.MainPage = nav;
 
             var homePage = this.IoCC.GetInstance<IPageServiceZero>().MakePage<HomePage, HomePageVm>((vm) => vm.SetState(null));
 
-            _navPageHack.PushAsync(homePage, true);
+            nav.PushAsync(homePage, true);
 
-            _lastPageToAppear = _navPageHack.RootPage;
+            //_lastPageToAppear = _navPageHack.RootPage;
 
-            //currentApplication.PageAppearing += Current_PageAppearing;
-            //currentApplication.PageDisappearing += Current_PageDisappearing;
 
         }
 
@@ -67,7 +66,7 @@ namespace MvvmZeroTestApp.Service
         {
             Debug.WriteLine($"Appearing: {e.ToString()} ... {e.BindingContext}");
 
-            //_lastPageToAppear = e;
+            _lastPageToAppear = e;
 
         }
 

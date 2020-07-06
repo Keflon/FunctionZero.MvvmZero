@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -38,7 +37,8 @@ namespace FunctionZero.MvvmZero
 
         /// <summary>
         /// Creates a PageServiceZero associated with the provided NavigationPage.
-        /// Does not touch Application.Current.MainPage.
+        /// Uses a Func to get the INavigation for Push operations to allow
+        /// multiple nav stacks when using a MasterDetail page or similar architecture.
         /// </summary>
         /// <param name="navPage"></param>
         /// <param name="typeFactory"></param>
@@ -61,6 +61,7 @@ namespace FunctionZero.MvvmZero
 
             return page;
         }
+
         public TPage MakePage<TPage>(Action<object> setState) where TPage : Page
         {
             TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
@@ -73,7 +74,7 @@ namespace FunctionZero.MvvmZero
 
         public async Task PopAsync(bool isModal, bool animated = true)
         {
-            if (isModal)
+            if (!isModal)
                 await CurrentNavigationPage.PopAsync(animated);
             else
                 await CurrentNavigationPage.PopModalAsync(animated);
@@ -92,27 +93,7 @@ namespace FunctionZero.MvvmZero
         public async Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page
         {
             TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
-            newPage.Appearing += NewPage_Appearing;
-            newPage.Disappearing += NewPage_Disappearing;
             return await PushPageAsync(newPage, isModal);
-        }
-
-        private void NewPage_Appearing(object sender, EventArgs e)
-        {
-            Page page = (Page)sender;
-            page.Appearing -= NewPage_Appearing;
-
-            if (page.BindingContext is IHasOwnerPage hop)
-                hop.OwnerPageAppearing(this.CurrentNavigationPage?.NavigationStack.Count);
-        }
-
-        private void NewPage_Disappearing(object sender, EventArgs e)
-        {
-            Page page = (Page)sender;
-            page.Disappearing -= NewPage_Disappearing;
-
-            if (((Page)sender).BindingContext is IHasOwnerPage hop)
-                hop.OwnerPageDisappearing();
         }
 
         public async Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page
