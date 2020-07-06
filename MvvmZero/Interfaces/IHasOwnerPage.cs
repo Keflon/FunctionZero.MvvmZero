@@ -32,8 +32,7 @@ namespace FunctionZero.MvvmZero
         /// <summary>
         /// Lifecycle events for a Page
         /// </summary>
-        /// <param name="pageDepth">The stack depth of the Page associated with this ViewModel, or null if the Page is not within a NavigationPage</param>
-        void OwnerPageAppearing(int? pageDepth);
+        void OwnerPageAppearing();
         void OwnerPageDisappearing();
     }
 }

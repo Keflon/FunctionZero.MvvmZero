@@ -46,9 +46,9 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 await _pageService.PushPageAsync<ResultsPage>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM RED!!"));
         }
 
-        public override void OwnerPageAppearing(int? pageDepth)
+        public override void OwnerPageAppearing()
         {
-            base.OwnerPageAppearing(pageDepth);
+            base.OwnerPageAppearing();
             CanProceed = false;
         }
 

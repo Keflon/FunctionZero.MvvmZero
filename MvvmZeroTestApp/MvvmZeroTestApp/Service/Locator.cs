@@ -50,7 +50,7 @@ namespace MvvmZeroTestApp.Service
 
             var homePage = this.IoCC.GetInstance<IPageServiceZero>().MakePage<HomePage, HomePageVm>((vm) => vm.SetState(null));
 
-            nav.PushAsync(homePage, true);
+            this.IoCC.GetInstance<IPageServiceZero>().PushPageAsync(homePage, false);
 
             //_lastPageToAppear = _navPageHack.RootPage;
 
@@ -65,16 +65,11 @@ namespace MvvmZeroTestApp.Service
         private void Current_PageAppearing(object sender, Page e)
         {
             Debug.WriteLine($"Appearing: {e.ToString()} ... {e.BindingContext}");
-
-            _lastPageToAppear = e;
-
         }
-
-        private static Page _lastPageToAppear;
 
         private INavigation GetNavigationControl()
         {
-            return _lastPageToAppear.Navigation;
+            return (INavigation)((NavigationPage)App.Current.MainPage).Navigation;
         }
 
         private void PageCreated(Page newPage)

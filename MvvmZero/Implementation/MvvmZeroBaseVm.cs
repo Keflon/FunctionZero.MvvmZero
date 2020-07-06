@@ -26,7 +26,7 @@ namespace FunctionZero.MvvmZero
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public virtual void OwnerPageAppearing(int? pageDepth)
+        public virtual void OwnerPageAppearing()
         {
             Debug.WriteLine($"{GetType()} Appearing");
         }

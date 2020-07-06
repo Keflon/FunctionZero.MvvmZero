@@ -95,9 +95,9 @@ namespace MvvmZeroTestApp.Mvvm.ViewModels
             }
         }
 
-        public override void OwnerPageAppearing(int? pageDepth)
+        public override void OwnerPageAppearing()
         {
-            base.OwnerPageAppearing(pageDepth);
+            base.OwnerPageAppearing();
 
             // HACK: Workaround for UWP BUG setting transform to 0.0 has no effect.
             //Rotation = 0.1;

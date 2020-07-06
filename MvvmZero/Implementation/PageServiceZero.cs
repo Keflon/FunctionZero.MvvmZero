@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -74,20 +76,43 @@ namespace FunctionZero.MvvmZero
 
         public async Task PopAsync(bool isModal, bool animated = true)
         {
+            Page page;
+
             if (!isModal)
-                await CurrentNavigationPage.PopAsync(animated);
+                page = await CurrentNavigationPage.PopAsync(animated);
             else
-                await CurrentNavigationPage.PopModalAsync(animated);
+                page = await CurrentNavigationPage.PopModalAsync(animated);
+
+            DetachFromPage(page);
         }
 
         public async Task<Page> PushPageAsync(Page page, bool isModal)
         {
+            AttachToPage(page);
+
             if (isModal == false)
                 await CurrentNavigationPage.PushAsync(page, true);
             else
                 await CurrentNavigationPage.PushModalAsync(page, true);
 
             return page;
+        }
+
+        private void Page_Disappearing(object sender, EventArgs e)
+        {
+            var page = (Page)sender;
+            Debug.WriteLine($"XXX {page} disappearing.");
+            if (page.BindingContext is IHasOwnerPage hop)
+                hop.OwnerPageDisappearing();
+        }
+
+        private void Page_Appearing(object sender, EventArgs e)
+        {
+            var page = (Page)sender;
+            Debug.WriteLine($"XXX {page} appearing.");
+
+            if (page.BindingContext is IHasOwnerPage hop)
+                hop.OwnerPageAppearing();
         }
 
         public async Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page
@@ -102,28 +127,29 @@ namespace FunctionZero.MvvmZero
             return await PushPageAsync(newPage, isModal);
         }
 
-        //public void SetPage(Page page)
-        //{
-        //    Application.Current.MainPage = page;
-        //}
-
-        //public TPage SetPage<TPage, TViewModel>(Action<TViewModel> setStateAction) where TPage : Page
-        //{
-        //    TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
-        //    SetPage(newPage);
-        //    return newPage;
-        //}
-
-        //public TPage SetPage<TPage>(Action<object> setStateAction) where TPage : Page
-        //{
-        //    TPage newPage = MakePage<TPage>(setStateAction);
-        //    SetPage(newPage);
-        //    return newPage;
-        //}
-
         public async Task PopToRootAsync(bool animated = false)
         {
+            var pages = new List<Page>(CurrentNavigationPage.NavigationStack);
+
             await CurrentNavigationPage.PopToRootAsync(animated);
+
+            // Detach from the pages we've just discarded.
+            // Do not detach from the top page because it is not popped.
+            for (int c = pages.Count - 1; c > 0; c--)
+                DetachFromPage(pages[c]);
+        }
+
+        private void DetachFromPage(Page thePage)
+        {
+            Debug.WriteLine($"Letting go of {thePage}");
+            thePage.Appearing -= Page_Appearing;
+            thePage.Disappearing -= Page_Disappearing;
+        }
+
+        private void AttachToPage(Page page)
+        {
+            page.Appearing += Page_Appearing;
+            page.Disappearing += Page_Disappearing;
         }
     }
 }
