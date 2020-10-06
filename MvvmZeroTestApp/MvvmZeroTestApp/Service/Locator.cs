@@ -25,8 +25,7 @@ namespace MvvmZeroTestApp.Service
 
             // Register the PageService ...
             IoCC.Register<IPageServiceZero>(() => new PageServiceZero(GetNavigationControl,
-                                                                  (theType) => IoCC.GetInstance(theType),
-                                                                  PageCreated),
+                                                                  (theType) => IoCC.GetInstance(theType)),
                                    Lifestyle.Singleton);
 
             // Register Pages ...
@@ -39,6 +38,7 @@ namespace MvvmZeroTestApp.Service
             IoCC.Register<HomePageVm>(Lifestyle.Transient);
             IoCC.Register<RedPillPageVm>(Lifestyle.Transient);
             IoCC.Register<ResultsPageVm>(Lifestyle.Transient);
+            IoCC.Register<BluePillPageVm>(Lifestyle.Transient);
 
             // Register other things ...
             //IoCC.Register<IJarvisLogger, JarvisLogger>(Lifestyle.Singleton);
@@ -70,11 +70,6 @@ namespace MvvmZeroTestApp.Service
         private INavigation GetNavigationControl()
         {
             return (INavigation)((NavigationPage)App.Current.MainPage).Navigation;
-        }
-
-        private void PageCreated(Page newPage)
-        {
-            Debug.WriteLine($"Created a page of type {newPage.GetType()}");
         }
     }
 }

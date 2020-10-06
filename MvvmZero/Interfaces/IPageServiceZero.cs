@@ -33,6 +33,7 @@ namespace FunctionZero.MvvmZero
         //void SetPage(Page page);
         //Page CurrentPage { get; }
         TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
+        TPage MakePage<TPage>(Action<object> setState) where TPage : Page;
         //TPage SetPage<TPage, TViewModel>(Action<TViewModel> setStateAction) where TPage : Page;
         Task<Page> PushPageAsync(Page page, bool isModal);
         Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page;

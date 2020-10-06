@@ -33,7 +33,6 @@ namespace FunctionZero.MvvmZero
 {
     public class PageServiceZero : IPageServiceZero
     {
-        private readonly Action<Page> _pageCreateAction;
         private readonly Func<INavigation> _navigationGetter;
         private Func<Type, object> _typeFactory;
 
@@ -46,12 +45,25 @@ namespace FunctionZero.MvvmZero
         /// </summary>
         /// <param name="navPage"></param>
         /// <param name="typeFactory"></param>
-        /// <param name="pageCreateAction"></param>
-        public PageServiceZero(Func<INavigation> navigationGetter, Func<Type, object> typeFactory, Action<Page> pageCreateAction)
+        /// <param name="theApplicationInstance">Pass in App.Current if you want IHasOwnerPage wired up for you</param>
+        public PageServiceZero(Func<INavigation> navigationGetter, Func<Type, object> typeFactory)
         {
             _navigationGetter = navigationGetter;
             _typeFactory = typeFactory;
-            _pageCreateAction = pageCreateAction;
+        }
+
+        private void Page_Disappearing(object sender, EventArgs e)
+        {
+            var page = (Page)sender;
+            if (page.BindingContext is IHasOwnerPage hop)
+                hop.OwnerPageDisappearing();
+        }
+
+        private void Page_Appearing(object sender, EventArgs e)
+        {
+            var page = (Page)sender;
+            if (page.BindingContext is IHasOwnerPage hop)
+                hop.OwnerPageAppearing();
         }
 
         public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
@@ -61,9 +73,19 @@ namespace FunctionZero.MvvmZero
             setState?.Invoke(vm);
             page.BindingContext = vm;
 
-            _pageCreateAction?.Invoke(page);
+            AttachToPage(page);
 
             return page;
+        }
+
+        private void AttachToPage<TPage>(TPage page) where TPage : Page
+        {
+            // Just in case we've seen this page before. (It may be a singleton, etc)
+            page.Appearing -= Page_Appearing;
+            page.Disappearing -= Page_Disappearing;
+            // Attach to the page so we can service IHasOwnerPage.
+            page.Appearing += Page_Appearing;
+            page.Disappearing += Page_Disappearing;
         }
 
         public TPage MakePage<TPage>(Action<object> setState) where TPage : Page
@@ -71,7 +93,7 @@ namespace FunctionZero.MvvmZero
             TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
             setState?.Invoke(page.BindingContext);
 
-            _pageCreateAction?.Invoke(page);
+            AttachToPage(page);
 
             return page;
         }
@@ -79,38 +101,19 @@ namespace FunctionZero.MvvmZero
         public async Task PopAsync(bool isModal, bool animated = true)
         {
             if (!isModal)
-               await CurrentNavigationPage.PopAsync(animated);
+                await CurrentNavigationPage.PopAsync(animated);
             else
                 await CurrentNavigationPage.PopModalAsync(animated);
         }
 
         public async Task<Page> PushPageAsync(Page page, bool isModal)
         {
-            AttachToPage(page);
-
             if (isModal == false)
                 await CurrentNavigationPage.PushAsync(page, true);
             else
                 await CurrentNavigationPage.PushModalAsync(page, true);
 
             return page;
-        }
-
-        private void Page_Disappearing(object sender, EventArgs e)
-        {
-            var page = (Page)sender;
-            Debug.WriteLine($"XXX {page} disappearing.");
-            if (page.BindingContext is IHasOwnerPage hop)
-                hop.OwnerPageDisappearing();
-        }
-
-        private void Page_Appearing(object sender, EventArgs e)
-        {
-            var page = (Page)sender;
-            Debug.WriteLine($"XXX {page} appearing.");
-
-            if (page.BindingContext is IHasOwnerPage hop)
-                hop.OwnerPageAppearing();
         }
 
         public async Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page
@@ -128,38 +131,6 @@ namespace FunctionZero.MvvmZero
         public async Task PopToRootAsync(bool animated = false)
         {
             await CurrentNavigationPage.PopToRootAsync(animated);
-        }
-
-        private void DetachFromPage(Page thePage)
-        {
-            Debug.WriteLine($"Detaching from {thePage}");
-            thePage.Appearing -= Page_Appearing;
-            thePage.Disappearing -= Page_Disappearing;
-            thePage.PropertyChanged -= Page_PropertyChanged;
-        }
-
-        private void AttachToPage(Page page)
-        {
-            Debug.WriteLine($"Attaching to {page}");
-            page.Appearing += Page_Appearing;
-            page.Disappearing += Page_Disappearing;
-            page.PropertyChanged += Page_PropertyChanged;
-        }
-
-        private void Page_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Page.Parent))
-            {
-                var page = (Page)sender;
-                if (page.Parent == null)
-                {
-                    DetachFromPage(page);
-                }
-                else
-                {
-                    // Page has just been given a parent.
-                }
-            }
         }
     }
 }
