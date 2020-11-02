@@ -78,6 +78,13 @@ namespace FunctionZero.MvvmZero
             return page;
         }
 
+
+        public TViewModel MakeViewModel<TViewModel>() where TViewModel : class
+        {
+            TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
+            return vm;
+        }
+
         private void AttachToPage<TPage>(TPage page) where TPage : Page
         {
             // Just in case we've seen this page before. (It may be a singleton, etc)
