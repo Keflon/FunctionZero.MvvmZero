@@ -86,6 +86,7 @@ namespace FunctionZero.MvvmZero
             // Attach to the page so we can service IHasOwnerPage.
             page.Appearing += Page_Appearing;
             page.Disappearing += Page_Disappearing;
+
         }
 
         public TPage MakePage<TPage>(Action<object> setState) where TPage : Page
@@ -108,10 +109,25 @@ namespace FunctionZero.MvvmZero
 
         public async Task<Page> PushPageAsync(Page page, bool isModal)
         {
+            var current = CurrentNavigationPage;
+
+            if (current is NavigationPage navPage)
+            {
+                // Just in case we've seen this page before. (It may be a singleton, etc)
+                current.push -= Page_Appearing;
+                page.Disappearing -= Page_Disappearing;
+                // Attach to the page so we can service IHasOwnerPage.
+                page.Appearing += Page_Appearing;
+                page.Disappearing += Page_Disappearing;
+            }
+
+
+
+
             if (isModal == false)
-                await CurrentNavigationPage.PushAsync(page, true);
+                await current.PushAsync(page, true);
             else
-                await CurrentNavigationPage.PushModalAsync(page, true);
+                await current.PushModalAsync(page, true);
 
             return page;
         }
