@@ -34,9 +34,5 @@ namespace FunctionZero.MvvmZero
         /// </summary>
         void OwnerPageAppearing();
         void OwnerPageDisappearing();
-
-
-        void Pushed();
-        void Popped();
     }
 }

@@ -36,16 +36,6 @@ namespace FunctionZero.MvvmZero
             Debug.WriteLine($"{GetType()} Disappearing");
         }
 
-        public void Pushed()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Popped()
-        {
-            throw new NotImplementedException();
-        }
-
         public int? PageDepth { get; set; }
 
         public event EventHandler<GuardChangedEventArgs> GuardChanged
