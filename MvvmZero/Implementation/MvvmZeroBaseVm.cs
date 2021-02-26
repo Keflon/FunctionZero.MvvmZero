@@ -15,11 +15,19 @@ namespace FunctionZero.MvvmZero
     public abstract class MvvmZeroBaseVm : IGuard, INotifyPropertyChanged, IHasOwnerPage
     {
         private readonly IGuard _guardImplementation;
+        private bool _IsownerPageVisible;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MvvmZeroBaseVm()
         {
             _guardImplementation = new BasicGuard();
+        }
+
+        public bool IsOwnerPageVisible
+        {
+            get => _IsownerPageVisible;
+            private set => SetProperty(ref _IsownerPageVisible, value);
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = null)
@@ -39,12 +47,12 @@ namespace FunctionZero.MvvmZero
 
         public virtual void OwnerPageAppearing()
         {
-            Debug.WriteLine($"{GetType()} Appearing");
+            IsOwnerPageVisible = true;
         }
 
         public virtual void OwnerPageDisappearing()
         {
-            Debug.WriteLine($"{GetType()} Disappearing");
+            IsOwnerPageVisible = false;
         }
 
         public event EventHandler<GuardChangedEventArgs> GuardChanged

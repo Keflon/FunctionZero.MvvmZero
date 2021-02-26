@@ -5,14 +5,14 @@
     <LangVersion>7.3</LangVersion>
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
-    <Version>2.0.3-pre-06</Version>
+    <Version>2.0.4</Version>
     <Copyright>FunctionZero Ltd. 2020</Copyright>
     <Description>A simple library for building cross-platform Xamarin Forms applications very quickly</Description>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
     <PackageTags>ICommand Command Mvvm Xamarin Forms iOS UWP Android</PackageTags>
-    <PackageReleaseNotes>IHasOwnerPage events fixed. (OwnerPageAppearing, OwnerPageDisappearing)</PackageReleaseNotes>
+    <PackageReleaseNotes>Added IsOwnerPageVisible to MvvmZeroBaseVm</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
   </PropertyGroup>
 
