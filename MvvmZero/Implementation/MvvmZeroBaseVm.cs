@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -19,7 +20,17 @@ namespace FunctionZero.MvvmZero
         public MvvmZeroBaseVm()
         {
             _guardImplementation = new BasicGuard();
-        } 
+        }
+
+        protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+                return false;
+
+            backingStore = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -35,8 +46,6 @@ namespace FunctionZero.MvvmZero
         {
             Debug.WriteLine($"{GetType()} Disappearing");
         }
-
-        public int? PageDepth { get; set; }
 
         public event EventHandler<GuardChangedEventArgs> GuardChanged
         {

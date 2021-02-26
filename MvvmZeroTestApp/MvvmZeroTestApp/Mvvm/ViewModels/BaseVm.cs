@@ -24,75 +24,34 @@ namespace MvvmZeroTestApp.Mvvm.ViewModels
 
         public double TranslationX
         {
-            get => _translationX; set
-            {
-                if (value != _translationX)
-                {
-                    _translationX = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _translationX;
+            set => SetProperty(ref _translationX, value);
         }
         public double TranslationY
         {
             get => _translationY;
-            set
-            {
-                if (value != _translationY)
-                {
-                    _translationY = value;
-                    OnPropertyChanged();
-                    //Debug.WriteLine($"TranslationY:{TranslationY}");
-                }
-            }
+            set => SetProperty(ref _translationY, value);
         }
+
         public double Rotation
         {
             get => _rotation;
-            set
-            {
-                if (value != _rotation)
-                {
-                    _rotation = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _rotation, value);
         }
         public double Scale
         {
             get => _scale;
-            set
-            {
-                if (value != _scale)
-                {
-                    _scale = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _scale, value);
         }
         public double AnchorX
         {
             get => _anchorX;
-            set
-            {
-                if (value != _anchorX)
-                {
-                    _anchorX = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _anchorX, value);
         }
         public double AnchorY
         {
             get => _anchorY;
-            set
-            {
-                if (value != _anchorY)
-                {
-                    _anchorY = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _anchorY, value);
         }
 
         public override void OwnerPageAppearing()
