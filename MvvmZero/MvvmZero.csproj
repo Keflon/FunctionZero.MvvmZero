@@ -12,7 +12,7 @@
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
     <PackageTags>ICommand Command Mvvm Xamarin Forms iOS UWP Android</PackageTags>
-    <PackageReleaseNotes>IHasOwnerPage events fixed. (OwnerPageAppearing, OwnerPageDisappearing)</PackageReleaseNotes>
+    <PackageReleaseNotes>Added MakeViewModel method.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
   </PropertyGroup>
 
