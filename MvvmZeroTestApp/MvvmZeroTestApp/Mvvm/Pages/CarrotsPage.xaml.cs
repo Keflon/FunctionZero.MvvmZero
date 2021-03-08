@@ -5,9 +5,9 @@ using Xamarin.Forms.Xaml;
 namespace MvvmZeroTestApp.Mvvm.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class RedPillPage : ContentPage
+    public partial class CarrotsPage : ContentPage
     {
-        public RedPillPage()
+        public CarrotsPage()
         {
             InitializeComponent();
         }

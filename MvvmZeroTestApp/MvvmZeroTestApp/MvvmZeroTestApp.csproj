@@ -21,13 +21,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Mvvm\Pages\BluePillPage.xaml">
+    <Compile Update="Mvvm\Pages\BroccoliPage.xaml.cs">
+      <DependentUpon>BroccoliPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Mvvm\Pages\CarrotsPage.xaml.cs">
+      <DependentUpon>CarrotsPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Mvvm\Pages\BroccoliPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Mvvm\Pages\HomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Mvvm\Pages\RedPillPage.xaml">
+    <EmbeddedResource Update="Mvvm\Pages\CarrotsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Mvvm\Pages\ResultsPage.xaml">

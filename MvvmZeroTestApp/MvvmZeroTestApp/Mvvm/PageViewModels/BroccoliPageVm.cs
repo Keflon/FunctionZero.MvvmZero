@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class BluePillPageVm : BaseVm
+    public class BroccoliPageVm : BaseVm
     {
         private int _puzzleProgress;
         private double _zeroWidth;
@@ -36,7 +36,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 }
             }
         }
-        public BluePillPageVm(IPageServiceZero pageService)
+        public BroccoliPageVm(IPageServiceZero pageService)
         {
             _pageService = pageService;
             ZeroCommand = new CommandBuilder().AddGuard(this).SetCanExecute(()=>PuzzleProgress == 0).SetExecute(AnyCommandExecute).SetName("Zero").Build();
@@ -63,7 +63,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         {
             PuzzleProgress++;
             if(PuzzleProgress == 3)
-                await _pageService.PushPageAsync<ResultsPage>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM BLUE!!"));
+                await _pageService.PushPageAsync<ResultsPage>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM BROCCOLI!!"));
         }
 
         public double ZeroWidth

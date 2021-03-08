@@ -15,21 +15,21 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 
         private IPageServiceZero _pageService;
 
-        public CommandZeroAsync RedPillCommand { get; }
-        public CommandZeroAsync BluePillCommand { get; }
+        public CommandZeroAsync CarrotsCommand { get; }
+        public CommandZeroAsync BroccoliCommand { get; }
 
         public HomePageVm(IPageServiceZero pageService)
         {
             _pageService = pageService;
 
-            RedPillCommand = new CommandBuilder().AddGuard(this).SetExecute(RedPillCommandExecute).SetName("Red Pill").Build();
-            BluePillCommand = new CommandBuilder().AddGuard(this).SetExecute(BluePillCommandExecute).SetName("Blue Pill").Build();
+            CarrotsCommand = new CommandBuilder().AddGuard(this).SetExecute(CarrotsCommandExecute).SetName("Carrots").Build();
+            BroccoliCommand = new CommandBuilder().AddGuard(this).SetExecute(BroccoliCommandExecute).SetName("Broccoli").Build();
         }
 
-        private async Task RedPillCommandExecute()
+        private async Task CarrotsCommandExecute()
         {
             await DoSomethingSilly();
-            await _pageService.PushPageAsync<RedPillPage, RedPillPageVm>((vm) => vm.SetState(null));
+            await _pageService.PushPageAsync<CarrotsPage, CarrotsPageVm>((vm) => vm.SetState(null));
         }
 
         private async Task DoSomethingSilly()
@@ -73,10 +73,10 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             Scale = 1.0;
         }
 
-        private async Task BluePillCommandExecute()
+        private async Task BroccoliCommandExecute()
         {
             await DoSomethingElseSilly();
-            await _pageService.PushPageAsync<BluePillPage, BluePillPageVm>((vm) => vm.SetState(null));
+            await _pageService.PushPageAsync<BroccoliPage, BroccoliPageVm>((vm) => vm.SetState(null));
         }
 
         private async Task DoSomethingElseSilly()

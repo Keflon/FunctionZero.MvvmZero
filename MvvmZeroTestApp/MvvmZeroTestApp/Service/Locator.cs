@@ -30,15 +30,15 @@ namespace MvvmZeroTestApp.Service
 
             // Register Pages ...
             IoCC.Register<HomePage>(Lifestyle.Transient);
-            IoCC.Register<RedPillPage>(Lifestyle.Transient);
+            IoCC.Register<CarrotsPage>(Lifestyle.Transient);
             IoCC.Register<ResultsPage>(Lifestyle.Transient);
-            IoCC.Register<BluePillPage>(Lifestyle.Transient);
+            IoCC.Register<BroccoliPage>(Lifestyle.Transient);
 
             // Register ViewModels ...
             IoCC.Register<HomePageVm>(Lifestyle.Transient);
-            IoCC.Register<RedPillPageVm>(Lifestyle.Transient);
+            IoCC.Register<CarrotsPageVm>(Lifestyle.Transient);
             IoCC.Register<ResultsPageVm>(Lifestyle.Transient);
-            IoCC.Register<BluePillPageVm>(Lifestyle.Transient);
+            IoCC.Register<BroccoliPageVm>(Lifestyle.Transient);
 
             // Register other things ...
             //IoCC.Register<IJarvisLogger, JarvisLogger>(Lifestyle.Singleton);

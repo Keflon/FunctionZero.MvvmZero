@@ -14,8 +14,8 @@
             AnchorX="{Binding AnchorX}"
             AnchorY="{Binding AnchorY}"
                      >
-            <Button TranslationY="{Binding TranslationY, Mode=OneWay}" Text="{Binding RedPillCommand.FriendlyName}" Command="{Binding RedPillCommand}" BackgroundColor="Red"/>
-            <Button Text="{Binding BluePillCommand.FriendlyName}" Command="{Binding BluePillCommand}" BackgroundColor="Blue" />
+            <Button TranslationY="{Binding TranslationY, Mode=OneWay}" Text="{Binding CarrotsCommand.FriendlyName}" Command="{Binding CarrotsCommand}" BackgroundColor="Red"/>
+            <Button Text="{Binding BroccoliCommand.FriendlyName}" Command="{Binding BroccoliCommand}" BackgroundColor="Blue" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

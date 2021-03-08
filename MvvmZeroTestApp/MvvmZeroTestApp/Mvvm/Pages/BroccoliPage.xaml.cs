@@ -5,10 +5,10 @@ using Xamarin.Forms.Xaml;
 namespace MvvmZeroTestApp.Mvvm.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class BluePillPage : ContentPage
+    public partial class BroccoliPage : ContentPage
     {
 
-        public BluePillPage()
+        public BroccoliPage()
         {
             InitializeComponent();
         }

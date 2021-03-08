@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MvvmZeroTestApp.Mvvm.PageViewModels
 {
-    public class RedPillPageVm : BaseVm
+    public class CarrotsPageVm : BaseVm
     {
         private bool _canProceed;
         private IPageServiceZero _pageService;
@@ -27,7 +27,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             }
         }
 
-        public RedPillPageVm(IPageServiceZero pageService)
+        public CarrotsPageVm(IPageServiceZero pageService)
         {
             _pageService = pageService;
 
@@ -43,7 +43,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             if (CanProceed == false)
                 CanProceed = true;
             else
-                await _pageService.PushPageAsync<ResultsPage>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM RED!!"));
+                await _pageService.PushPageAsync<ResultsPage>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM CARROT!!"));
         }
 
         public override void OwnerPageAppearing()
