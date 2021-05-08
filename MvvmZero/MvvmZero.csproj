@@ -5,19 +5,19 @@
     <LangVersion>7.3</LangVersion>
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
-    <Version>2.0.4</Version>
-    <Copyright>FunctionZero Ltd. 2020</Copyright>
-    <Description>A simple library for building cross-platform Xamarin Forms applications very quickly</Description>
+    <Version>2.1.0</Version>
+    <Copyright>FunctionZero Ltd. 2021</Copyright>
+    <Description>An easy to use library for building cross-platform Xamarin Forms applications very quickly</Description>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
     <PackageTags>ICommand Command Mvvm Xamarin Forms iOS UWP Android</PackageTags>
-    <PackageReleaseNotes>Added IsOwnerPageVisible to MvvmZeroBaseVm</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FunctionZero.CommandZero" Version="1.0.3" />
+    <PackageReference Include="FunctionZero.CommandZero" Version="1.1.0" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
   </ItemGroup>
 

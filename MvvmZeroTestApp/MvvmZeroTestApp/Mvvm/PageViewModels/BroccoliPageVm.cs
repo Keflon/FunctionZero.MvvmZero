@@ -18,12 +18,11 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private double _twoWidth;
         private IPageServiceZero _pageService;
 
-        public CommandZeroAsync ZeroCommand { get; }
-        public CommandZeroAsync OneCommand { get; }
-        public CommandZeroAsync TwoCommand { get; }
+        public ICommandZero ZeroCommand { get; }
+        public ICommandZero OneCommand { get; }
+        public ICommandZero TwoCommand { get; }
         
-        public 
-            CommandZeroAsync ResetCommand { get; }
+        public ICommandZero ResetCommand { get; }
         public int PuzzleProgress
         {
             get => _puzzleProgress;
@@ -39,11 +38,11 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         public BroccoliPageVm(IPageServiceZero pageService)
         {
             _pageService = pageService;
-            ZeroCommand = new CommandBuilder().AddGuard(this).SetCanExecute(()=>PuzzleProgress == 0).SetExecuteAsync(AnyCommandExecute).SetName("Zero").Build();
-            OneCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 1).SetExecuteAsync(AnyCommandExecute).SetName("One").Build();
-            TwoCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 2).SetExecuteAsync(AnyCommandExecute).SetName("Two").Build();
+            ZeroCommand = new CommandBuilder().AddGuard(this).SetCanExecute(()=>PuzzleProgress == 0).SetExecuteAsync(AnyCommandExecuteAsync).SetName("Zero").Build();
+            OneCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 1).SetExecuteAsync(AnyCommandExecuteAsync).SetName("One").Build();
+            TwoCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 2).SetExecuteAsync(AnyCommandExecuteAsync).SetName("Two").Build();
 
-            ResetCommand = new CommandBuilder().AddObservedProperty(this, nameof(PuzzleProgress)).SetExecuteAsync(TestCommandExecute).SetCanExecute(TestCommandCanExecute).SetName("RESET").Build();
+            ResetCommand = new CommandBuilder().AddObservedProperty(this, nameof(PuzzleProgress)).SetExecute(TestCommandExecute).SetCanExecute(TestCommandCanExecute).SetName("RESET").Build();
 
 
             _stopwatch = new Stopwatch();
@@ -54,12 +53,12 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             return PuzzleProgress != 0;
         }
 
-        private async Task TestCommandExecute(object arg)
+        private void TestCommandExecute()
         {
             PuzzleProgress = 0;
         }
 
-        private async Task AnyCommandExecute()
+        private async Task AnyCommandExecuteAsync()
         {
             PuzzleProgress++;
             if(PuzzleProgress == 3)
@@ -110,7 +109,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 
             PuzzleProgress = 0;
             // BindingContext may not yet be set, so force a ChangeCanExecute ...
-            ZeroCommand.ChangeCanExecute();
+            ((CommandZeroAsync)ZeroCommand).ChangeCanExecute();
             _stopwatch = Stopwatch.StartNew();
             Device.StartTimer(new TimeSpan(0, 0, 0, 0, 30), TimerCallback);
         }
