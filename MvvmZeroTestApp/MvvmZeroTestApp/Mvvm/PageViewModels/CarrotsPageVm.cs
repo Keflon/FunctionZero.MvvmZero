@@ -33,7 +33,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 
             NextCommand = new CommandBuilder()
                 //.SetCanExecute(() => CanProceed)
-                .SetExecute(NextCommandExecute)
+                .SetExecuteAsync(NextCommandExecute)
                 .SetName("Next")
                 .Build();
         }

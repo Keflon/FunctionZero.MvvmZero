@@ -22,8 +22,8 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         {
             _pageService = pageService;
 
-            CarrotsCommand = new CommandBuilder().AddGuard(this).SetExecute(CarrotsCommandExecute).SetName("Carrots").Build();
-            BroccoliCommand = new CommandBuilder().AddGuard(this).SetExecute(BroccoliCommandExecute).SetName("Broccoli").Build();
+            CarrotsCommand = new CommandBuilder().AddGuard(this).SetExecuteAsync(CarrotsCommandExecute).SetName("Carrots").Build();
+            BroccoliCommand = new CommandBuilder().AddGuard(this).SetExecuteAsync(BroccoliCommandExecute).SetName("Broccoli").Build();
         }
 
         private async Task CarrotsCommandExecute()

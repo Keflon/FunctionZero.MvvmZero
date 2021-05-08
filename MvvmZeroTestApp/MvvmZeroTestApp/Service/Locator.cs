@@ -29,16 +29,16 @@ namespace MvvmZeroTestApp.Service
                                    Lifestyle.Singleton);
 
             // Register Pages ...
-            IoCC.Register<HomePage>(Lifestyle.Transient);
-            IoCC.Register<CarrotsPage>(Lifestyle.Transient);
-            IoCC.Register<ResultsPage>(Lifestyle.Transient);
-            IoCC.Register<BroccoliPage>(Lifestyle.Transient);
+            IoCC.Register<HomePage>(Lifestyle.Singleton);
+            IoCC.Register<CarrotsPage>(Lifestyle.Singleton);
+            IoCC.Register<ResultsPage>(Lifestyle.Singleton);
+            IoCC.Register<BroccoliPage>(Lifestyle.Singleton);
 
             // Register ViewModels ...
-            IoCC.Register<HomePageVm>(Lifestyle.Transient);
-            IoCC.Register<CarrotsPageVm>(Lifestyle.Transient);
-            IoCC.Register<ResultsPageVm>(Lifestyle.Transient);
-            IoCC.Register<BroccoliPageVm>(Lifestyle.Transient);
+            IoCC.Register<HomePageVm>(Lifestyle.Singleton);
+            IoCC.Register<CarrotsPageVm>(Lifestyle.Singleton);
+            IoCC.Register<ResultsPageVm>(Lifestyle.Singleton);
+            IoCC.Register<BroccoliPageVm>(Lifestyle.Singleton);
 
             // Register other things ...
             //IoCC.Register<IJarvisLogger, JarvisLogger>(Lifestyle.Singleton);
@@ -48,9 +48,10 @@ namespace MvvmZeroTestApp.Service
             //Application.Current.MainPage = nav;
             currentApplication.MainPage = nav;
 
-            var homePage = this.IoCC.GetInstance<IPageServiceZero>().MakePage<HomePage, HomePageVm>((vm) => vm.SetState(null));
-
-            this.IoCC.GetInstance<IPageServiceZero>().PushPageAsync(homePage, false);
+            var pageService = this.IoCC.GetInstance<IPageServiceZero>();
+            var homePage = pageService.MakePage<HomePage, HomePageVm>((vm) => vm.SetState(null));
+            
+            pageService.PushPageAsync(homePage, false);
 
             //_lastPageToAppear = _navPageHack.RootPage;
 

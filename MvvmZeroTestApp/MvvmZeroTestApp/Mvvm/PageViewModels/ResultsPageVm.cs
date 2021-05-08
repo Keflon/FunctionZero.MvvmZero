@@ -1,6 +1,5 @@
 using FunctionZero.CommandZero;
 using FunctionZero.MvvmZero;
-using FunctionZero.MvvmZero;
 using MvvmZeroTestApp.Mvvm.ViewModels;
 using System;
 using Xamarin.Forms;
@@ -17,8 +16,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         {
             PopToRootCommand = new CommandBuilder()
                 .SetName("Test PopToRoot")
-                .SetExecute(
-                () => pageService.PopToRootAsync()).Build();
+                .SetExecuteAsync(()=>pageService.PopToRootAsync()).Build();
         }
 
         public void SetState(string state)

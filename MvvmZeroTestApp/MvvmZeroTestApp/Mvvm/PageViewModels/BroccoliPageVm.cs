@@ -39,11 +39,11 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         public BroccoliPageVm(IPageServiceZero pageService)
         {
             _pageService = pageService;
-            ZeroCommand = new CommandBuilder().AddGuard(this).SetCanExecute(()=>PuzzleProgress == 0).SetExecute(AnyCommandExecute).SetName("Zero").Build();
-            OneCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 1).SetExecute(AnyCommandExecute).SetName("One").Build();
-            TwoCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 2).SetExecute(AnyCommandExecute).SetName("Two").Build();
+            ZeroCommand = new CommandBuilder().AddGuard(this).SetCanExecute(()=>PuzzleProgress == 0).SetExecuteAsync(AnyCommandExecute).SetName("Zero").Build();
+            OneCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 1).SetExecuteAsync(AnyCommandExecute).SetName("One").Build();
+            TwoCommand = new CommandBuilder().AddGuard(this).SetCanExecute(() => PuzzleProgress == 2).SetExecuteAsync(AnyCommandExecute).SetName("Two").Build();
 
-            ResetCommand = new CommandBuilder().AddObservedProperty(this, nameof(PuzzleProgress)).SetExecute(TestCommandExecute).SetCanExecute(TestCommandCanExecute).SetName("RESET").Build();
+            ResetCommand = new CommandBuilder().AddObservedProperty(this, nameof(PuzzleProgress)).SetExecuteAsync(TestCommandExecute).SetCanExecute(TestCommandCanExecute).SetName("RESET").Build();
 
 
             _stopwatch = new Stopwatch();
