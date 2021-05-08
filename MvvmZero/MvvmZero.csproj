@@ -11,8 +11,8 @@
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
-    <PackageTags>ICommand Command Mvvm Xamarin Forms iOS UWP Android</PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageTags>Mvvm Xamarin Forms iOS UWP Android ICommand Command CommandZero CommandZeroAsync</PackageTags>
+    <PackageReleaseNotes>Updated to use latest CommandZero package.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
   </PropertyGroup>
 
