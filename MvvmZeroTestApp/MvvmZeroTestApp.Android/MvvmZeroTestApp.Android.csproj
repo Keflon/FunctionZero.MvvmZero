@@ -74,6 +74,7 @@
     <PackageReference Include="Xamarin.AndroidX.Palette" Version="1.0.0.7" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomRenderers\NavigationTransitionPageRenderer.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -109,6 +110,10 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MvvmZero\MvvmZero.csproj">
+      <Project>{50C18F4F-E55B-4C36-890C-BA98250120F4}</Project>
+      <Name>MvvmZero</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MvvmZeroTestApp\MvvmZeroTestApp.csproj">
       <Project>{E054535B-C7E6-440D-90D1-DCE5CE3A8254}</Project>
       <Name>MvvmZeroTestApp</Name>

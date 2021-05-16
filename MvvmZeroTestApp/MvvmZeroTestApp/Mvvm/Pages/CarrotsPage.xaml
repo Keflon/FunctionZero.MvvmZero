@@ -2,8 +2,17 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MvvmZeroTestApp.Mvvm.Pages.CarrotsPage"   
+             xmlns:pagetransitions="clr-namespace:FunctionZero.MvvmZero.PageTransitions;assembly=FunctionZero.MvvmZero"
+
+             pagetransitions:CustomNavigationPage.TransitionAnimation="{DynamicResource pageTransition}"
+             
              x:Name ="Self"
 >
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <pagetransitions:GeneralTransitionAnimation x:Key="pageTransition"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout VerticalOptions="CenterAndExpand" 
                    HorizontalOptions="CenterAndExpand">
