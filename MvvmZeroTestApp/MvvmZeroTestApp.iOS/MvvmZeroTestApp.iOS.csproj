@@ -60,6 +60,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CustomRenderers\NavigationTransitionPageRenderer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
@@ -128,6 +129,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\..\MvvmZero\MvvmZero.csproj">
+      <Project>{50C18F4F-E55B-4C36-890C-BA98250120F4}</Project>
+      <Name>MvvmZero</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MvvmZeroTestApp\MvvmZeroTestApp.csproj">
       <Project>{E054535B-C7E6-440D-90D1-DCE5CE3A8254}</Project>
       <Name>MvvmZeroTestApp</Name>
