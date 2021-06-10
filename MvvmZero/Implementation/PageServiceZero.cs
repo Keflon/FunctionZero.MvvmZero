@@ -50,20 +50,19 @@ namespace FunctionZero.MvvmZero
         {
             _navigationGetter = navigationGetter;
             _typeFactory = typeFactory;
-        }
 
-        private void Page_Disappearing(object sender, EventArgs e)
-        {
-            var page = (Page)sender;
-            if (page.BindingContext is IHasOwnerPage hop)
-                hop.OwnerPageDisappearing();
+            Application.Current.PageAppearing += Current_PageAppearing;
+            Application.Current.PageDisappearing += Current_PageDisappearing;
         }
-
-        private void Page_Appearing(object sender, EventArgs e)
+        private void Current_PageAppearing(object sender, Page page)
         {
-            var page = (Page)sender;
             if (page.BindingContext is IHasOwnerPage hop)
                 hop.OwnerPageAppearing();
+        }
+        private void Current_PageDisappearing(object sender, Page page)
+        {
+            if (page.BindingContext is IHasOwnerPage hop)
+                hop.OwnerPageDisappearing();
         }
 
         public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
@@ -72,8 +71,6 @@ namespace FunctionZero.MvvmZero
             TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
             setState?.Invoke(vm);
             page.BindingContext = vm;
-
-            AttachToPage(page);
 
             return page;
         }
@@ -85,22 +82,10 @@ namespace FunctionZero.MvvmZero
             return vm;
         }
 
-        private void AttachToPage<TPage>(TPage page) where TPage : Page
-        {
-            // Just in case we've seen this page before. (It may be a singleton, etc)
-            page.Appearing -= Page_Appearing;
-            page.Disappearing -= Page_Disappearing;
-            // Attach to the page so we can service IHasOwnerPage.
-            page.Appearing += Page_Appearing;
-            page.Disappearing += Page_Disappearing;
-        }
-
         public TPage MakePage<TPage>(Action<object> setState) where TPage : Page
         {
             TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
             setState?.Invoke(page.BindingContext);
-
-            AttachToPage(page);
 
             return page;
         }
