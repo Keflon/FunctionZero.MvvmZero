@@ -35,6 +35,7 @@ namespace FunctionZero.MvvmZero
     {
         private readonly Func<INavigation> _navigationGetter;
         private Func<Type, object> _typeFactory;
+        private Application _currentApplication;
 
         private INavigation CurrentNavigationPage => _navigationGetter();
 
@@ -46,14 +47,37 @@ namespace FunctionZero.MvvmZero
         /// <param name="navPage"></param>
         /// <param name="typeFactory"></param>
         /// <param name="theApplicationInstance">Pass in App.Current if you want IHasOwnerPage wired up for you</param>
-        public PageServiceZero(Func<INavigation> navigationGetter, Func<Type, object> typeFactory)
+        public PageServiceZero(Func<INavigation> navigationGetter, Func<Type, object> typeFactory, Application currentApplication = null)
         {
             _navigationGetter = navigationGetter;
             _typeFactory = typeFactory;
 
-            Application.Current.PageAppearing += Current_PageAppearing;
-            Application.Current.PageDisappearing += Current_PageDisappearing;
+            if (currentApplication == null)
+                currentApplication =  Application.Current;
+
+            if (currentApplication != null)
+            {
+                Init(currentApplication);
+
+            }
         }
+
+        public void Init(Application currentApplication)
+        {
+            if (_currentApplication != null)
+            {
+                _currentApplication.PageAppearing -= Current_PageAppearing;
+                _currentApplication.PageDisappearing -= Current_PageDisappearing;
+            }
+
+            if (currentApplication != null)
+            {
+                currentApplication.PageAppearing += Current_PageAppearing;
+                currentApplication.PageDisappearing += Current_PageDisappearing;
+            }
+            _currentApplication = currentApplication;
+        }
+
         private void Current_PageAppearing(object sender, Page page)
         {
             if (page.BindingContext is IHasOwnerPage hop)

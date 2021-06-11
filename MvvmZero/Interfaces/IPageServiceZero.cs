@@ -43,6 +43,14 @@ namespace FunctionZero.MvvmZero
         Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page;
         Task PopAsync(bool isModal, bool animated = true);
         Task PopToRootAsync(bool animated = true);
+
+        /// <summary>
+        /// Call this only if you create a PageService before Application.Current is set, 
+        /// and you don't have the application instance to inject to the constructor at the time of creation.
+        /// </summary>
+        /// <param name="currentApplication"></param>
+        void Init(Application currentApplication);
+
     }
 
     //public interface IFlowPageZero<TInput, TOutput>

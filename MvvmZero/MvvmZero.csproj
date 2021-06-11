@@ -5,14 +5,14 @@
     <LangVersion>7.3</LangVersion>
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
-    <Version>2.2.2</Version>
+    <Version>2.2.4-pre0</Version>
     <Copyright>FunctionZero Ltd. 2021</Copyright>
     <Description>An easy to use library for building cross-platform Xamarin Forms applications very quickly. Includes FunctionZero.zBind, allowing fully featured databinding to expressions.</Description>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
     <PackageTags>Mvvm Xamarin Forms iOS UWP Android ICommand Command CommandZero CommandZeroAsync zbind expression parser databinding</PackageTags>
-    <PackageReleaseNotes>MvvmZero now includes FunctionZero.zBind, allowing databinding to expressions.</PackageReleaseNotes>
+    <PackageReleaseNotes>This fixes previous OwnerPage[Appearing|Disappearing] fix causing NullReferenceException if the pageService is inistalised before Application.Current is set.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
   </PropertyGroup>
 
