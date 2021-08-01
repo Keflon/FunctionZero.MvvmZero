@@ -15,8 +15,6 @@ namespace FunctionZero.MvvmZero.Services
         private int _counter;
         bool _timerIsRunning;
 
-        //public delegate Task DelayedActionAsync();
-
         /// <summary>
         /// 
         /// </summary>
