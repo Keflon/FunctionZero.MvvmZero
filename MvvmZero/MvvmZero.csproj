@@ -12,7 +12,18 @@
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
     <PackageTags>Mvvm Xamarin Forms iOS UWP Android ICommand Command CommandZero CommandZeroAsync zbind expression parser databinding</PackageTags>
-    <PackageReleaseNotes>This fixes previous OwnerPage[Appearing|Disappearing] fix causing NullReferenceException if the pageService is inistalised before Application.Current is set.</PackageReleaseNotes>
+    <PackageReleaseNotes>Breaking change:
+- Renamed OwnerPageAppearing to OnOwnerPageAppearing.
+- Renamed OwnerPageDisappearing to OnOwnerPageDisappearing.
+
+Bugfix:
+PopToRootAsync now ensures the topmost Page calls OwnerPageDisappearing on its ViewModel if the Page's ViewModel supports IHasOwnerPage.
+(Xamarin Forms does not inform the top page it is disappearing if Navigation.PopToRootAsync is called.)
+
+New feature:
+- Added AddPageTimer call to MvvmZeroBaseVm.
+- - Adds a page timer that is only active whilst the page is presented. Experimental.
+- IHasOwnerPage now supports INPC.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
   </PropertyGroup>
 
