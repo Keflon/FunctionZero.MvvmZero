@@ -20,6 +20,13 @@ namespace MvvmZeroTestApp.Mvvm.ViewModels
         {
             // Something sensible ...
             Scale = 1.0;
+
+            base.AddPageTimer(10000, timerCallback, null, "hello");
+        }
+
+        private void timerCallback(object obj)
+        {
+            Debug.WriteLine($"{this} beep");
         }
 
         public double TranslationX
@@ -54,9 +61,9 @@ namespace MvvmZeroTestApp.Mvvm.ViewModels
             set => SetProperty(ref _anchorY, value);
         }
 
-        public override void OwnerPageAppearing()
+        public override void OnOwnerPageAppearing()
         {
-            base.OwnerPageAppearing();
+            base.OnOwnerPageAppearing();
 
             // HACK: Workaround for UWP BUG setting transform to 0.0 has no effect.
             //Rotation = 0.1;
@@ -69,9 +76,9 @@ namespace MvvmZeroTestApp.Mvvm.ViewModels
             AnchorY = 0.0;
             Scale = 1.0;
         }
-        public override void OwnerPageDisappearing()
+        public override void OnOwnerPageDisappearing()
         {
-            base.OwnerPageDisappearing();
+            base.OnOwnerPageDisappearing();
 
             // iOS NavigationPage animates differently to UWP and Droid.
             if (Device.RuntimePlatform == Device.iOS)

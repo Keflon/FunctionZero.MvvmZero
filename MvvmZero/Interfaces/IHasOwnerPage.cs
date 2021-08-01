@@ -22,17 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
+using System.ComponentModel;
+
 namespace FunctionZero.MvvmZero
 {
     /// <summary>
     /// If the ViewModel of a Page supports this interface, these methods are called by the page service.
     /// </summary>
-    public interface IHasOwnerPage
+    public interface IHasOwnerPage : INotifyPropertyChanged
     {
         /// <summary>
-        /// Lifecycle events for a Page
+        /// Tells us whether the owner page is visible.
+        /// Implementors must raise INPC.
         /// </summary>
-        void OwnerPageAppearing();
-        void OwnerPageDisappearing();
+        bool IsOwnerPageVisible { get; }
+        /// <summary>
+        /// Lifecycle for a Page
+        /// </summary>
+        void OnOwnerPageAppearing();
+        void OnOwnerPageDisappearing();
     }
 }

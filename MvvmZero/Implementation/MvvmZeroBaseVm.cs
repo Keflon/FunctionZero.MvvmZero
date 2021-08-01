@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using FunctionZero.CommandZero;
+using FunctionZero.MvvmZero.Services;
 
 namespace FunctionZero.MvvmZero
 {
@@ -41,10 +42,20 @@ namespace FunctionZero.MvvmZero
         private bool _IsownerPageVisible;
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler OwnerPageAppearing;
+        public event EventHandler OwnerPageDisappearing;
+
+        private readonly List<AutoPageTimer> _pageTimers;
 
         public MvvmZeroBaseVm()
         {
+            _pageTimers = new List<AutoPageTimer>();
             _guardImplementation = new BasicGuard();
+        }
+
+        protected void AddPageTimer(int millisecondInterval, Action<object> callback, Action<Exception> exceptionHandler, object state)
+        {
+            _pageTimers.Add(new AutoPageTimer(this, millisecondInterval, callback, exceptionHandler, state));
         }
 
         public bool IsOwnerPageVisible
@@ -68,14 +79,16 @@ namespace FunctionZero.MvvmZero
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public virtual void OwnerPageAppearing()
+        public virtual void OnOwnerPageAppearing()
         {
             IsOwnerPageVisible = true;
+            OwnerPageAppearing?.Invoke(this, EventArgs.Empty);
         }
 
-        public virtual void OwnerPageDisappearing()
+        public virtual void OnOwnerPageDisappearing()
         {
             IsOwnerPageVisible = false;
+            OwnerPageDisappearing?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler<GuardChangedEventArgs> GuardChanged

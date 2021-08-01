@@ -53,7 +53,7 @@ namespace FunctionZero.MvvmZero
             _typeFactory = typeFactory;
 
             if (currentApplication == null)
-                currentApplication =  Application.Current;
+                currentApplication = Application.Current;
 
             if (currentApplication != null)
             {
@@ -81,12 +81,12 @@ namespace FunctionZero.MvvmZero
         private void Current_PageAppearing(object sender, Page page)
         {
             if (page.BindingContext is IHasOwnerPage hop)
-                hop.OwnerPageAppearing();
+                hop.OnOwnerPageAppearing();
         }
         private void Current_PageDisappearing(object sender, Page page)
         {
             if (page.BindingContext is IHasOwnerPage hop)
-                hop.OwnerPageDisappearing();
+                hop.OnOwnerPageDisappearing();
         }
 
         public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
@@ -146,6 +146,16 @@ namespace FunctionZero.MvvmZero
 
         public async Task PopToRootAsync(bool animated = false)
         {
+            var navStack = CurrentNavigationPage.NavigationStack;
+
+            // CurrentNavigationPage.PopToRootAsync does not raise OnPageDisappearing on the top page,
+            // so we must do it here.
+            // Odd, given the appearing / disappearing methods are called when backgrounding, foregrounding etc.
+            if (navStack.Count > 1)
+            {
+                var topPage = navStack[navStack.Count - 1];
+                (topPage.BindingContext as IHasOwnerPage)?.OnOwnerPageDisappearing();
+            }
             await CurrentNavigationPage.PopToRootAsync(animated);
         }
     }

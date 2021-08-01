@@ -46,9 +46,9 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 await _pageService.PushPageAsync<ResultsPage>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM CARROT!!"));
         }
 
-        public override void OwnerPageAppearing()
+        public override void OnOwnerPageAppearing()
         {
-            base.OwnerPageAppearing();
+            base.OnOwnerPageAppearing();
             CanProceed = false;
         }
 

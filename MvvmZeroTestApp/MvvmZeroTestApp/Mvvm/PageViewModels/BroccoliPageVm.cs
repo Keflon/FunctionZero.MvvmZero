@@ -103,9 +103,9 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         }
 
         Stopwatch _stopwatch;
-        public override void OwnerPageAppearing()
+        public override void OnOwnerPageAppearing()
         {
-            base.OwnerPageAppearing();
+            base.OnOwnerPageAppearing();
 
             PuzzleProgress = 0;
             // BindingContext may not yet be set, so force a ChangeCanExecute ...
@@ -128,12 +128,12 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             return _stopwatch.IsRunning;
         }
 
-        public override void OwnerPageDisappearing()
+        public override void OnOwnerPageDisappearing()
         {
             _stopwatch.Stop();
             PuzzleProgress = 0;
 
-            base.OwnerPageDisappearing();
+            base.OnOwnerPageDisappearing();
         }
 
         public void SetState(object state)
