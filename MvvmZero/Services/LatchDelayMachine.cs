@@ -8,9 +8,9 @@ namespace FunctionZero.MvvmZero.Services
     {
         private readonly TimeSpan _clockTimespan;
         private readonly int _clockTicksBeforeAction;
-        private readonly Func<Task> _delayedActionAsync;
-        private readonly Func<Task> _delayStartedActionAsync;
-        private readonly Func<int, double, Task> _clockTickAsync;
+        private readonly Action _delayedAction;
+        private readonly Func<bool> _delayStartedAction;
+        private readonly Func<int, double, bool> _clockTick;
 
         private int _counter;
         bool _timerIsRunning;
@@ -20,22 +20,22 @@ namespace FunctionZero.MvvmZero.Services
         /// </summary>
         /// <param name="millisecondClock"></param>
         /// <param name="clockTicksBeforeAction"></param>
-        /// <param name="delayedActionAsync"></param>
-        /// <param name="delayStartedActionAsync"></param>
-        /// <param name="clockTickAsync"></param>
+        /// <param name="delayedAction"></param>
+        /// <param name="delayStartedAction"></param>
+        /// <param name="clockTick"></param>
         public LatchDelayMachine(
             int millisecondClock,
             int clockTicksBeforeAction,
-            Func<Task> delayedActionAsync,
-            Func<Task> delayStartedActionAsync = null,
-            Func<int, double, Task> clockTickAsync = null
+            Action delayedAction,
+            Func<bool> delayStartedAction = null,
+            Func<int, double, bool> clockTick = null
             )
         {
             _clockTimespan = new TimeSpan(0, 0, 0, 0, millisecondClock);
             _clockTicksBeforeAction = clockTicksBeforeAction;
-            _delayedActionAsync = delayedActionAsync ?? (async () => { });
-            _delayStartedActionAsync = delayStartedActionAsync ?? (async () => { });
-            _clockTickAsync = clockTickAsync ?? (async (count, progress) => { });
+            _delayedAction = delayedAction ?? (() => { });
+            _delayStartedAction = delayStartedAction ?? (() => true);
+            _clockTick = clockTick ?? ((count, progress) => true);
         }
 
 
@@ -49,9 +49,14 @@ namespace FunctionZero.MvvmZero.Services
 
             if (!_timerIsRunning)
             {
+                if (_delayStartedAction() == false)
+                    return false;
+
+                if (_clockTick(_counter, _counter / _clockTicksBeforeAction) == false)
+                    return false;
+
                 _timerIsRunning = true;
-                _ = _delayStartedActionAsync?.Invoke();
-                _ = _clockTickAsync(_counter, _counter / _clockTicksBeforeAction);
+
                 Device.StartTimer(_clockTimespan, AreWeReadyToRock);
                 return true;
             }
@@ -61,12 +66,14 @@ namespace FunctionZero.MvvmZero.Services
         private bool AreWeReadyToRock()
         {
             _counter++;
-            _clockTickAsync(_counter, _counter / _clockTicksBeforeAction);
-
-            if (_counter >= _clockTicksBeforeAction)
+            if (_clockTick(_counter, (double)_counter / (double)_clockTicksBeforeAction) == false)
             {
                 _timerIsRunning = false;
-                _ = _delayedActionAsync.Invoke();
+            }
+            else if (_counter >= _clockTicksBeforeAction)
+            {
+                _timerIsRunning = false;
+                _delayedAction();
             }
             return _timerIsRunning;
         }
