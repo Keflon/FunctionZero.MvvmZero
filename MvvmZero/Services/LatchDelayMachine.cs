@@ -73,7 +73,9 @@ namespace FunctionZero.MvvmZero.Services
             else if (_counter >= _clockTicksBeforeAction)
             {
                 _timerIsRunning = false;
+                // This timer must die. _delayedAction may now start a new timer, setting _timerIsRunning to true. 
                 _delayedAction();
+                return false;
             }
             return _timerIsRunning;
         }

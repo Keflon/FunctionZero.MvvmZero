@@ -5,16 +5,14 @@
     <LangVersion>7.3</LangVersion>
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
-    <Version>2.2.4-pre3</Version>
+    <Version>2.2.4-pre5</Version>
     <Copyright>FunctionZero Ltd. 2021</Copyright>
     <Description>An easy to use library for building cross-platform Xamarin Forms applications very quickly. Includes FunctionZero.zBind, allowing fully featured databinding to expressions.</Description>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
     <PackageTags>Mvvm Xamarin Forms iOS UWP Android ICommand Command CommandZero CommandZeroAsync zbind expression parser databinding</PackageTags>
-    <PackageReleaseNotes>delayStartedAction, delayedAction and clockTick are no longer async.
-delayStartedAction can return false to abort the timer.
-clockTick can return false to abort the timer.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed LatchDelayMachine spawning an exponentially increasing number of timers under some circumstances. (again)</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
   </PropertyGroup>
 
