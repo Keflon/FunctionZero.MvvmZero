@@ -72,8 +72,8 @@ namespace FunctionZero.MvvmZero.Services
             }
             else if (_counter >= _clockTicksBeforeAction)
             {
-                _timerIsRunning = false;
                 _delayedAction();
+                _timerIsRunning = false;
             }
             return _timerIsRunning;
         }
