@@ -5,23 +5,21 @@
     <LangVersion>7.3</LangVersion>
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
-    <Version>2.2.4</Version>
+    <Version>2.2.5</Version>
     <Copyright>FunctionZero Ltd. 2021</Copyright>
     <Description>An easy to use library for building cross-platform Xamarin Forms applications very quickly. Includes FunctionZero.zBind, allowing fully featured databinding to expressions.</Description>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
     <PackageTags>Mvvm Xamarin Forms iOS UWP Android ICommand Command CommandZero CommandZeroAsync zbind expression parser databinding</PackageTags>
-    <PackageReleaseNotes>Updated to latest z:Bind v1.2.3, fixing problems when binding to objects when they are null.
-Updated to latest Xamarin.Forms v5.0.0.2196.
-Have fun with the LatchDelayMachine and with 'AddPageTimer' in MvvmZeroBaseVm.
+    <PackageReleaseNotes>Updated to latest z:Bind v1.2.4, fixing problems when short-circuit raises NRE in expressions such as 'SomeBool AND true' where the left operand is a variable.
 </PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FunctionZero.CommandZero" Version="1.1.0" />
-    <PackageReference Include="FunctionZero.zBind" Version="1.2.3" />
+    <PackageReference Include="FunctionZero.zBind" Version="1.2.4" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
   </ItemGroup>
 
