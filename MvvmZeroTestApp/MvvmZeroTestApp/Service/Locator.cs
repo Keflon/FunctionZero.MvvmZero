@@ -49,9 +49,12 @@ namespace MvvmZeroTestApp.Service
             currentApplication.MainPage = nav;
 
             var pageService = this.IoCC.GetInstance<IPageServiceZero>();
-            var homePage = pageService.MakePage<HomePage, HomePageVm>((vm) => vm.SetState(null));
-            
-            pageService.PushPageAsync(homePage, false);
+            //var homePage = pageService.MakePage<HomePage, HomePageVm>((vm) => vm.SetState(null));
+            var homeMvvmPage = pageService.GetMvvmPage<HomePage, HomePageVm>();
+            homeMvvmPage.viewModel.SetState(null);
+
+
+            pageService.PushPageAsync(homeMvvmPage.page, false);
 
             //_lastPageToAppear = _navPageHack.RootPage;
 

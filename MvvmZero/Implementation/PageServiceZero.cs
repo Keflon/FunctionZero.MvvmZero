@@ -1,7 +1,7 @@
 ﻿/*
 MIT License
 
-Copyright(c) 2016 - 2021 Function Zero Ltd
+Copyright(c) 2016 - 2022 Function Zero Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -62,6 +62,8 @@ namespace FunctionZero.MvvmZero
             }
         }
 
+        public GetMvvmPageMode DefaultMvvmPageMode { get; set; }
+
         public void Init(Application currentApplication)
         {
             if (_currentApplication != null)
@@ -83,62 +85,196 @@ namespace FunctionZero.MvvmZero
             if (page.BindingContext is IHasOwnerPage hop)
                 hop.OnOwnerPageAppearing();
         }
+
         private void Current_PageDisappearing(object sender, Page page)
         {
             if (page.BindingContext is IHasOwnerPage hop)
                 hop.OnOwnerPageDisappearing();
         }
 
-        public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
+        //public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
+        //{
+        //    TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
+        //    TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
+        //    setState?.Invoke(vm);
+        //    page.BindingContext = vm;
+
+        //    return page;
+        //}
+        public (TPage page, TViewModel viewModel) GetMvvmPage<TPage, TViewModel>(GetMvvmPageMode mode)
+            where TPage : Page
+            where TViewModel : class
+        {
+            TPage page = (TPage)_typeFactory(typeof(TPage));
+            TViewModel vm = null;
+
+            GetMvvmPageMode actualMode = mode;
+            if (actualMode == GetMvvmPageMode.Default)
+                actualMode = GetMvvmPageMode.Singleton;
+
+            switch (actualMode)
+            {
+                case GetMvvmPageMode.Default:
+                    {
+                        throw new InvalidOperationException("This cannot happen");
+                    }
+                case GetMvvmPageMode.Singleton:
+                    {
+                        vm = (TViewModel)_typeFactory(typeof(TViewModel));
+                        if (page.BindingContext == null)
+                            page.BindingContext = vm;
+
+                        else if (page.BindingContext != vm)
+                            throw new InvalidOperationException("Page already has a different viewModel instance");
+
+                        page.BindingContext = vm;
+                    }
+                    break;
+                case GetMvvmPageMode.Manual:
+                    {
+                        vm = (TViewModel)_typeFactory(typeof(TViewModel));
+                        if (page.BindingContext != vm)
+                            if (page.BindingContext != null)
+                                throw new InvalidOperationException("Page already has a BindingContext");
+
+                        page.BindingContext = vm;
+                    }
+                    break;
+                case GetMvvmPageMode.Auto:
+                    {
+                        if (page.BindingContext == null)
+                        {
+                            vm = (TViewModel)_typeFactory(typeof(TViewModel));
+                            page.BindingContext = vm;
+                        }
+                        else if ((page.BindingContext is TViewModel) == false)
+                        {
+                            throw new InvalidOperationException("Page has an unsuitable BindingContext");
+                        }
+                        else
+                        {
+                            vm = (TViewModel)page.BindingContext;
+                        }
+                    }
+                    break;
+                case GetMvvmPageMode.Page:
+                    {
+                        if (page.BindingContext == null)
+                        {
+                            throw new InvalidOperationException("Page does not have a BindingContext");
+                        }
+                        if (page.BindingContext is TViewModel pvm)
+                        {
+                            vm = pvm;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("Page has an unsuitable BindingContext");
+                        }
+                    }
+                    break;
+                case GetMvvmPageMode.Force:
+                    {
+                        vm = (TViewModel)_typeFactory(typeof(TViewModel));
+                        page.BindingContext = vm;
+                    }
+                    break;
+            }
+            return (page, vm);
+        }
+
+        public TPage GetPage<TPage>() where TPage : Page
         {
             TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
-            TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
-            setState?.Invoke(vm);
-            page.BindingContext = vm;
-
             return page;
         }
-        public TPage MakePage<TPage>(Action<object> setState) where TPage : Page
-        {
-            TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
-            setState?.Invoke(page.BindingContext);
-
-            return page;
-        }
-        public TViewModel MakeViewModel<TViewModel>() where TViewModel : class
+        public TViewModel GetViewModel<TViewModel>() where TViewModel : class
         {
             TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
             return vm;
         }
 
-        public async Task<Page> PushPageAsync(Page page, bool isModal)
+        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal, GetMvvmPageMode mode)
+    where TPage : Page
+    where TViewModel : class
         {
+            var mvvmPage = GetMvvmPage<TPage, TViewModel>(mode);
+
+            if (initViewModelActionAsync != null)
+            {
+                await initViewModelActionAsync(mvvmPage.viewModel);
+            }
+
+            await PushPageAsync(mvvmPage.page, isModal);
+
+            return mvvmPage.viewModel;
+        }
+
+        //public async Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page
+        //{
+        //    TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
+        //    return await PushPageAsync(newPage, isModal);
+        //}
+        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal, GetMvvmPageMode mode)
+    where TPage : Page
+    where TViewModel : class
+        {
+            var mvvmPage = GetMvvmPage<TPage, TViewModel>(mode);
+
+            if (initViewModelAction != null)
+            {
+                initViewModelAction(mvvmPage.viewModel);
+            }
+
+            await PushPageAsync(mvvmPage.page, isModal);
+
+            return mvvmPage.viewModel;
+        }
+
+
+        public async Task PushPageAsync(Page page, bool isModal)
+        {
+            var hop = page.BindingContext as IHasOwnerPage;
             if (isModal == false)
+            {
+                hop?.OnOwnerPagePushing(isModal);
                 await CurrentNavigationPage.PushAsync(page, true);
+                hop?.OnOwnerPagePushed(isModal);
+            }
             else
+            {
+                hop?.OnOwnerPagePushing(isModal);
                 await CurrentNavigationPage.PushModalAsync(page, true);
-
-            return page;
+                hop?.OnOwnerPagePushed(isModal);
+            }
         }
 
-        public async Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page
-        {
-            TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
-            return await PushPageAsync(newPage, isModal);
-        }
+        //public async Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page
+        //{
+        //    var mvvmPage = GetMvvmPage<TPage, object>();
+        //    return await PushPageAsync(newPage, isModal);
+        //}
 
-        public async Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page
-        {
-            TPage newPage = MakePage<TPage>(setStateAction);
-            return await PushPageAsync(newPage, isModal);
-        }
+
 
         public async Task PopAsync(bool isModal, bool animated = true)
         {
             if (!isModal)
+            {
+                var page = CurrentNavigationPage.NavigationStack.Last();
+                var hop = page.BindingContext as IHasOwnerPage;
+                hop?.OnOwnerPagePopping(isModal);
                 await CurrentNavigationPage.PopAsync(animated);
+                hop?.OnOwnerPagePopped(isModal);
+            }
             else
+            {
+                var page = CurrentNavigationPage.ModalStack.Last();
+                var hop = page.BindingContext as IHasOwnerPage;
+                hop?.OnOwnerPagePopping(isModal);
                 await CurrentNavigationPage.PopModalAsync(animated);
+                hop?.OnOwnerPagePopped(isModal);
+            }
         }
         public async Task PopToRootAsync(bool animated = false)
         {

@@ -1,7 +1,7 @@
 ﻿/*
 MIT License
 
-Copyright(c) 2016 - 2021 Function Zero Ltd
+Copyright(c) 2016 - 2022 Function Zero Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,9 +38,18 @@ namespace FunctionZero.MvvmZero
         /// </summary>
         bool IsOwnerPageVisible { get; }
         /// <summary>
+        /// Tells us whether the owner page is on a navigation stack.
+        /// Implementors must raise INPC.
+        /// </summary>
+        bool IsOnNavigationStack { get; }
+        /// <summary>
         /// Lifecycle for a Page
         /// </summary>
         void OnOwnerPageAppearing();
         void OnOwnerPageDisappearing();
+        void OnOwnerPagePushing(bool isModal);
+        void OnOwnerPagePopping(bool isModal);
+        void OnOwnerPagePushed(bool isModal);
+        void OnOwnerPagePopped(bool isModal);
     }
 }

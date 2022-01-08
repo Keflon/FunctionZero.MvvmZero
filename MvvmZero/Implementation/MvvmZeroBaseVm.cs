@@ -1,7 +1,7 @@
 ﻿/*
 MIT License
 
-Copyright(c) 2016 - 2021 Function Zero Ltd
+Copyright(c) 2016 - 2022 Function Zero Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,7 @@ namespace FunctionZero.MvvmZero
     {
         private readonly IGuard _guardImplementation;
         private bool _IsownerPageVisible;
+        private bool _isOnNavigationStack;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler OwnerPageAppearing;
@@ -62,6 +63,11 @@ namespace FunctionZero.MvvmZero
         {
             get => _IsownerPageVisible;
             private set => SetProperty(ref _IsownerPageVisible, value);
+        }
+        public bool IsOnNavigationStack
+        {
+            get => _isOnNavigationStack;
+            private set => SetProperty(ref _isOnNavigationStack, value);
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = null)
@@ -89,6 +95,24 @@ namespace FunctionZero.MvvmZero
         {
             IsOwnerPageVisible = false;
             OwnerPageDisappearing?.Invoke(this, EventArgs.Empty);
+        }
+
+        public virtual void OnOwnerPagePushing(bool isModal)
+        {
+        }
+
+        public virtual void OnOwnerPagePopping(bool isModal)
+        {
+        }
+
+        public virtual void OnOwnerPagePushed(bool isModal)
+        {
+            IsOnNavigationStack = true;
+        }
+
+        public virtual void OnOwnerPagePopped(bool isModal)
+        {
+            IsOnNavigationStack = false;
         }
 
         public event EventHandler<GuardChangedEventArgs> GuardChanged

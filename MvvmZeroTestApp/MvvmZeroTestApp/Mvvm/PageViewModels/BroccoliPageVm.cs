@@ -62,7 +62,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         {
             PuzzleProgress++;
             if(PuzzleProgress == 3)
-                await _pageService.PushPageAsync<ResultsPage>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM BROCCOLI!!"));
+                await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM BROCCOLI!!"), false, GetMvvmPageMode.Page);
         }
 
         public double ZeroWidth
