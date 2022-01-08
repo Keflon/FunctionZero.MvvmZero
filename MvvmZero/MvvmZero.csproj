@@ -21,7 +21,7 @@ Have fun with the LatchDelayMachine and with 'AddPageTimer' in MvvmZeroBaseVm.
 
   <ItemGroup>
     <PackageReference Include="FunctionZero.CommandZero" Version="1.1.0" />
-    <PackageReference Include="FunctionZero.zBind" Version="1.2.3" />
+    <PackageReference Include="FunctionZero.zBind" Version="1.2.4" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
   </ItemGroup>
 

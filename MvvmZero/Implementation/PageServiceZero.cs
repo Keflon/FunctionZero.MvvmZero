@@ -98,14 +98,6 @@ namespace FunctionZero.MvvmZero
 
             return page;
         }
-
-
-        public TViewModel MakeViewModel<TViewModel>() where TViewModel : class
-        {
-            TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
-            return vm;
-        }
-
         public TPage MakePage<TPage>(Action<object> setState) where TPage : Page
         {
             TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
@@ -113,13 +105,10 @@ namespace FunctionZero.MvvmZero
 
             return page;
         }
-
-        public async Task PopAsync(bool isModal, bool animated = true)
+        public TViewModel MakeViewModel<TViewModel>() where TViewModel : class
         {
-            if (!isModal)
-                await CurrentNavigationPage.PopAsync(animated);
-            else
-                await CurrentNavigationPage.PopModalAsync(animated);
+            TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
+            return vm;
         }
 
         public async Task<Page> PushPageAsync(Page page, bool isModal)
@@ -144,6 +133,13 @@ namespace FunctionZero.MvvmZero
             return await PushPageAsync(newPage, isModal);
         }
 
+        public async Task PopAsync(bool isModal, bool animated = true)
+        {
+            if (!isModal)
+                await CurrentNavigationPage.PopAsync(animated);
+            else
+                await CurrentNavigationPage.PopModalAsync(animated);
+        }
         public async Task PopToRootAsync(bool animated = false)
         {
             var navStack = CurrentNavigationPage.NavigationStack;

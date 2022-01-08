@@ -30,19 +30,25 @@ namespace FunctionZero.MvvmZero
 {
     public interface IPageServiceZero
     {
-        //void SetPage(Page page);
-        //Page CurrentPage { get; }
+#if old
+        /// <summary>
+        /// Call this only if you create a PageService before Application.Current is set, 
+        /// and you don't have the application instance to inject to the constructor at the time of creation.
+        /// </summary>
+        /// <param name="currentApplication"></param>
+        void Init(Application currentApplication);
         TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
         TPage MakePage<TPage>(Action<object> setState) where TPage : Page;
 
         TViewModel MakeViewModel<TViewModel>() where TViewModel : class;
 
-        //TPage SetPage<TPage, TViewModel>(Action<TViewModel> setStateAction) where TPage : Page;
         Task<Page> PushPageAsync(Page page, bool isModal);
         Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page;
         Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page;
         Task PopAsync(bool isModal, bool animated = true);
         Task PopToRootAsync(bool animated = true);
+
+#else
 
         /// <summary>
         /// Call this only if you create a PageService before Application.Current is set, 
@@ -50,13 +56,19 @@ namespace FunctionZero.MvvmZero
         /// </summary>
         /// <param name="currentApplication"></param>
         void Init(Application currentApplication);
+        TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
+        TPage MakePage<TPage>(Action<object> setState) where TPage : Page;
+
+        TViewModel MakeViewModel<TViewModel>() where TViewModel : class;
+
+        Task<Page> PushPageAsync(Page page, bool isModal);
+        Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page;
+        Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page;
+        Task PopAsync(bool isModal, bool animated = true);
+        Task PopToRootAsync(bool animated = true);
+
+
+#endif
 
     }
-
-    //public interface IFlowPageZero<TInput, TOutput>
-    //{
-    //    void SetState(TInput state);
-    //    TInput GetState();
-    //    TOutput GetResult();
-    //}
 }
