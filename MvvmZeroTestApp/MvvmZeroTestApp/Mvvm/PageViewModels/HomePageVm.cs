@@ -28,8 +28,8 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 
         private async Task CarrotsCommandExecute()
         {
-            await DoSomethingSilly();
-            await _pageService.PushPageAsync<CarrotsPage, CarrotsPageVm>((vm) => vm.SetState(null));
+            //await DoSomethingSilly();
+            await _pageService.PushPageAsync<CarrotsPage, CarrotsPageVm>((vm) => vm.SetState(null), true);
         }
 
         private async Task DoSomethingSilly()
@@ -75,7 +75,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 
         private async Task BroccoliCommandExecute()
         {
-            await DoSomethingElseSilly();
+            //await DoSomethingElseSilly();
             await _pageService.PushPageAsync<BroccoliPage, BroccoliPageVm>((vm) => vm.SetState(null));
         }
 

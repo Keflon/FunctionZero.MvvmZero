@@ -48,7 +48,7 @@ namespace FunctionZero.MvvmZero
         void OnOwnerPageAppearing();
         void OnOwnerPageDisappearing();
         void OnOwnerPagePushing(bool isModal);
-        void OnOwnerPagePopping(bool isModal);
+        //void OnOwnerPagePopping(bool isModal);
         void OnOwnerPagePushed(bool isModal);
         void OnOwnerPagePopped(bool isModal);
     }

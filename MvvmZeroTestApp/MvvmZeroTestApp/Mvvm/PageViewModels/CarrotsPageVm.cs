@@ -14,6 +14,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
         private IPageServiceZero _pageService;
 
         public CommandZeroAsync NextCommand { get; }
+        public CommandZeroAsync PopModalCommand { get; }
         public bool CanProceed
         {
             get => _canProceed;
@@ -35,7 +36,11 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 //.SetCanExecute(() => CanProceed)
                 .SetExecuteAsync(NextCommandExecute)
                 .SetName("Next")
-                .Build();
+                .Build(); 
+            PopModalCommand= new CommandBuilder()
+             .SetExecuteAsync(async ()=>await _pageService.PopAsync(true))
+             .SetName("Pop Modal")
+             .Build();
         }
 
         private async Task NextCommandExecute()

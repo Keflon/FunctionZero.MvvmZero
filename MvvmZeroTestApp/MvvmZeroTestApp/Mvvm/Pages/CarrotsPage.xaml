@@ -11,6 +11,7 @@
             <Label Text="Please check below if you don't want to not opt out of spam"/>
             <CheckBox IsChecked="{Binding CanProceed, Mode=TwoWay}"/>
             <Button Text="{Binding NextCommand.FriendlyName}" Command="{Binding NextCommand}"/>
+            <Button Text="{Binding PopModalCommand.FriendlyName}" Command="{Binding PopModalCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

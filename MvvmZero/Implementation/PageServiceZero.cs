@@ -58,7 +58,6 @@ namespace FunctionZero.MvvmZero
             if (currentApplication != null)
             {
                 Init(currentApplication);
-
             }
         }
 
@@ -76,8 +75,53 @@ namespace FunctionZero.MvvmZero
             {
                 currentApplication.PageAppearing += Current_PageAppearing;
                 currentApplication.PageDisappearing += Current_PageDisappearing;
+
+                // TODO: Can currentApplication.MainPage be null?
+                // TODO: If so (I suspect it can), we should subscribe and unsubscribe when it changes.
+                currentApplication.MainPage.ChildAdded += CurrentApplication_ChildAdded;
+                currentApplication.MainPage.ChildRemoved += CurrentApplication_ChildRemoved;
+                currentApplication.ModalPushed += CurrentApplication_ModalPushed;
+                currentApplication.ModalPopped += CurrentApplication_ModalPopped;
             }
             _currentApplication = currentApplication;
+        }
+
+        private void CurrentApplication_ModalPopped(object sender, ModalPoppedEventArgs e)
+        {
+            Debug.WriteLine($"Modal Removed: {e.Modal}");
+
+            if (e.Modal is Page page)
+                if (page.BindingContext is IHasOwnerPage hop)
+                    hop.OnOwnerPagePopped(true);
+        }
+
+        private void CurrentApplication_ModalPushed(object sender, ModalPushedEventArgs e)
+        {
+            Debug.WriteLine($"Modal Added: {e.Modal}");
+
+            if (e.Modal is Page page)
+                if (page.BindingContext is IHasOwnerPage hop)
+                    hop.OnOwnerPagePushed(true);
+        }
+
+        private void CurrentApplication_ChildRemoved(object sender, ElementEventArgs e)
+        {
+            Debug.WriteLine($"Removed: {e.Element}");
+
+            //((e.Element as Page)?.BindingContext as IHasOwnerPage)?.OnOwnerPagePopped(false);
+
+            if (e.Element is Page page)
+                if(page.BindingContext is IHasOwnerPage hop)
+                hop.OnOwnerPagePopped(false);
+        }
+
+        private void CurrentApplication_ChildAdded(object sender, ElementEventArgs e)
+        {
+            Debug.WriteLine($"Added: {e.Element}");
+
+            if (e.Element is Page page)
+                if (page.BindingContext is IHasOwnerPage hop)
+                    hop.OnOwnerPagePushed(false);
         }
 
         private void Current_PageAppearing(object sender, Page page)
@@ -234,18 +278,16 @@ namespace FunctionZero.MvvmZero
 
         public async Task PushPageAsync(Page page, bool isModal)
         {
-            var hop = page.BindingContext as IHasOwnerPage;
+            if (page.BindingContext is IHasOwnerPage hop)
+                hop.OnOwnerPagePushing(isModal);
+            
             if (isModal == false)
             {
-                hop?.OnOwnerPagePushing(isModal);
                 await CurrentNavigationPage.PushAsync(page, true);
-                hop?.OnOwnerPagePushed(isModal);
             }
             else
             {
-                hop?.OnOwnerPagePushing(isModal);
                 await CurrentNavigationPage.PushModalAsync(page, true);
-                hop?.OnOwnerPagePushed(isModal);
             }
         }
 
@@ -256,26 +298,15 @@ namespace FunctionZero.MvvmZero
         //}
 
 
-
+        // Don't do anything fancy in PopAsync because the system can bypass this method and pop stuff directly.
         public async Task PopAsync(bool isModal, bool animated = true)
         {
             if (!isModal)
-            {
-                var page = CurrentNavigationPage.NavigationStack.Last();
-                var hop = page.BindingContext as IHasOwnerPage;
-                hop?.OnOwnerPagePopping(isModal);
                 await CurrentNavigationPage.PopAsync(animated);
-                hop?.OnOwnerPagePopped(isModal);
-            }
             else
-            {
-                var page = CurrentNavigationPage.ModalStack.Last();
-                var hop = page.BindingContext as IHasOwnerPage;
-                hop?.OnOwnerPagePopping(isModal);
                 await CurrentNavigationPage.PopModalAsync(animated);
-                hop?.OnOwnerPagePopped(isModal);
-            }
         }
+
         public async Task PopToRootAsync(bool animated = false)
         {
             var navStack = CurrentNavigationPage.NavigationStack;
