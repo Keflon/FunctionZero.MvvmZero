@@ -36,6 +36,7 @@ namespace FunctionZero.MvvmZero
         private readonly Func<INavigation> _navigationGetter;
         private Func<Type, object> _typeFactory;
         private Application _currentApplication;
+        private Page _oldMainPage;
 
         private INavigation CurrentNavigationPage => _navigationGetter();
 
@@ -78,12 +79,38 @@ namespace FunctionZero.MvvmZero
 
                 // TODO: Can currentApplication.MainPage be null?
                 // TODO: If so (I suspect it can), we should subscribe and unsubscribe when it changes.
-                currentApplication.MainPage.ChildAdded += CurrentApplication_ChildAdded;
-                currentApplication.MainPage.ChildRemoved += CurrentApplication_ChildRemoved;
+                if (currentApplication.MainPage != null)
+                {
+                    currentApplication.MainPage.ChildAdded += CurrentApplication_ChildAdded;
+                    currentApplication.MainPage.ChildRemoved += CurrentApplication_ChildRemoved;
+                }
+
+                currentApplication.PropertyChanged += CurrentApplication_PropertyChanged;
+
                 currentApplication.ModalPushed += CurrentApplication_ModalPushed;
                 currentApplication.ModalPopped += CurrentApplication_ModalPopped;
             }
             _currentApplication = currentApplication;
+        }
+
+        private void CurrentApplication_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Debug.WriteLine($"PSZ:INPC:{e.PropertyName}");
+
+            if(e.PropertyName == nameof(_currentApplication.MainPage))
+            {
+                if(_oldMainPage != null)
+                {
+                    _oldMainPage.ChildAdded -= CurrentApplication_ChildAdded;
+                    _oldMainPage.ChildRemoved -= CurrentApplication_ChildRemoved;
+                    _oldMainPage = _currentApplication.MainPage;
+                }
+                if(_currentApplication.MainPage != null)
+                {
+                    _currentApplication.MainPage.ChildAdded += CurrentApplication_ChildAdded;
+                    _currentApplication.MainPage.ChildRemoved += CurrentApplication_ChildRemoved;
+                }
+            }
         }
 
         private void CurrentApplication_ModalPopped(object sender, ModalPoppedEventArgs e)
@@ -238,18 +265,18 @@ namespace FunctionZero.MvvmZero
             return vm;
         }
 
-        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal, GetMvvmPageMode mode)
+        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal, bool animated, GetMvvmPageMode mode)
     where TPage : Page
     where TViewModel : class
         {
             var mvvmPage = GetMvvmPage<TPage, TViewModel>(mode);
-
+            
             if (initViewModelActionAsync != null)
             {
                 await initViewModelActionAsync(mvvmPage.viewModel);
             }
 
-            await PushPageAsync(mvvmPage.page, isModal);
+            await PushPageAsync(mvvmPage.page, isModal, animated);
 
             return mvvmPage.viewModel;
         }
@@ -259,7 +286,7 @@ namespace FunctionZero.MvvmZero
         //    TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
         //    return await PushPageAsync(newPage, isModal);
         //}
-        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal, GetMvvmPageMode mode)
+        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal, bool animated, GetMvvmPageMode mode)
     where TPage : Page
     where TViewModel : class
         {
@@ -270,24 +297,24 @@ namespace FunctionZero.MvvmZero
                 initViewModelAction(mvvmPage.viewModel);
             }
 
-            await PushPageAsync(mvvmPage.page, isModal);
+            await PushPageAsync(mvvmPage.page, isModal, animated);
 
             return mvvmPage.viewModel;
         }
 
 
-        public async Task PushPageAsync(Page page, bool isModal)
+        public async Task PushPageAsync(Page page, bool isModal, bool animated)
         {
             if (page.BindingContext is IHasOwnerPage hop)
                 hop.OnOwnerPagePushing(isModal);
             
             if (isModal == false)
             {
-                await CurrentNavigationPage.PushAsync(page, true);
+                await CurrentNavigationPage.PushAsync(page, animated);
             }
             else
             {
-                await CurrentNavigationPage.PushModalAsync(page, true);
+                await CurrentNavigationPage.PushModalAsync(page, animated);
             }
         }
 
@@ -320,6 +347,19 @@ namespace FunctionZero.MvvmZero
                 (topPage.BindingContext as IHasOwnerPage)?.OnOwnerPageDisappearing();
             }
             await CurrentNavigationPage.PopToRootAsync(animated);
+        }
+
+        public void RemovePageBelowTop()
+        {
+            if(CurrentNavigationPage != null)
+            {
+                int index = CurrentNavigationPage.NavigationStack.Count - 2;
+                if(index >= 0)
+                {
+                    var page = CurrentNavigationPage.NavigationStack[index];
+                    CurrentNavigationPage.RemovePage(page);
+                }
+            }
         }
     }
 }

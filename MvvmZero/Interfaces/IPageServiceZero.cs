@@ -69,23 +69,26 @@ namespace FunctionZero.MvvmZero
             where TPage : Page
             where TViewModel : class;
 
-
         TPage GetPage<TPage>() where TPage : Page;
 
         TViewModel GetViewModel<TViewModel>() where TViewModel : class;
 
-        Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal = false, GetMvvmPageMode mode = GetMvvmPageMode.Default)
+        Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal = false, bool animated = true, GetMvvmPageMode mode = GetMvvmPageMode.Default)
             where TPage : Page
             where TViewModel : class;
 
-        Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal = false, GetMvvmPageMode mode = GetMvvmPageMode.Default)
+        Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal = false, bool animated = true, GetMvvmPageMode mode = GetMvvmPageMode.Default)
             where TPage : Page
             where TViewModel : class;
 
-        Task PushPageAsync(Page page, bool isModal);
+        Task PushPageAsync(Page page, bool isModal, bool animated = true);
         //Task PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page;
         Task PopAsync(bool isModal, bool animated = true);
         Task PopToRootAsync(bool animated = true);
+
+        void RemovePageBelowTop();
+        //void RemovePageAtIndex(int index);
+        //void GetNavigationStackCount(bool isModal = false);
 #endif
     }
 
