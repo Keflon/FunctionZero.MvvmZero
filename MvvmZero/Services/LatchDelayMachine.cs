@@ -11,7 +11,7 @@ namespace FunctionZero.MvvmZero.Services
         private readonly Action _delayedAction;
         private readonly Func<bool> _delayStartedAction;
         private readonly Func<int, double, bool> _clockTick;
-
+        private readonly Action _delayKilledAction;
         private int _counter;
         bool _timerIsRunning;
 
@@ -20,6 +20,10 @@ namespace FunctionZero.MvvmZero.Services
         /// </summary>
         private bool _killPokeRequested = false;
 
+
+        // TODO: Either add a 'busy' flag and a BusyChanged event (e.g. to manage a 'Busy' flag in the consumer), or
+        // TODO: Add a bool to delayedAction describing whether the delayedAction was killed.
+        // TODO: Add a state-object.
         /// <summary>
         /// 
         /// </summary>
@@ -33,7 +37,8 @@ namespace FunctionZero.MvvmZero.Services
             int clockTicksBeforeAction,
             Action delayedAction,
             Func<bool> delayStartedAction = null,
-            Func<int, double, bool> clockTick = null
+            Func<int, double, bool> clockTick = null,
+            Action delayKilledAction = null
             )
         {
             _clockTimespan = new TimeSpan(0, 0, 0, 0, millisecondClock);
@@ -41,6 +46,7 @@ namespace FunctionZero.MvvmZero.Services
             _delayedAction = delayedAction ?? (() => { });
             _delayStartedAction = delayStartedAction ?? (() => true);
             _clockTick = clockTick ?? ((count, progress) => true);
+            _delayKilledAction = delayKilledAction ?? (() => { });
         }
 
 
@@ -91,7 +97,9 @@ namespace FunctionZero.MvvmZero.Services
             if (_killPokeRequested == true)
             {
                 _killPokeRequested = false;
-                return false;
+                _timerIsRunning = false;
+                _delayKilledAction();
+                return false; 
             }
 
             _counter++;
