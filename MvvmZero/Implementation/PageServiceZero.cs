@@ -50,6 +50,11 @@ namespace FunctionZero.MvvmZero
         /// <param name="theApplicationInstance">Pass in App.Current if you want IHasOwnerPage wired up for you</param>
         public PageServiceZero(Func<INavigation> navigationGetter, Func<Type, object> typeFactory, Application currentApplication = null)
         {
+            // TODO: Do not call Init from here.
+            // TODO: Reason:
+            // TODO: If the PageService is instantiated before the App object is instantiated
+            // TODO: then currentApplication is null, so Init does not get called.
+            // TODO: Better to require it to be called manually from the App constructor?
             _navigationGetter = navigationGetter;
             _typeFactory = typeFactory;
 

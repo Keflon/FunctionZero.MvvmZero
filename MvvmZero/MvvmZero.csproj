@@ -5,25 +5,23 @@
     <LangVersion>7.3</LangVersion>
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
-    <Version>2.3.0-pre6</Version>
-    <Copyright>FunctionZero Ltd. 2021</Copyright>
+    <Version>2.3.0-pre7</Version>
+    <Copyright>FunctionZero Ltd. 2022</Copyright>
     <Description>An easy to use library for building cross-platform Xamarin Forms applications very quickly. Includes FunctionZero.zBind, allowing fully featured databinding to expressions.</Description>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
     <PackageTags>Mvvm Xamarin Forms iOS UWP Android ICommand Command CommandZero CommandZeroAsync zbind expression parser databinding</PackageTags>
-    <PackageReleaseNotes>Pre-release: Testing
-1. Page initialisation sequence in a more deterministic way
-2. New lifecycle events
-3. Stability
+    <PackageReleaseNotes>Updated to zBind 1.3.0 so that functions and assignments automatically cast to the desired type, preventing InvalidCastExceptions.
+Updated to Xamarin.Forms 5.0.0.2478.
 </PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FunctionZero.CommandZero" Version="1.1.0" />
-    <PackageReference Include="FunctionZero.zBind" Version="1.2.4" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
+    <PackageReference Include="FunctionZero.zBind" Version="1.3.0" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2478" />
   </ItemGroup>
 
   <ItemGroup>

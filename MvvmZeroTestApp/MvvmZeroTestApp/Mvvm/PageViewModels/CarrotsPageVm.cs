@@ -40,8 +40,8 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
                 .SetName("Next")
                 .Build(); 
             PopModalCommand= new CommandBuilder()
-             .SetExecuteAsync(async ()=>await _pageService.PopAsync(true))
-             .SetName("Pop Modal")
+             .SetExecuteAsync(async ()=>await _pageService.PopAsync(false, true))
+             .SetName("Pop Page")
              .Build();
         }
 

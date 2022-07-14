@@ -28,8 +28,8 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 
         private async Task CarrotsCommandExecute()
         {
-            //await DoSomethingSilly();
-            await _pageService.PushPageAsync<CarrotsPage, CarrotsPageVm>((vm) => vm.SetState(null), true);
+            await DoSomethingSilly();
+            await _pageService.PushPageAsync<CarrotsPage, CarrotsPageVm>((vm) => vm.SetState(null), false, true);
         }
 
         private async Task DoSomethingSilly()
