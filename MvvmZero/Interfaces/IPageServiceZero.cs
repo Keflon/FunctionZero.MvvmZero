@@ -49,15 +49,6 @@ namespace FunctionZero.MvvmZero
         Task PopToRootAsync(bool animated = true);
 
 #else
-        GetMvvmPageMode DefaultMvvmPageMode { get; set; }
-        /// <summary>
-        /// Call this only if you create a PageService before Application.Current is set, 
-        /// and you don't have the application instance to inject to the constructor at the time of creation.
-        /// </summary>
-        /// <param name="currentApplication"></param>
-        void Init(Application currentApplication);
-
-
         /// <summary>
         /// Makes a TPage with a BindingContext set to a TViewModel
         /// </summary>
@@ -65,7 +56,7 @@ namespace FunctionZero.MvvmZero
         /// <typeparam name="TViewModel">The type of ViewModel found on the page BindingContext</typeparam>
         /// <param name="mode">The strategy used when acquiring the ViewModel</param>
         /// <returns>A Tuple containing a reference to the TPage and a reference to the TViewModel found on the page BindingContext</returns>
-        (TPage page, TViewModel viewModel) GetMvvmPage<TPage, TViewModel>(GetMvvmPageMode mode = GetMvvmPageMode.Default)
+        (TPage page, TViewModel viewModel) GetMvvmPage<TPage, TViewModel>()
             where TPage : Page
             where TViewModel : class;
 
@@ -73,11 +64,11 @@ namespace FunctionZero.MvvmZero
 
         TViewModel GetViewModel<TViewModel>() where TViewModel : class;
 
-        Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal = false, bool animated = true, GetMvvmPageMode mode = GetMvvmPageMode.Default)
+        Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal = false, bool animated = true)
             where TPage : Page
             where TViewModel : class;
 
-        Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal = false, bool animated = true, GetMvvmPageMode mode = GetMvvmPageMode.Default)
+        Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal = false, bool animated = true)
             where TPage : Page
             where TViewModel : class;
 
@@ -90,39 +81,5 @@ namespace FunctionZero.MvvmZero
         //void RemovePageAtIndex(int index);
         //void GetNavigationStackCount(bool isModal = false);
 #endif
-    }
-
-    public enum GetMvvmPageMode
-    {
-        /// <summary>
-        /// Use DefaultMvvmPageMode
-        /// </summary>
-        Default = 0,
-        /// <summary>
-        /// Gets a reference to a TViewModel
-        /// If the Page has a null BindingContext, sets it to the reference
-        /// Throws an exception if the Page already has a BindingContext that is different to the TViewModel reference
-        /// </summary>
-        Singleton,
-        /// <summary>
-        /// Assumes the Page has a null BindingContext and assigns a TViewModel
-        /// Throws an exception if the Page already has a BindingContext
-        /// </summary>
-        Manual,
-        /// <summary>
-        /// If the Page does not have a BindingContext already, sets the BindingContext to a TViewModel
-        /// Throws an exception if the Page already has a BindingContext that is-not-a TViewModel
-        /// </summary>
-        Auto,
-        /// <summary>
-        /// Assumes the Page will already have a BindingContext that is-a TViewModel
-        /// Throws an exception if this is not the case
-        /// </summary>
-        Page,
-
-        /// <summary>
-        /// Overwrites page.BindingContext with a TViewModel irrespective of what page.BindingContext may initially refer to
-        /// </summary>
-        Force
     }
 }

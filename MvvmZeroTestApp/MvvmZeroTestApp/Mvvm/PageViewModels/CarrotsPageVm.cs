@@ -50,7 +50,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
             if (CanProceed == false)
                 CanProceed = true;
             else
-                await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM CARROT!!"), false, true, GetMvvmPageMode.Page);
+                await _pageService.PushPageAsync<ResultsPage, ResultsPageVm>((vm)=>((ResultsPageVm)vm).SetState("GO TEAM CARROT!!"), false, true);
         }
 
         public override void OnOwnerPageAppearing()

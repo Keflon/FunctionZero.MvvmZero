@@ -48,7 +48,7 @@ namespace FunctionZero.MvvmZero
         /// <param name="navPage"></param>
         /// <param name="typeFactory"></param>
         /// <param name="theApplicationInstance">Pass in App.Current if you want IHasOwnerPage wired up for you</param>
-        public PageServiceZero(Func<INavigation> navigationGetter, Func<Type, object> typeFactory, Application currentApplication = null)
+        public PageServiceZero(Func<INavigation> navigationGetter, Func<Type, object> typeFactory)
         {
             // TODO: Do not call Init from here.
             // TODO: Reason:
@@ -57,25 +57,29 @@ namespace FunctionZero.MvvmZero
             // TODO: Better to require it to be called manually from the App constructor?
             _navigationGetter = navigationGetter;
             _typeFactory = typeFactory;
-
-            if (currentApplication == null)
-                currentApplication = Application.Current;
-
-            if (currentApplication != null)
-            {
-                Init(currentApplication);
-            }
         }
 
-        public GetMvvmPageMode DefaultMvvmPageMode { get; set; }
-
-        public void Init(Application currentApplication)
+        private void Init()
         {
+            // NOTE: Overkill, because AFAIK Application.Current cannot change once set.
+            // NOTE: => _currentApplication will only ever be null here.
             if (_currentApplication != null)
             {
                 _currentApplication.PageAppearing -= Current_PageAppearing;
                 _currentApplication.PageDisappearing -= Current_PageDisappearing;
+
+                if (_currentApplication.MainPage != null)
+                {
+                    _currentApplication.MainPage.ChildAdded -= CurrentApplication_ChildAdded;
+                    _currentApplication.MainPage.ChildRemoved -= CurrentApplication_ChildRemoved;
+                }
+                _currentApplication.PropertyChanged -= CurrentApplication_PropertyChanged;
+
+                _currentApplication.ModalPushed -= CurrentApplication_ModalPushed;
+                _currentApplication.ModalPopped -= CurrentApplication_ModalPopped;
             }
+
+            var currentApplication = Application.Current;
 
             if (currentApplication != null)
             {
@@ -84,6 +88,7 @@ namespace FunctionZero.MvvmZero
 
                 // TODO: Can currentApplication.MainPage be null?
                 // TODO: If so (I suspect it can), we should subscribe and unsubscribe when it changes.
+
                 if (currentApplication.MainPage != null)
                 {
                     currentApplication.MainPage.ChildAdded += CurrentApplication_ChildAdded;
@@ -102,15 +107,15 @@ namespace FunctionZero.MvvmZero
         {
             Debug.WriteLine($"PSZ:INPC:{e.PropertyName}");
 
-            if(e.PropertyName == nameof(_currentApplication.MainPage))
+            if (e.PropertyName == nameof(_currentApplication.MainPage))
             {
-                if(_oldMainPage != null)
+                if (_oldMainPage != null)
                 {
                     _oldMainPage.ChildAdded -= CurrentApplication_ChildAdded;
                     _oldMainPage.ChildRemoved -= CurrentApplication_ChildRemoved;
                     _oldMainPage = _currentApplication.MainPage;
                 }
-                if(_currentApplication.MainPage != null)
+                if (_currentApplication.MainPage != null)
                 {
                     _currentApplication.MainPage.ChildAdded += CurrentApplication_ChildAdded;
                     _currentApplication.MainPage.ChildRemoved += CurrentApplication_ChildRemoved;
@@ -143,8 +148,8 @@ namespace FunctionZero.MvvmZero
             //((e.Element as Page)?.BindingContext as IHasOwnerPage)?.OnOwnerPagePopped(false);
 
             if (e.Element is Page page)
-                if(page.BindingContext is IHasOwnerPage hop)
-                hop.OnOwnerPagePopped(false);
+                if (page.BindingContext is IHasOwnerPage hop)
+                    hop.OnOwnerPagePopped(false);
         }
 
         private void CurrentApplication_ChildAdded(object sender, ElementEventArgs e)
@@ -177,90 +182,22 @@ namespace FunctionZero.MvvmZero
 
         //    return page;
         //}
-        public (TPage page, TViewModel viewModel) GetMvvmPage<TPage, TViewModel>(GetMvvmPageMode mode)
+        public (TPage page, TViewModel viewModel) GetMvvmPage<TPage, TViewModel>()
             where TPage : Page
             where TViewModel : class
         {
-            TPage page = (TPage)_typeFactory(typeof(TPage));
-            TViewModel vm = null;
-
-            GetMvvmPageMode actualMode = mode;
-            if (actualMode == GetMvvmPageMode.Default)
-                actualMode = GetMvvmPageMode.Singleton;
-
-            switch (actualMode)
-            {
-                case GetMvvmPageMode.Default:
-                    {
-                        throw new InvalidOperationException("This cannot happen");
-                    }
-                case GetMvvmPageMode.Singleton:
-                    {
-                        vm = (TViewModel)_typeFactory(typeof(TViewModel));
-                        if (page.BindingContext == null)
-                            page.BindingContext = vm;
-
-                        else if (page.BindingContext != vm)
-                            throw new InvalidOperationException("Page already has a different viewModel instance");
-
-                        page.BindingContext = vm;
-                    }
-                    break;
-                case GetMvvmPageMode.Manual:
-                    {
-                        vm = (TViewModel)_typeFactory(typeof(TViewModel));
-                        if (page.BindingContext != vm)
-                            if (page.BindingContext != null)
-                                throw new InvalidOperationException("Page already has a BindingContext");
-
-                        page.BindingContext = vm;
-                    }
-                    break;
-                case GetMvvmPageMode.Auto:
-                    {
-                        if (page.BindingContext == null)
-                        {
-                            vm = (TViewModel)_typeFactory(typeof(TViewModel));
-                            page.BindingContext = vm;
-                        }
-                        else if ((page.BindingContext is TViewModel) == false)
-                        {
-                            throw new InvalidOperationException("Page has an unsuitable BindingContext");
-                        }
-                        else
-                        {
-                            vm = (TViewModel)page.BindingContext;
-                        }
-                    }
-                    break;
-                case GetMvvmPageMode.Page:
-                    {
-                        if (page.BindingContext == null)
-                        {
-                            throw new InvalidOperationException("Page does not have a BindingContext");
-                        }
-                        if (page.BindingContext is TViewModel pvm)
-                        {
-                            vm = pvm;
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException("Page has an unsuitable BindingContext");
-                        }
-                    }
-                    break;
-                case GetMvvmPageMode.Force:
-                    {
-                        vm = (TViewModel)_typeFactory(typeof(TViewModel));
-                        page.BindingContext = vm;
-                    }
-                    break;
-            }
+            TPage page = GetPage<TPage>();
+            TViewModel vm = GetViewModel<TViewModel>();
+            page.BindingContext = vm;
             return (page, vm);
         }
 
         public TPage GetPage<TPage>() where TPage : Page
         {
+            if (_currentApplication != Application.Current)
+                Init();
+
+
             TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
             return page;
         }
@@ -270,12 +207,12 @@ namespace FunctionZero.MvvmZero
             return vm;
         }
 
-        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal, bool animated, GetMvvmPageMode mode)
+        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal, bool animated)
     where TPage : Page
     where TViewModel : class
         {
-            var mvvmPage = GetMvvmPage<TPage, TViewModel>(mode);
-            
+            var mvvmPage = GetMvvmPage<TPage, TViewModel>();
+
             if (initViewModelActionAsync != null)
             {
                 await initViewModelActionAsync(mvvmPage.viewModel);
@@ -291,11 +228,11 @@ namespace FunctionZero.MvvmZero
         //    TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
         //    return await PushPageAsync(newPage, isModal);
         //}
-        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal, bool animated, GetMvvmPageMode mode)
+        public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal, bool animated)
     where TPage : Page
     where TViewModel : class
         {
-            var mvvmPage = GetMvvmPage<TPage, TViewModel>(mode);
+            var mvvmPage = GetMvvmPage<TPage, TViewModel>();
 
             if (initViewModelAction != null)
             {
@@ -312,7 +249,7 @@ namespace FunctionZero.MvvmZero
         {
             if (page.BindingContext is IHasOwnerPage hop)
                 hop.OnOwnerPagePushing(isModal);
-            
+
             if (isModal == false)
             {
                 await CurrentNavigationPage.PushAsync(page, animated);
@@ -356,10 +293,10 @@ namespace FunctionZero.MvvmZero
 
         public void RemovePageBelowTop()
         {
-            if(CurrentNavigationPage != null)
+            if (CurrentNavigationPage != null)
             {
                 int index = CurrentNavigationPage.NavigationStack.Count - 2;
-                if(index >= 0)
+                if (index >= 0)
                 {
                     var page = CurrentNavigationPage.NavigationStack[index];
                     CurrentNavigationPage.RemovePage(page);
