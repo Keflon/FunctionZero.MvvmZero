@@ -50,8 +50,7 @@ namespace MvvmZeroTestApp.Service
 
             var pageService = this.IoCC.GetInstance<IPageServiceZero>();
             //var homePage = pageService.MakePage<HomePage, HomePageVm>((vm) => vm.SetState(null));
-            var homeMvvmPage = pageService.GetMvvmPage<HomePage, HomePageVm>();
-            homeMvvmPage.viewModel.SetState(null);
+            var homeMvvmPage = pageService.GetMvvmPage<HomePage, HomePageVm>((vm) => vm.SetState(null));
 
 
             pageService.PushPageAsync(homeMvvmPage.page, false);

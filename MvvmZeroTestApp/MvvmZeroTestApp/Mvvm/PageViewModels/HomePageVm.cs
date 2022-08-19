@@ -75,7 +75,7 @@ namespace MvvmZeroTestApp.Mvvm.PageViewModels
 
         private async Task BroccoliCommandExecute()
         {
-            //await DoSomethingElseSilly();
+            await DoSomethingElseSilly();
             await _pageService.PushPageAsync<BroccoliPage, BroccoliPageVm>((vm) => vm.SetState(null));
         }
 
