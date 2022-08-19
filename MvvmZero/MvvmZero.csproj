@@ -5,17 +5,20 @@
     <LangVersion>7.3</LangVersion>
     <RootNamespace>FunctionZero.MvvmZero</RootNamespace>
     <AssemblyName>FunctionZero.MvvmZero</AssemblyName>
-    <Version>2.3.0-pre9</Version>
+    <Version>2.4.0</Version>
     <Copyright>FunctionZero Ltd. 2022</Copyright>
     <Description>An easy to use library for building cross-platform Xamarin Forms applications very quickly. Includes FunctionZero.zBind, allowing fully featured databinding to expressions.</Description>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Keflon/FunctionZero.MvvmZero</PackageProjectUrl>
     <PackageTags>Mvvm Xamarin Forms iOS UWP Android ICommand Command CommandZero CommandZeroAsync zbind expression parser databinding</PackageTags>
-    <PackageReleaseNotes>Updated to zBind 1.3.0 so that functions and assignments automatically cast to the desired type, preventing InvalidCastExceptions.
-Updated to Xamarin.Forms 5.0.0.2478.
+    <PackageReleaseNotes>Updated NuGet packages. 
+Added ability to navigate purely vm to vm (no references needed for Pages).
+Tidied up the interface.
 </PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Keflon/FunctionZero.MvvmZero</RepositoryUrl>
+    <Title>MvvmZero</Title>
+    <PackageReadmeFile>NuGetReadMe.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +28,10 @@ Updated to Xamarin.Forms 5.0.0.2478.
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\NuGetReadMe.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="License.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
