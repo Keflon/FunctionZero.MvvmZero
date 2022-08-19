@@ -37,26 +37,24 @@ namespace FunctionZero.MvvmZero
         private Func<Type, object> _typeFactory;
         private Application _currentApplication;
         private Page _oldMainPage;
+        Func<object, Page> _pageResolver;
 
         private INavigation CurrentNavigationPage => _navigationGetter();
+
 
         /// <summary>
         /// Creates a PageServiceZero associated with the provided NavigationPage.
         /// Uses a Func to get the INavigation for Push operations to allow
         /// multiple nav stacks when using a MasterDetail page or similar architecture.
         /// </summary>
-        /// <param name="navPage"></param>
-        /// <param name="typeFactory"></param>
-        /// <param name="theApplicationInstance">Pass in App.Current if you want IHasOwnerPage wired up for you</param>
-        public PageServiceZero(Func<INavigation> navigationGetter, Func<Type, object> typeFactory)
+        /// <param name="navigationGetter">Function that returns the current INavigation</param>
+        /// <param name="typeFactory">Function that returns an instance of a given type.</param>
+        /// <param name="pageResolver">If using PushViewModelAsync you must provide a Function that returns a Page for a given ViewModel type</param>
+        public PageServiceZero(Func<INavigation> navigationGetter, Func<Type, object> typeFactory, Func<object, Page> pageResolver = null)
         {
-            // TODO: Do not call Init from here.
-            // TODO: Reason:
-            // TODO: If the PageService is instantiated before the App object is instantiated
-            // TODO: then currentApplication is null, so Init does not get called.
-            // TODO: Better to require it to be called manually from the App constructor?
             _navigationGetter = navigationGetter;
             _typeFactory = typeFactory;
+            _pageResolver = pageResolver;
         }
 
         private void Init()
@@ -173,22 +171,13 @@ namespace FunctionZero.MvvmZero
                 hop.OnOwnerPageDisappearing();
         }
 
-        //public TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page
-        //{
-        //    TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
-        //    TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
-        //    setState?.Invoke(vm);
-        //    page.BindingContext = vm;
-
-        //    return page;
-        //}
         public (TPage page, TViewModel viewModel) GetMvvmPage<TPage, TViewModel>()
             where TPage : Page
             where TViewModel : class
         {
             TPage page = GetPage<TPage>();
             TViewModel vm = GetViewModel<TViewModel>();
-            page.BindingContext = vm;
+            //page.BindingContext = vm;
             return (page, vm);
         }
 
@@ -197,16 +186,19 @@ namespace FunctionZero.MvvmZero
             if (_currentApplication != Application.Current)
                 Init();
 
-
-            TPage page = (TPage)_typeFactory.Invoke(typeof(TPage));
+            TPage page = (TPage)_typeFactory(typeof(TPage));
             return page;
         }
+
         public TViewModel GetViewModel<TViewModel>() where TViewModel : class
         {
-            TViewModel vm = (TViewModel)_typeFactory.Invoke(typeof(TViewModel));
+            TViewModel vm = (TViewModel)_typeFactory(typeof(TViewModel));
             return vm;
         }
-
+        /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal, bool animated)
     where TPage : Page
     where TViewModel : class
@@ -217,33 +209,27 @@ namespace FunctionZero.MvvmZero
             {
                 await initViewModelActionAsync(mvvmPage.viewModel);
             }
+            // Vm is initialised *before* setting the BindingContext, so any Bindings to non INPC properties or OneShot Bindings are correct.
+            mvvmPage.page.BindingContext = mvvmPage.viewModel;
 
             await PushPageAsync(mvvmPage.page, isModal, animated);
 
             return mvvmPage.viewModel;
         }
 
-        //public async Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page
-        //{
-        //    TPage newPage = MakePage<TPage, TViewModel>(setStateAction);
-        //    return await PushPageAsync(newPage, isModal);
-        //}
         public async Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal, bool animated)
     where TPage : Page
     where TViewModel : class
         {
             var mvvmPage = GetMvvmPage<TPage, TViewModel>();
 
-            if (initViewModelAction != null)
-            {
-                initViewModelAction(mvvmPage.viewModel);
-            }
+            initViewModelAction?.Invoke(mvvmPage.viewModel);
+            // Vm is initialised *before* setting the BindingContext, so any Bindings to non INPC properties or OneShot Bindings are correct.
+            mvvmPage.page.BindingContext = mvvmPage.viewModel;
 
             await PushPageAsync(mvvmPage.page, isModal, animated);
-
             return mvvmPage.viewModel;
         }
-
 
         public async Task PushPageAsync(Page page, bool isModal, bool animated)
         {
@@ -259,14 +245,36 @@ namespace FunctionZero.MvvmZero
                 await CurrentNavigationPage.PushModalAsync(page, animated);
             }
         }
+        
+        public async Task<TViewModel> PushViewModelAsync<TViewModel>(Action<TViewModel> initViewModelAction, bool isModal, bool animated) where TViewModel : class
+        {
+            if (_pageResolver == null)
+                throw new InvalidOperationException("Please provide a PageResolver to the PageService constructor to use PushViewModelAsync");
 
-        //public async Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page
-        //{
-        //    var mvvmPage = GetMvvmPage<TPage, object>();
-        //    return await PushPageAsync(newPage, isModal);
-        //}
+            TViewModel vm = GetViewModel<TViewModel>();
+            var page = _pageResolver(vm);
+            initViewModelAction?.Invoke(vm);
+            page.BindingContext = vm;
+            await PushPageAsync(page, isModal, animated);
+            return vm;
+        }
 
+        public async Task<TViewModel> PushViewModelAsync<TViewModel>(Func<TViewModel, Task> initViewModelAction, bool isModal, bool animated) where TViewModel : class
+        {
+            if (_pageResolver == null)
+                throw new InvalidOperationException("Please provide a PageResolver to the PageService constructor to use PushViewModelAsync");
 
+            TViewModel vm = GetViewModel<TViewModel>();
+            var page = _pageResolver(vm);
+            await initViewModelAction?.Invoke(vm);
+            page.BindingContext = vm;
+            await PushPageAsync(page, isModal, animated);
+            return vm;
+        }
+        /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Don't do anything fancy in PopAsync because the system can bypass this method and pop stuff directly.
         public async Task PopAsync(bool isModal, bool animated = true)
         {

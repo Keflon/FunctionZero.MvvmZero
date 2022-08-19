@@ -30,25 +30,7 @@ namespace FunctionZero.MvvmZero
 {
     public interface IPageServiceZero
     {
-#if old
-        /// <summary>
-        /// Call this only if you create a PageService before Application.Current is set, 
-        /// and you don't have the application instance to inject to the constructor at the time of creation.
-        /// </summary>
-        /// <param name="currentApplication"></param>
-        void Init(Application currentApplication);
-        TPage MakePage<TPage, TViewModel>(Action<TViewModel> setState) where TPage : Page;
-        TPage MakePage<TPage>(Action<object> setState) where TPage : Page;
 
-        TViewModel MakeViewModel<TViewModel>() where TViewModel : class;
-
-        Task<Page> PushPageAsync(Page page, bool isModal);
-        Task<Page> PushPageAsync<TPage, TViewModel>(Action<TViewModel> setStateAction, bool isModal = false) where TPage : Page;
-        Task<Page> PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page;
-        Task PopAsync(bool isModal, bool animated = true);
-        Task PopToRootAsync(bool animated = true);
-
-#else
         /// <summary>
         /// Makes a TPage with a BindingContext set to a TViewModel
         /// </summary>
@@ -60,26 +42,90 @@ namespace FunctionZero.MvvmZero
             where TPage : Page
             where TViewModel : class;
 
+        /// <summary>
+        /// Returns a Page of type TPage
+        /// </summary>
+        /// <typeparam name="TPage"></typeparam>
+        /// <returns></returns>
         TPage GetPage<TPage>() where TPage : Page;
 
+        /// <summary>
+        /// Returns a ViewModel of type TViewModel
+        /// </summary>
+        /// <typeparam name="TViewModel"></typeparam>
+        /// <returns></returns>
         TViewModel GetViewModel<TViewModel>() where TViewModel : class;
 
+        /// <summary>
+        /// Pushes a TPage onto the navigation stack whose BindingContext is set to a TViewModel
+        /// </summary>
+        /// <typeparam name="TPage"></typeparam>
+        /// <typeparam name="TViewModel"></typeparam>
+        /// <param name="initViewModelActionAsync">An async Action used to initialise the ViewModel before it it's page is presented</param>
+        /// <param name="isModal">Whether the Page should be presented on the modal stack</param>
+        /// <param name="animated">Whether the page should appear using the system animation</param>
+        /// <returns>The ViewModel found on the Page's BindingContext</returns>
         Task<TViewModel> PushPageAsync<TPage, TViewModel>(Func<TViewModel, Task> initViewModelActionAsync, bool isModal = false, bool animated = true)
             where TPage : Page
             where TViewModel : class;
 
+        /// <summary>
+        /// Pushes a TPage onto the navigation stack whose BindingContext is set to a TViewModel
+        /// </summary>
+        /// <typeparam name="TPage"></typeparam>
+        /// <typeparam name="TViewModel"></typeparam>
+        /// <param name="initViewModelActionAsync">An Action used to initialise the ViewModel before it it's page is presented</param>
+        /// <param name="isModal">Whether the Page should be presented on the modal stack</param>
+        /// <param name="animated">Whether the page should appear using the system animation</param>
+        /// <returns>The ViewModel found on the Page's BindingContext</returns>
         Task<TViewModel> PushPageAsync<TPage, TViewModel>(Action<TViewModel> initViewModelAction, bool isModal = false, bool animated = true)
             where TPage : Page
             where TViewModel : class;
 
+        /// <summary>
+        /// Pushes a Page onto the navigation stack
+        /// </summary>
+        /// <param name="page">The Page to push</param>
+        /// <param name="isModal">Whether the Page should be presented on the modal stack</param>
+        /// <param name="animated">Whether the page should appear using the system animation</param>
+        /// <returns>The ViewModel found on the Page's BindingContext</returns>
         Task PushPageAsync(Page page, bool isModal, bool animated = true);
         //Task PushPageAsync<TPage>(Action<object> setStateAction, bool isModal = false) where TPage : Page;
+
+        /// <summary>
+        /// NOTE: To use this method, the PageService needs to know how to get a Page for a given ViewModel.
+        /// PageServiceZero can do this if you provide a page-resolver to the constructor.
+        /// This method finds a suitable Page for the TViewModel, sets the page BindingContext to a TViewModel, 
+        /// then pushes the page onto the navigation stack.
+        /// </summary>
+        /// <typeparam name="TViewModel"></typeparam>
+        /// <param name="initViewModelActionAsync">An Action used to initialise the ViewModel before it it's page is presented</param>
+        /// <param name="isModal">Whether the Page should be presented on the modal stack</param>
+        /// <param name="animated">Whether the page should appear using the system animation</param>
+        /// <returns>The ViewModel found on the Page's BindingContext</returns>
+        Task<TViewModel> PushViewModelAsync<TViewModel>(Action<TViewModel> initViewModelAction, bool isModal, bool animated) where TViewModel : class;
+
+
+        /// <summary>
+        /// Pops the top page from the navigation stack
+        /// </summary>
+        /// <param name="isModal">Whether the Page should be presented on the modal stack</param>
+        /// <param name="animated">Whether the page should appear using the system animation</param>
+        /// <returns>A Task that can be awaited</returns>
         Task PopAsync(bool isModal, bool animated = true);
+
+
+        /// <summary>
+        /// Pops the all pages from the navigation stack
+        /// </summary>
+        /// <param name="animated">Whether the page should appear using the system animation</param>
+        /// <returns>A Task that can be awaited</returns>
         Task PopToRootAsync(bool animated = true);
 
         void RemovePageBelowTop();
+
+        Task<TViewModel> PushViewModelAsync<TViewModel>(Func<TViewModel, Task> initViewModelAction, bool isModal, bool animated) where TViewModel : class;
         //void RemovePageAtIndex(int index);
         //void GetNavigationStackCount(bool isModal = false);
-#endif
     }
 }
