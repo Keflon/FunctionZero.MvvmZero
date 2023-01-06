@@ -127,5 +127,8 @@ namespace FunctionZero.MvvmZero
         //Task<TViewModel> PushViewModelAsync<TViewModel>(Func<TViewModel, Task> initViewModelAction, bool isModal, bool animated) where TViewModel : class;
         //void RemovePageAtIndex(int index);
         //void GetNavigationStackCount(bool isModal = false);
+
+        TViewModel FindAncestorPageVm<TViewModel>() where TViewModel : class;
+
     }
 }

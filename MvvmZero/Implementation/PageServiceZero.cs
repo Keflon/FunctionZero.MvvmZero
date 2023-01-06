@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -227,7 +228,7 @@ namespace FunctionZero.MvvmZero
                 await CurrentNavigationPage.PushModalAsync(page, animated);
             }
         }
-        
+
         public async Task<TViewModel> PushViewModelAsync<TViewModel>(Action<TViewModel> initViewModelAction, bool isModal, bool animated) where TViewModel : class
         {
             if (_pageResolver == null)
@@ -279,6 +280,15 @@ namespace FunctionZero.MvvmZero
                     CurrentNavigationPage.RemovePage(page);
                 }
             }
+        }
+
+        public TViewModel FindAncestorPageVm<TViewModel>() where TViewModel : class
+        {
+            for(int c = CurrentNavigationPage.NavigationStack.Count - 1; c>=0; c--)
+                if (CurrentNavigationPage.NavigationStack[c].BindingContext is TViewModel theVm)
+                    return theVm;
+
+            return null;
         }
     }
 }
